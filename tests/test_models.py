@@ -1,4 +1,4 @@
-from build.models import model_specs
+from build.models import model_ids, model_specs
 from build.ranges import Range
 
 
@@ -28,3 +28,9 @@ def test_curated_parameter_range():
                             "total_b": {"min": 200, "max": 400}}}
     spec = model_specs(curated, ecologits_models=[])["closed-y"]
     assert (spec["active_b"], spec["total_b"]) == (Range(20, 40), Range(200, 400))
+
+
+def test_model_ids_need_no_valid_parameters():
+    # Validation needs the ids before it has checked the files, so reading them must not touch parameters.
+    raw = [{"provider": "x", "name": "eco-1", "architecture": {"type": "dense", "parameters": 1}}]
+    assert model_ids({"broken": {"name": "broken"}}, ecologits_models=raw) == {"eco-1", "broken"}

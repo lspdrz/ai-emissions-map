@@ -15,13 +15,17 @@ ENERGY = FixedEnergyModel({
 })
 
 
-@pytest.fixture
-def ratings(sources, fixtures_dir):
+def _rate(sources, fixtures_dir, release=date(2026, 10, 8)):
     grid, cloud = load_grid(fixtures_dir / "grid.csv"), load_cloud_regions(fixtures_dir / "cloud_regions.csv")
     models = model_specs(sources["models"], ecologits_models=[])
-    results = compute_routes(sources, models, grid, cloud, ENERGY, date(2026, 10, 8))
+    results = compute_routes(sources, models, grid, cloud, ENERGY, release)
     routes = rate_routes(sources, results)
     return routes, rate_orgs(sources, routes)
+
+
+@pytest.fixture
+def ratings(sources, fixtures_dir):
+    return _rate(sources, fixtures_dir)
 
 
 def test_route_letters_and_gaps(ratings):
@@ -49,3 +53,14 @@ def test_org_without_routes_is_not_rated(sources):
     sources["organizations"]["idle"] = sources["organizations"]["vaguehost"] | {"name": "idle", "routes": []}
     org = rate_orgs(sources, {})["idle"]
     assert (org["letter"], org["mean"], org["summary"]) == (None, None, "Not rated (no routes)")
+
+
+def test_stale_route_is_not_called_undisclosed(sources, fixtures_dir):
+    # 91 days after last_verified: the provider did disclose, the map just has not re-checked it.
+    sources["routes"]["alpinehost-test-70b"]["location"]["evidence"].append(
+        sources["routes"]["vaguehost-test-70b"]["location"]["evidence"][0])   # plus a press report
+    routes, _ = _rate(sources, fixtures_dir, release=date(2026, 12, 20))
+    assert routes["alpinehost-test-70b"]["letter"] == "E"
+    assert routes["alpinehost-test-70b"]["gap"] == "Location evidence not re-verified within 90 days of the release."
+    assert routes["aggregator-test-70b"]["gap"] == "An upstream route's location is undisclosed or unverified."
+    assert routes["vaguehost-test-70b"]["gap"] == "Reported in press, not disclosed by the provider."

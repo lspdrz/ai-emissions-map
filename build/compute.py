@@ -20,6 +20,12 @@ class ComputeError(Exception):
     pass
 
 
+# Why a route is not scored. build.rate turns each into the gap it publishes.
+UNDISCLOSED = "location undisclosed"
+NOT_VERIFIED = f"location evidence not verified within {VERIFICATION_WINDOW} days"
+UPSTREAM_UNSCORED = "an upstream route's location is undisclosed or unverified"
+
+
 def _result(name: str, org: str, r: dict, energy: Range, embodied: Range, **fields) -> dict:
     """A route result. Unscored unless the caller passes the scored fields."""
     result = {
@@ -60,8 +66,9 @@ def compute_routes(data: dict, models: dict, grid: dict, cloud_regions: dict[tup
             energy = Range.union(u["energy_wh"] for u in ups)
             embodied = Range.union(u["embodied_g"] for u in ups)
             if not all(u["scored"] for u in ups):
-                res = _result(name, owners[name], r, energy, embodied,
-                              reason="an upstream route's location is undisclosed")
+                res = _result(name, owners[name], r, energy, embodied, reason=UPSTREAM_UNSCORED,
+                              label_mismatch=bool(r.get("served_as") and r["served_as"] != r["model"])
+                              or any(u["label_mismatch"] for u in ups))
             else:
                 score = Range.union(u["score_direct"] for u in ups)
                 res = _result(
@@ -81,10 +88,9 @@ def compute_routes(data: dict, models: dict, grid: dict, cloud_regions: dict[tup
             energy, embodied = energy_model.estimate(r["model"], models[r["model"]])
             loc = r["location"]
             if loc["confidence"] == "unknown":
-                res = _result(name, owners[name], r, energy, embodied, reason="location undisclosed")
+                res = _result(name, owners[name], r, energy, embodied, reason=UNDISCLOSED)
             elif not location_established(loc, release):
-                res = _result(name, owners[name], r, energy, embodied,
-                              reason=f"location evidence not verified within {VERIFICATION_WINDOW} days")
+                res = _result(name, owners[name], r, energy, embodied, reason=NOT_VERIFIED)
             else:
                 zones = resolve_zones(loc, data["facilities"], cloud_regions)
                 direct = intensity_range(zones, grid, "direct")

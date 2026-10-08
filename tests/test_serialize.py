@@ -40,3 +40,17 @@ def test_validation_errors_stop_the_build(tmp_path, fixtures_dir, capsys):
     assert run(tmp_path, fixtures_dir, grid_zones_override={"DE", "FR"}) > 0
     assert not (tmp_path / "organizations.json").exists()
     assert "ERROR: facilities/alp-1.yaml: grid zone 'CH' is not in the grid data" in capsys.readouterr().out
+
+
+def test_broken_model_file_is_reported_not_raised(tmp_path, fixtures_dir, capsys):
+    import shutil
+    root = tmp_path / "corpus"
+    shutil.copytree(fixtures_dir / "corpus", root)
+    model = root / "sources" / "models" / "test-8b.yaml"
+    model.write_text(model.read_text().replace("active_b: 8\n", "active_b: 8B\n"))
+    out = tmp_path / "out"
+    assert serialize(root=root, release=date(2026, 10, 8), out_dir=out, energy_model=ENERGY,
+                     grid_path=fixtures_dir / "grid.csv", cloud_path=fixtures_dir / "cloud_regions.csv",
+                     ecologits_models=[]) > 0
+    assert "ERROR: models/test-8b.yaml: active_b:" in capsys.readouterr().out
+    assert not out.exists()

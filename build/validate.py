@@ -144,7 +144,7 @@ def _check_route_shape(routes: dict) -> list[str]:
 
 
 def _check_references(facilities: dict, routes: dict, all_routes: dict, grid_zones: set[str] | None,
-                      cloud_keys: set[tuple[str, str]] | None) -> list[str]:
+                      cloud_regions: dict[tuple[str, str], str] | None) -> list[str]:
     errors = []
     for name, f in facilities.items():
         if grid_zones is not None and f["grid_zone"] not in grid_zones:
@@ -154,14 +154,22 @@ def _check_references(facilities: dict, routes: dict, all_routes: dict, grid_zon
         for u in r.get("upstreams") or []:
             if u["route"] not in all_routes:
                 errors.append(f"{where}: upstream route {u['route']!r} has no routes/{u['route']}.yaml")
+            elif u["route"] in routes and routes[u["route"]]["model"] != r["model"]:
+                errors.append(f"{where}: upstream route {u['route']!r} serves model "
+                              f"{routes[u['route']]['model']!r}, not {r['model']!r}")
         for cand in (r.get("location") or {}).get("candidates", []):
             kind, _, rest = cand.partition(":")
             if kind == "facility" and rest not in facilities:
                 errors.append(f"{where}: facility {rest!r} has no facilities/{rest}.yaml")
             elif kind == "cloud":
                 vendor, _, region = rest.partition(":")
-                if cloud_keys is not None and (vendor, region) not in cloud_keys:
+                if cloud_regions is None:
+                    continue
+                if (vendor, region) not in cloud_regions:
                     errors.append(f"{where}: cloud region {vendor}:{region} is not in the cloud-region data")
+                elif grid_zones is not None and cloud_regions[(vendor, region)] not in grid_zones:
+                    errors.append(f"{where}: cloud region {vendor}:{region} maps to grid zone "
+                                  f"{cloud_regions[(vendor, region)]!r}, which is not in the grid data")
             elif kind == "zone" and grid_zones is not None and rest not in grid_zones:
                 errors.append(f"{where}: grid zone {rest!r} is not in the grid data")
     return errors
@@ -177,12 +185,25 @@ def _check_evidence(facilities: dict, routes: dict) -> list[str]:
                 errors.append(f"{where}: confidence {loc['confidence']!r} needs at least one primary source")
             if not loc["candidates"]:
                 errors.append(f"{where}: confidence {loc['confidence']!r} needs at least one candidate")
+            errors += _check_confidence_supported(where, loc)
         if r.get("upstreams") and not _primary(r.get("upstream_evidence")):
             errors.append(f"{where}: upstream weights need a primary source")
     for name, f in facilities.items():
         if not _primary(f["location_evidence"]):
             errors.append(f"facilities/{name}.yaml: facility location needs a primary source")
     return errors
+
+
+# The precision a candidate kind can support: a confidence may not claim more than its candidates show.
+_CANDIDATES_FOR = {"facility": ("facility",), "region": ("facility", "cloud")}
+
+
+def _check_confidence_supported(where: str, loc: dict) -> list[str]:
+    allowed = _CANDIDATES_FOR.get(loc["confidence"])
+    if allowed is None or all(c.partition(":")[0] in allowed for c in loc["candidates"]):
+        return []
+    kinds = " or ".join(f"{k}:" for k in allowed)
+    return [f"{where}: confidence {loc['confidence']!r} needs every candidate to be a {kinds} candidate"]
 
 
 def _check_models(routes: dict, model_ids: set[str] | None) -> list[str]:
@@ -226,12 +247,12 @@ def _check_gap_map_ids(orgs: dict, gap_map_orgs: set[str]) -> list[str]:
 
 
 def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zones: set[str] | None = None,
-                     cloud_keys: set[tuple[str, str]] | None = None, gap_map_orgs: set[str] | None = None,
+                     cloud_regions: dict[tuple[str, str], str] | None = None, gap_map_orgs: set[str] | None = None,
                      root: Path = ROOT) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
     The optional sets switch on the checks against outside data: model_ids (EcoLogits plus sources/models/),
-    grid_zones (the grid snapshot), cloud_keys (cloud regions) and gap_map_orgs (the pinned os-ai-map release).
+    grid_zones (the grid snapshot), cloud_regions ((vendor, region) -> grid zone) and gap_map_orgs (the pinned os-ai-map release).
     """
     schemas = _load_schemas(root)
     errors = [f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
@@ -245,7 +266,7 @@ def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zone
     # Cross-file checks read only records that passed their schema, so a malformed file is reported once.
     facilities, routes = valid["facilities"], valid["routes"]
     errors += _check_route_shape(routes)
-    errors += _check_references(facilities, routes, data.get("routes") or {}, grid_zones, cloud_keys)
+    errors += _check_references(facilities, routes, data.get("routes") or {}, grid_zones, cloud_regions)
     errors += _check_evidence(facilities, routes)
     errors += _check_models(routes, model_ids)
     errors += _check_upstream_cycles(routes)
@@ -276,23 +297,27 @@ def _csv_values(path: Path, *columns: str) -> set:
 
 
 def main(argv: list[str] | None = None) -> int:
-    from build.models import model_specs
+    from build.grid import load_cloud_regions
+    from build.models import model_ids
 
     parser = argparse.ArgumentParser(prog="python -m build.validate", description="Validate sources/.")
     parser.add_argument("--release-date", type=date.fromisoformat, help="also warn about stale location evidence")
+    parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
 
-    data = load_sources(ROOT)
-    snapshots = ROOT / "sources" / "snapshots"
+    root = args.root
+    data = load_sources(root)
+    snapshots = root / "sources" / "snapshots"
     grid_path = max((snapshots / "grid").glob("*.csv"), default=None)
-    cloud_path = ROOT / "sources" / "cloud_regions.csv"
+    cloud_path = root / "sources" / "cloud_regions.csv"
     pin_path = snapshots / "os-ai-map.pin.json"
     errs = validate_sources(
         data,
-        model_ids=set(model_specs(data.get("models"))),
+        model_ids=model_ids(data.get("models")),
         grid_zones=_csv_values(grid_path, "zone") if grid_path else None,
-        cloud_keys=_csv_values(cloud_path, "vendor", "region") if cloud_path.exists() else None,
+        cloud_regions=load_cloud_regions(cloud_path) if cloud_path.exists() else None,
         gap_map_orgs=set(json.loads(pin_path.read_text())["org_slugs"]) if pin_path.exists() else None,
+        root=root,
     )
     for e in errs:
         print("ERROR:", e)

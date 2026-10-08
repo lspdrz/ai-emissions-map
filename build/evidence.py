@@ -9,8 +9,9 @@ from build.config import VERIFICATION_WINDOW
 
 def verified(location: dict, release: date) -> bool:
     """The claim rests on primary evidence and was re-confirmed within VERIFICATION_WINDOW days of the release
-    (inclusive)."""
-    recent = date.fromisoformat(location["last_verified"]) >= release - timedelta(days=VERIFICATION_WINDOW)
+    (inclusive). A date after the release is a typo or a rebuild of an old release, and does not count."""
+    last_verified = date.fromisoformat(location["last_verified"])
+    recent = release - timedelta(days=VERIFICATION_WINDOW) <= last_verified <= release
     return recent and any(e["kind"] == "primary" for e in location["evidence"])
 
 

@@ -19,6 +19,12 @@ def _params(value) -> Range:
     return Range.point(float(value))
 
 
+def model_ids(curated: dict | None, ecologits_models: list[dict] | None = None) -> set[str]:
+    """Every known model id. Reads names only, so it is safe to call before validate_sources has checked the files."""
+    raw = packaged_ecologits_models() if ecologits_models is None else ecologits_models
+    return {m["name"] for m in raw} | set(curated or {})
+
+
 def model_specs(curated: dict | None, ecologits_models: list[dict] | None = None) -> dict[str, dict]:
     """Model id -> {"active_b", "total_b": Range of billions of parameters, "source": "ecologits" | "curated"}.
 

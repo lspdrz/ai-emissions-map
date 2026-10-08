@@ -15,7 +15,7 @@ from build.compute import compute_routes
 from build.config import METHODOLOGY_VERSION, PUE
 from build.energy import EcoLogitsEnergyModel, EnergyModel
 from build.grid import load_cloud_regions, load_grid
-from build.models import model_specs
+from build.models import model_ids, model_specs
 from build.ranges import Range
 from build.rate import rate_orgs, rate_routes
 from build.validate import ROOT, load_sources, validate_sources, validation_warnings
@@ -68,17 +68,18 @@ def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyMode
               ecologits_models: list[dict] | None = None, grid_zones_override: set[str] | None = None) -> int:
     """Validate, then compute and write. Returns the number of validation errors; 0 means outputs were written."""
     data = load_sources(root)
-    models = model_specs(data.get("models"), ecologits_models)
     grid = load_grid(grid_path)
     cloud = load_cloud_regions(cloud_path)
     zones = grid_zones_override if grid_zones_override is not None else set(grid)
-    errs = validate_sources(data, model_ids=set(models), grid_zones=zones, cloud_keys=set(cloud))
+    errs = validate_sources(data, model_ids=model_ids(data.get("models"), ecologits_models), grid_zones=zones,
+                            cloud_regions=cloud)
     for e in errs:
         print("ERROR:", e)
     if errs:
         return len(errs)
     for w in validation_warnings(data, release):
         print("WARNING:", w)
+    models = model_specs(data.get("models"), ecologits_models)  # parameters are read only once validated
     results = compute_routes(data, models, grid, cloud, energy_model, release)
     route_ratings = rate_routes(data, results)
     org_ratings = rate_orgs(data, route_ratings)

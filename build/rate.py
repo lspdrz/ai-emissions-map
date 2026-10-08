@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from collections import Counter
 
-from build.config import LOCATION_PRECISION_SCORE
+from build.compute import NOT_VERIFIED, UPSTREAM_UNSCORED
+from build.config import LOCATION_PRECISION_SCORE, VERIFICATION_WINDOW
 from build.utils import average_level_score, score_to_letter
 
 _GAP_MESSAGES = {
@@ -14,16 +15,22 @@ _GAP_MESSAGES = {
     "unknown": "Location not disclosed by the provider.",
 }
 _PRESS_ONLY = "Reported in press, not disclosed by the provider."
+# A route that is unscored for a reason other than non-disclosure must not be published as undisclosed.
+_GAP_FOR_REASON = {
+    NOT_VERIFIED: f"Location evidence not re-verified within {VERIFICATION_WINDOW} days of the release.",
+    UPSTREAM_UNSCORED: "An upstream route's location is undisclosed or unverified.",
+}
 
 
 def rate_routes(data: dict, results: dict[str, dict]) -> dict[str, dict]:
     """Route slug -> {"level", "score": 0-4, "letter": A-E, "gap": what is missing, or None}."""
     ratings: dict[str, dict] = {}
     for name in sorted(results):
-        level = results[name]["level"]
+        level, reason = results[name]["level"], results[name]["reason"]
         location = data["routes"][name].get("location")
-        gap = _GAP_MESSAGES.get(level)
-        if level == "unknown" and location and any(e["kind"] == "corroborating" for e in location["evidence"]):
+        gap = _GAP_FOR_REASON.get(reason) or _GAP_MESSAGES.get(level)
+        if (location and location["confidence"] == "unknown"
+                and any(e["kind"] == "corroborating" for e in location["evidence"])):
             gap = _PRESS_ONLY
         score = LOCATION_PRECISION_SCORE[level]
         ratings[name] = {"level": level, "score": score, "letter": score_to_letter(score), "gap": gap}

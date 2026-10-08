@@ -3,7 +3,7 @@ import shutil
 from datetime import date
 
 from build.evidence import location_established, verified
-from build.validate import load_sources, route_owners, validate_sources, validation_warnings
+from build.validate import ROOT, load_sources, route_owners, validate_sources, validation_warnings
 
 SHA = "0" * 64
 
@@ -186,12 +186,12 @@ def test_upstream_weight_must_be_positive():
 # Cross-file checks (Task 3).
 
 ZONES = {"CH", "DE", "FR"}
-CLOUD = {("cloudx", "eu-de"), ("cloudx", "eu-fr")}
+CLOUD = {("cloudx", "eu-de"): "DE", ("cloudx", "eu-fr"): "FR"}
 MODELS = {"test-70b", "test-8b"}
 
 
 def test_fixture_corpus_passes_every_check(sources):
-    assert validate_sources(sources, model_ids=MODELS, grid_zones=ZONES, cloud_keys=CLOUD) == []
+    assert validate_sources(sources, model_ids=MODELS, grid_zones=ZONES, cloud_regions=CLOUD) == []
     assert validation_warnings(sources, date(2026, 10, 8)) == []
 
 
@@ -216,7 +216,7 @@ def test_unknown_zone_reported(sources):
 
 
 def test_unknown_cloud_region_reported(sources):
-    errs = validate_sources(sources, cloud_keys={("cloudx", "eu-de")})
+    errs = validate_sources(sources, cloud_regions={("cloudx", "eu-de"): "DE"})
     assert errs == ["routes/multihost-test-70b.yaml: cloud region cloudx:eu-fr is not in the cloud-region data"]
 
 
@@ -308,3 +308,65 @@ def test_stale_location_is_a_warning(sources):
 def test_org_without_routes_is_a_warning():
     d = _org(_fixture(), "idle")
     assert validation_warnings(d) == ["organizations/idle.yaml: has no routes and will not be rated"]
+
+
+# Fixes from the final review.
+
+def test_cloud_region_whose_zone_is_not_in_the_grid():
+    # The validator must catch what would otherwise crash compute_routes after "0 errors".
+    errs = validate_sources(_cloud_fixture(), grid_zones={"CH", "DE"}, cloud_regions={("cloudx", "eu-pl"): "PL"})
+    assert errs == ["routes/acme-m-70b.yaml: cloud region cloudx:eu-pl maps to grid zone 'PL', "
+                    "which is not in the grid data"]
+
+
+def _cloud_fixture():
+    d = _fixture()
+    loc = d["routes"]["acme-m-70b"]["location"]
+    loc["confidence"], loc["candidates"] = "region", ["cloud:cloudx:eu-pl"]
+    return d
+
+
+def test_aggregator_upstream_must_serve_the_same_model():
+    d = _with_route(_fixture(), "acme-agg")
+    d["routes"]["acme-m-8b"] = copy.deepcopy(d["routes"]["acme-m-70b"]) | {"name": "acme-m-8b", "model": "m-8b"}
+    d["organizations"]["acme"]["routes"].append("acme-m-8b")
+    agg = d["routes"]["acme-agg"]
+    del agg["location"]
+    agg["upstreams"] = [{"route": "acme-m-8b", "weight": 1}]
+    agg["upstream_evidence"] = [_evidence()]
+    assert validate_sources(d) == [
+        "routes/acme-agg.yaml: upstream route 'acme-m-8b' serves model 'm-8b', not 'm-70b'"]
+
+
+def test_facility_confidence_needs_facility_candidates():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["location"]["candidates"] = ["zone:CH"]
+    assert validate_sources(d) == [
+        "routes/acme-m-70b.yaml: confidence 'facility' needs every candidate to be a facility: candidate"]
+
+
+def test_region_confidence_cannot_rest_on_a_bare_zone():
+    d = _fixture()
+    loc = d["routes"]["acme-m-70b"]["location"]
+    loc["confidence"], loc["candidates"] = "region", ["zone:CH"]
+    assert validate_sources(d) == [
+        "routes/acme-m-70b.yaml: confidence 'region' needs every candidate to be a facility: or cloud: candidate"]
+    loc["candidates"] = ["facility:acme-1"]
+    assert validate_sources(d) == []
+
+
+def test_future_last_verified_does_not_count(sources):
+    loc = copy.deepcopy(sources["routes"]["alpinehost-test-70b"]["location"])
+    loc["last_verified"] = "2062-09-20"   # a typo, after the release
+    assert not verified(loc, date(2026, 10, 8))
+
+
+def test_cli_reports_a_broken_model_file_instead_of_crashing(tmp_path, fixtures_dir, capsys):
+    from build.validate import main
+    root = tmp_path / "corpus"
+    shutil.copytree(fixtures_dir / "corpus", root)
+    shutil.copytree(ROOT / "docs", root / "docs")
+    model = root / "sources" / "models" / "test-8b.yaml"
+    model.write_text(model.read_text().replace("total_b: 8\n", ""))
+    assert main(["--root", str(root)]) == 1
+    assert "ERROR: models/test-8b.yaml: 'total_b' is a required property" in capsys.readouterr().out
