@@ -1,7 +1,9 @@
 import copy
 import shutil
+from datetime import date
 
-from build.validate import load_sources, route_owners, validate_sources
+from build.evidence import location_established, verified
+from build.validate import load_sources, route_owners, validate_sources, validation_warnings
 
 SHA = "0" * 64
 
@@ -179,3 +181,130 @@ def test_upstream_weight_must_be_positive():
     del agg["location"]
     agg["upstreams"] = [{"route": "acme-m-70b", "weight": 0}]
     assert any(e.startswith("routes/acme-agg.yaml: upstreams[0].weight:") for e in validate_sources(d))
+
+
+# Cross-file checks (Task 3).
+
+ZONES = {"CH", "DE", "FR"}
+CLOUD = {("cloudx", "eu-de"), ("cloudx", "eu-fr")}
+MODELS = {"test-70b", "test-8b"}
+
+
+def test_fixture_corpus_passes_every_check(sources):
+    assert validate_sources(sources, model_ids=MODELS, grid_zones=ZONES, cloud_keys=CLOUD) == []
+    assert validation_warnings(sources, date(2026, 10, 8)) == []
+
+
+def test_verified_needs_primary_and_recent(sources):
+    loc = sources["routes"]["alpinehost-test-70b"]["location"]
+    assert verified(loc, date(2026, 10, 8))
+    assert verified(loc, date(2026, 12, 19))       # exactly 90 days after location.last_verified 2026-09-20
+    assert not verified(loc, date(2026, 12, 20))
+    press = sources["routes"]["vaguehost-test-70b"]["location"]   # corroborating evidence only
+    assert not verified(press, date(2026, 10, 8))
+
+
+def test_location_established(sources):
+    assert location_established(sources["routes"]["alpinehost-test-70b"]["location"], date(2026, 10, 8))
+    assert not location_established(sources["routes"]["vaguehost-test-70b"]["location"], date(2026, 10, 8))
+
+
+def test_unknown_zone_reported(sources):
+    errs = validate_sources(sources, grid_zones={"DE", "FR"})
+    assert "facilities/alp-1.yaml: grid zone 'CH' is not in the grid data" in errs
+    assert "routes/alpinehost-test-8b.yaml: grid zone 'CH' is not in the grid data" in errs
+
+
+def test_unknown_cloud_region_reported(sources):
+    errs = validate_sources(sources, cloud_keys={("cloudx", "eu-de")})
+    assert errs == ["routes/multihost-test-70b.yaml: cloud region cloudx:eu-fr is not in the cloud-region data"]
+
+
+def test_unknown_facility_and_upstream_reported():
+    d = _with_route(_fixture(), "acme-agg")
+    d["routes"]["acme-m-70b"]["location"]["candidates"] = ["facility:nowhere"]
+    agg = d["routes"]["acme-agg"]
+    del agg["location"]
+    agg["upstreams"] = [{"route": "acme-ghost", "weight": 1}]
+    agg["upstream_evidence"] = [_evidence()]
+    errs = validate_sources(d)
+    assert "routes/acme-m-70b.yaml: facility 'nowhere' has no facilities/nowhere.yaml" in errs
+    assert "routes/acme-agg.yaml: upstream route 'acme-ghost' has no routes/acme-ghost.yaml" in errs
+
+
+def test_upstream_cycle_reported(sources):
+    d = copy.deepcopy(sources)
+    alp = d["routes"]["alpinehost-test-70b"]
+    del alp["location"]
+    alp["upstreams"] = [{"route": "aggregator-test-70b", "weight": 1}]
+    alp["upstream_evidence"] = d["routes"]["aggregator-test-70b"]["upstream_evidence"]
+    assert any("upstream cycle" in e and "aggregator-test-70b -> alpinehost-test-70b" in e
+               for e in validate_sources(d))
+
+
+def test_location_needs_primary_evidence():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["location"]["evidence"][0]["kind"] = "corroborating"
+    assert validate_sources(d) == ["routes/acme-m-70b.yaml: confidence 'facility' needs at least one primary source"]
+
+
+def test_location_needs_candidates():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["location"]["candidates"] = []
+    assert validate_sources(d) == ["routes/acme-m-70b.yaml: confidence 'facility' needs at least one candidate"]
+
+
+def test_upstreams_need_primary_evidence():
+    d = _with_route(_fixture(), "acme-agg")
+    agg = d["routes"]["acme-agg"]
+    del agg["location"]
+    agg["upstreams"] = [{"route": "acme-m-70b", "weight": 1}]
+    assert validate_sources(d) == ["routes/acme-agg.yaml: upstream weights need a primary source"]
+
+
+def test_facility_needs_primary_evidence():
+    d = _fixture()
+    d["facilities"]["acme-1"]["location_evidence"][0]["kind"] = "corroborating"
+    assert validate_sources(d) == ["facilities/acme-1.yaml: facility location needs a primary source"]
+
+
+def test_route_shape():
+    d = _fixture()
+    del d["routes"]["acme-m-70b"]["location"]
+    assert validate_sources(d) == ["routes/acme-m-70b.yaml: route needs either a location or upstreams"]
+    d = _with_route(_fixture(), "acme-agg")
+    d["routes"]["acme-agg"]["upstreams"] = [{"route": "acme-m-70b", "weight": 1}]
+    d["routes"]["acme-agg"]["upstream_evidence"] = [_evidence()]
+    assert validate_sources(d) == ["routes/acme-agg.yaml: route cannot have both a location and upstreams"]
+
+
+def test_unknown_model_and_label_without_evidence():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["served_as"] = "m-70b-v1.5"
+    errs = validate_sources(d, model_ids={"something-else"})
+    assert "routes/acme-m-70b.yaml: model 'm-70b' is not in EcoLogits or sources/models/" in errs
+    assert any("served_as 'm-70b-v1.5' differs" in e for e in errs)
+
+
+def test_gap_map_ids_checked():
+    d = _fixture()
+    d["organizations"]["acme"]["ids"]["gap_map"] = "acme-ai"
+    assert validate_sources(d, gap_map_orgs={"something-else"}) == [
+        "organizations/acme.yaml: ids.gap_map 'acme-ai' is not in the pinned os-ai-map release"]
+    assert validate_sources(d, gap_map_orgs={"acme-ai"}) == []
+
+
+def test_malformed_record_is_reported_once():
+    d = _fixture()
+    del d["routes"]["acme-m-70b"]["location"]["candidates"]
+    assert validate_sources(d) == ["routes/acme-m-70b.yaml: location: 'candidates' is a required property"]
+
+
+def test_stale_location_is_a_warning(sources):
+    warns = validation_warnings(sources, date(2027, 6, 1))
+    assert any(w.startswith("routes/alpinehost-test-70b.yaml: no primary location evidence verified") for w in warns)
+
+
+def test_org_without_routes_is_a_warning():
+    d = _org(_fixture(), "idle")
+    assert validation_warnings(d) == ["organizations/idle.yaml: has no routes and will not be rated"]

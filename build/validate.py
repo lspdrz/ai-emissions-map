@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import argparse
+import csv
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 import jsonschema
 import yaml
+
+from build.evidence import location_established
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -124,8 +129,110 @@ def _check_rosters(orgs: dict, routes: dict) -> list[str]:
     return errors
 
 
-def validate_sources(data: dict, *, root: Path = ROOT) -> list[str]:
-    """Every problem in the corpus, one message per problem, each naming the file it is in."""
+def _primary(items: list | None) -> bool:
+    return any(e["kind"] == "primary" for e in items or [])
+
+
+def _check_route_shape(routes: dict) -> list[str]:
+    errors = []
+    for name, r in routes.items():
+        if r.get("location") is None and not r.get("upstreams"):
+            errors.append(f"routes/{name}.yaml: route needs either a location or upstreams")
+        if r.get("location") is not None and r.get("upstreams"):
+            errors.append(f"routes/{name}.yaml: route cannot have both a location and upstreams")
+    return errors
+
+
+def _check_references(facilities: dict, routes: dict, all_routes: dict, grid_zones: set[str] | None,
+                      cloud_keys: set[tuple[str, str]] | None) -> list[str]:
+    errors = []
+    for name, f in facilities.items():
+        if grid_zones is not None and f["grid_zone"] not in grid_zones:
+            errors.append(f"facilities/{name}.yaml: grid zone {f['grid_zone']!r} is not in the grid data")
+    for name, r in routes.items():
+        where = f"routes/{name}.yaml"
+        for u in r.get("upstreams") or []:
+            if u["route"] not in all_routes:
+                errors.append(f"{where}: upstream route {u['route']!r} has no routes/{u['route']}.yaml")
+        for cand in (r.get("location") or {}).get("candidates", []):
+            kind, _, rest = cand.partition(":")
+            if kind == "facility" and rest not in facilities:
+                errors.append(f"{where}: facility {rest!r} has no facilities/{rest}.yaml")
+            elif kind == "cloud":
+                vendor, _, region = rest.partition(":")
+                if cloud_keys is not None and (vendor, region) not in cloud_keys:
+                    errors.append(f"{where}: cloud region {vendor}:{region} is not in the cloud-region data")
+            elif kind == "zone" and grid_zones is not None and rest not in grid_zones:
+                errors.append(f"{where}: grid zone {rest!r} is not in the grid data")
+    return errors
+
+
+def _check_evidence(facilities: dict, routes: dict) -> list[str]:
+    errors = []
+    for name, r in routes.items():
+        where = f"routes/{name}.yaml"
+        loc = r.get("location")
+        if loc and loc["confidence"] != "unknown":
+            if not _primary(loc["evidence"]):
+                errors.append(f"{where}: confidence {loc['confidence']!r} needs at least one primary source")
+            if not loc["candidates"]:
+                errors.append(f"{where}: confidence {loc['confidence']!r} needs at least one candidate")
+        if r.get("upstreams") and not _primary(r.get("upstream_evidence")):
+            errors.append(f"{where}: upstream weights need a primary source")
+    for name, f in facilities.items():
+        if not _primary(f["location_evidence"]):
+            errors.append(f"facilities/{name}.yaml: facility location needs a primary source")
+    return errors
+
+
+def _check_models(routes: dict, model_ids: set[str] | None) -> list[str]:
+    errors = []
+    for name, r in routes.items():
+        where = f"routes/{name}.yaml"
+        if model_ids is not None and r["model"] not in model_ids:
+            errors.append(f"{where}: model {r['model']!r} is not in EcoLogits or sources/models/")
+        if r.get("served_as") and r["served_as"] != r["model"] and not r.get("served_model_evidence"):
+            errors.append(f"{where}: served_as {r['served_as']!r} differs from model {r['model']!r}; "
+                          "add served_model_evidence")
+    return errors
+
+
+def _check_upstream_cycles(routes: dict) -> list[str]:
+    errors: list[str] = []
+    state: dict[str, str] = {}
+
+    def visit(name: str, path: list[str]) -> None:
+        if state.get(name) == "done":
+            return
+        if state.get(name) == "active":
+            loop = path[path.index(name):] + [name]
+            errors.append(f"routes/{name}.yaml: upstream cycle {' -> '.join(loop)}")
+            return
+        state[name] = "active"
+        for u in routes[name].get("upstreams") or []:
+            if u["route"] in routes:
+                visit(u["route"], path + [name])
+        state[name] = "done"
+
+    for name in sorted(routes):
+        visit(name, [])
+    return errors
+
+
+def _check_gap_map_ids(orgs: dict, gap_map_orgs: set[str]) -> list[str]:
+    return [f"organizations/{name}.yaml: ids.gap_map {o['ids']['gap_map']!r} is not in the pinned os-ai-map release"
+            for name, o in orgs.items()
+            if o["ids"].get("gap_map") and o["ids"]["gap_map"] not in gap_map_orgs]
+
+
+def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zones: set[str] | None = None,
+                     cloud_keys: set[tuple[str, str]] | None = None, gap_map_orgs: set[str] | None = None,
+                     root: Path = ROOT) -> list[str]:
+    """Every problem in the corpus, one message per problem, each naming the file it is in.
+
+    The optional sets switch on the checks against outside data: model_ids (EcoLogits plus sources/models/),
+    grid_zones (the grid snapshot), cloud_keys (cloud regions) and gap_map_orgs (the pinned os-ai-map release).
+    """
     schemas = _load_schemas(root)
     errors = [f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
               for path in data.get("stray_files", [])]
@@ -135,12 +242,66 @@ def validate_sources(data: dict, *, root: Path = ROOT) -> list[str]:
         errors += errs
         errors += _check_aliases(dirname, valid[dirname])
     errors += _check_rosters(valid["organizations"], data.get("routes") or {})
+    # Cross-file checks read only records that passed their schema, so a malformed file is reported once.
+    facilities, routes = valid["facilities"], valid["routes"]
+    errors += _check_route_shape(routes)
+    errors += _check_references(facilities, routes, data.get("routes") or {}, grid_zones, cloud_keys)
+    errors += _check_evidence(facilities, routes)
+    errors += _check_models(routes, model_ids)
+    errors += _check_upstream_cycles(routes)
+    if gap_map_orgs is not None:
+        errors += _check_gap_map_ids(valid["organizations"], gap_map_orgs)
     return errors
 
 
-if __name__ == "__main__":
-    errs = validate_sources(load_sources(ROOT))
+def validation_warnings(data: dict, release_date: date | None = None) -> list[str]:
+    """Problems that do not stop a release. Call on data that validate_sources passed."""
+    warnings = [f"organizations/{name}.yaml: has no routes and will not be rated"
+                for name, o in sorted(data["organizations"].items()) if not o["routes"]]
+    if release_date is not None:
+        warnings += [f"routes/{name}.yaml: no primary location evidence verified within the window for "
+                     f"{release_date.isoformat()}; the route will be treated as unknown"
+                     for name, r in sorted(data["routes"].items())
+                     if r.get("location") and r["location"]["confidence"] != "unknown"
+                     and not location_established(r["location"], release_date)]
+    return warnings
+
+
+def _csv_values(path: Path, *columns: str) -> set:
+    with path.open(encoding="utf-8", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    if len(columns) == 1:
+        return {row[columns[0]] for row in rows}
+    return {tuple(row[c] for c in columns) for row in rows}
+
+
+def main(argv: list[str] | None = None) -> int:
+    from build.models import model_specs
+
+    parser = argparse.ArgumentParser(prog="python -m build.validate", description="Validate sources/.")
+    parser.add_argument("--release-date", type=date.fromisoformat, help="also warn about stale location evidence")
+    args = parser.parse_args(argv)
+
+    data = load_sources(ROOT)
+    snapshots = ROOT / "sources" / "snapshots"
+    grid_path = max((snapshots / "grid").glob("*.csv"), default=None)
+    cloud_path = ROOT / "sources" / "cloud_regions.csv"
+    pin_path = snapshots / "os-ai-map.pin.json"
+    errs = validate_sources(
+        data,
+        model_ids=set(model_specs(data.get("models"))),
+        grid_zones=_csv_values(grid_path, "zone") if grid_path else None,
+        cloud_keys=_csv_values(cloud_path, "vendor", "region") if cloud_path.exists() else None,
+        gap_map_orgs=set(json.loads(pin_path.read_text())["org_slugs"]) if pin_path.exists() else None,
+    )
     for e in errs:
         print("ERROR:", e)
-    print(f"{len(errs)} error(s)")
-    sys.exit(1 if errs else 0)
+    warns = [] if errs else validation_warnings(data, args.release_date)
+    for w in warns:
+        print("WARNING:", w)
+    print(f"{len(errs)} error(s), {len(warns)} warning(s)")
+    return 1 if errs else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
