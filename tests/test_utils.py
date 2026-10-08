@@ -1,7 +1,7 @@
 import inspect
 
-from aem import config, utils
-from aem.ranges import Range
+from build import config, utils
+from build.ranges import Range
 
 
 def test_config_holds_only_constants():

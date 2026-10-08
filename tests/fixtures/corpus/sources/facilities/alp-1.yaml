@@ -1,0 +1,13 @@
+name: alp-1
+display_name: Alpine Host DC 1
+operator: alpinehost
+ownership: owned
+grid_zone: CH
+last_verified: '2026-09-20'
+location_evidence:
+- url: https://alpinehost.example/datacenters
+  shows: 'Data centre list: "ALP-1, Zurich, Switzerland, owned and operated by Alpine Host"'
+  accessed: '2026-09-01'
+  http_status: 200
+  content_sha256: "2222222222222222222222222222222222222222222222222222222222222222"
+  kind: primary

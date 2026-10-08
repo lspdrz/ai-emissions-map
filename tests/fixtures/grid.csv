@@ -1,0 +1,4 @@
+zone,year,direct_gco2_per_kwh,lifecycle_gco2_per_kwh,source,fallback
+CH,2025,30,45,electricitymaps,false
+DE,2025,330,380,electricitymaps,false
+FR,2025,40,60,electricitymaps,false

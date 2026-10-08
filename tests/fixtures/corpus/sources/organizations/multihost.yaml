@@ -1,0 +1,7 @@
+name: multihost
+display_name: Multi Host
+type: inference_host
+homepage: https://multihost.example
+ids: { gap_map: null, ossd: null, hf_provider: null, openrouter: null }
+routes:
+- multihost-test-70b

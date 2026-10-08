@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Facility",
+  "type": "object",
+  "required": [
+    "name",
+    "display_name",
+    "operator",
+    "ownership",
+    "grid_zone",
+    "last_verified",
+    "location_evidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/slug",
+      "description": "The slug; must equal the filename stem"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aliases": {
+      "$ref": "#/$defs/aliases"
+    },
+    "operator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ownership": {
+      "enum": [
+        "owned",
+        "colocation",
+        "hpc_center",
+        "gpu_cloud"
+      ]
+    },
+    "grid_zone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "last_verified": {
+      "$ref": "#/$defs/date",
+      "description": "When the facility's location was last confirmed against its evidence"
+    },
+    "location_evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "comments": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601, quoted in YAML"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/slug"
+      },
+      "uniqueItems": true,
+      "description": "Retired slugs of this record. A slug leaves the corpus only by appearing here."
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "url",
+        "shows",
+        "accessed",
+        "http_status",
+        "content_sha256",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shows": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the source actually says, quoted from the page that was read"
+        },
+        "accessed": {
+          "$ref": "#/$defs/date"
+        },
+        "http_status": {
+          "type": "integer"
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "kind": {
+          "enum": [
+            "primary",
+            "corroborating"
+          ]
+        },
+        "capture": {
+          "enum": [
+            "auto",
+            "manual"
+          ]
+        },
+        "anomaly": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

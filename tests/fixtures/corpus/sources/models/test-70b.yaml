@@ -1,0 +1,12 @@
+name: test-70b
+display_name: Test 70B
+architecture: dense
+active_b: 70
+total_b: 70
+evidence:
+- url: https://example.org/model-card-70b
+  shows: 'Model card: "70B parameters, dense decoder-only transformer"'
+  accessed: '2026-09-01'
+  http_status: 200
+  content_sha256: "8888888888888888888888888888888888888888888888888888888888888888"
+  kind: primary

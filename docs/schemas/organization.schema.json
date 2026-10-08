@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Organization",
+  "type": "object",
+  "required": [
+    "name",
+    "display_name",
+    "type",
+    "homepage",
+    "ids",
+    "routes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/slug",
+      "description": "The slug; must equal the filename stem"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "enum": [
+        "model_lab",
+        "inference_host",
+        "cloud",
+        "public_compute",
+        "aggregator"
+      ]
+    },
+    "homepage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "country": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "ISO 3166-1 alpha-2"
+    },
+    "aliases": {
+      "$ref": "#/$defs/aliases"
+    },
+    "ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gap_map": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ossd": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hf_provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "openrouter": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "notified": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "responses": {
+      "type": "array"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/slug"
+      },
+      "uniqueItems": true,
+      "description": "The routes this organization serves. Each route appears on exactly one roster."
+    },
+    "comments": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601, quoted in YAML"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/slug"
+      },
+      "uniqueItems": true,
+      "description": "Retired slugs of this record. A slug leaves the corpus only by appearing here."
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "url",
+        "shows",
+        "accessed",
+        "http_status",
+        "content_sha256",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shows": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the source actually says, quoted from the page that was read"
+        },
+        "accessed": {
+          "$ref": "#/$defs/date"
+        },
+        "http_status": {
+          "type": "integer"
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "kind": {
+          "enum": [
+            "primary",
+            "corroborating"
+          ]
+        },
+        "capture": {
+          "enum": [
+            "auto",
+            "manual"
+          ]
+        },
+        "anomaly": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import pytest
 
-from aem.ranges import Range
+from build.ranges import Range
 
 
 def test_range_rejects_inverted_and_negative():

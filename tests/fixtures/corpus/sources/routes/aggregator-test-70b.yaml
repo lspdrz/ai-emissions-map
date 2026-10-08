@@ -1,0 +1,12 @@
+name: aggregator-test-70b
+model: test-70b
+upstreams:
+- { route: alpinehost-test-70b, weight: 1 }
+- { route: multihost-test-70b, weight: 1 }
+upstream_evidence:
+- url: https://aggregator.example/routing.yaml
+  shows: 'Routing config: test-70b routes to "alpinehost" and "multihost" with equal weight'
+  accessed: '2026-09-01'
+  http_status: 200
+  content_sha256: "7777777777777777777777777777777777777777777777777777777777777777"
+  kind: primary

@@ -1,0 +1,13 @@
+name: alpinehost-test-70b
+model: test-70b
+location:
+  confidence: facility
+  candidates: ["facility:alp-1"]
+  last_verified: '2026-09-20'
+  evidence:
+  - url: https://alpinehost.example/docs/regions
+    shows: 'Regions page: "test-70b is served exclusively from ALP-1"'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: "4444444444444444444444444444444444444444444444444444444444444444"
+    kind: primary

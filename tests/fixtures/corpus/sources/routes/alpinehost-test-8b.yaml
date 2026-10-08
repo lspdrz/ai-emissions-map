@@ -1,0 +1,13 @@
+name: alpinehost-test-8b
+model: test-8b
+location:
+  confidence: country
+  candidates: ["zone:CH"]
+  last_verified: '2026-09-20'
+  evidence:
+  - url: https://alpinehost.example/docs/small-models
+    shows: 'Small models page: "small models run in our Swiss data centres"'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: "4545454545454545454545454545454545454545454545454545454545454545"
+    kind: primary

@@ -1,6 +1,6 @@
 """Methodology constants. Every value here is a documented, tunable choice (spec §8-§9).
 
-Only constants live here; functions that use them are in aem/utils.py.
+Only constants live here; functions that use them are in build/utils.py.
 """
 
 from __future__ import annotations

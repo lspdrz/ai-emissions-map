@@ -1,11 +1,11 @@
-"""Helpers that apply the methodology constants in aem/config.py."""
+"""Helpers that apply the methodology constants in build/config.py."""
 
 from __future__ import annotations
 
 import math
 
-from aem.config import CARBON_BAND_UPPER
-from aem.ranges import Range
+from build.config import CARBON_BAND_UPPER
+from build.ranges import Range
 
 _LETTERS = {4: "A", 3: "B", 2: "C", 1: "D", 0: "E"}
 

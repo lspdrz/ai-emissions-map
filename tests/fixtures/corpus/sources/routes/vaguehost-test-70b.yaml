@@ -1,0 +1,13 @@
+name: vaguehost-test-70b
+model: test-70b
+location:
+  confidence: unknown
+  candidates: []
+  last_verified: '2026-09-20'
+  evidence:
+  - url: https://news.example/vaguehost-datacenter
+    shows: 'Article says Vague Host "plans a European data centre"; names no site or model'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: "5656565656565656565656565656565656565656565656565656565656565656"
+    kind: corroborating

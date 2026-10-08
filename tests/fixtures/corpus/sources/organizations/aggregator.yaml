@@ -1,0 +1,7 @@
+name: aggregator
+display_name: Aggregator
+type: aggregator
+homepage: https://aggregator.example
+ids: { gap_map: null, ossd: null, hf_provider: null, openrouter: null }
+routes:
+- aggregator-test-70b

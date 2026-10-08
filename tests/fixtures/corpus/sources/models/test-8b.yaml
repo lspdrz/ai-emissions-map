@@ -1,0 +1,12 @@
+name: test-8b
+display_name: Test 8B
+architecture: dense
+active_b: 8
+total_b: 8
+evidence:
+- url: https://example.org/model-card-8b
+  shows: 'Model card: "8B parameters, dense decoder-only transformer"'
+  accessed: '2026-09-01'
+  http_status: 200
+  content_sha256: "8989898989898989898989898989898989898989898989898989898989898989"
+  kind: primary

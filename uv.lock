@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [[package]]
 name = "ai-emissions-map"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "ecologits" },
     { name = "jsonschema" },

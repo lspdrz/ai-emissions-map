@@ -1,0 +1,13 @@
+name: multihost-test-70b
+model: test-70b
+location:
+  confidence: country_set
+  candidates: ["cloud:cloudx:eu-de", "cloud:cloudx:eu-fr"]
+  last_verified: '2026-09-20'
+  evidence:
+  - url: https://multihost.example/legal/subprocessors
+    shows: 'Sub-processor list: "CloudX, inference hosting, Frankfurt or Paris regions"'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: "5555555555555555555555555555555555555555555555555555555555555555"
+    kind: primary
