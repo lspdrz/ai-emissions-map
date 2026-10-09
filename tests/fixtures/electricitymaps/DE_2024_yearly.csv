@@ -1,0 +1,2 @@
+Datetime (UTC),Country,Zone name,Zone id,Carbon intensity gCO₂eq/kWh (direct),Carbon intensity gCO₂eq/kWh (Life cycle),Carbon-free energy percentage (CFE%),Renewable energy percentage (RE%),Data source,Data estimated,Data estimation method
+2024-01-01 00:00:00,Germany,Germany,DE,330.4,380.9,58.2,55.0,entsoe.eu,true,TIME_SLICER_AVERAGE

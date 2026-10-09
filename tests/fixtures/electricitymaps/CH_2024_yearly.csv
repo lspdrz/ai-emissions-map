@@ -1,0 +1,2 @@
+﻿Datetime (UTC),Country,Zone name,Zone id,Carbon intensity gCO₂eq/kWh (direct),Carbon intensity gCO₂eq/kWh (Life cycle),Carbon-free energy percentage (CFE%),Renewable energy percentage (RE%),Data source,Data estimated,Data estimation method
+2024-01-01 00:00:00,Switzerland,Switzerland,CH,29.85,45.12,95.1,74.3,entsoe.eu,false,
