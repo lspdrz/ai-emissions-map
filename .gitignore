@@ -4,3 +4,8 @@ __pycache__/
 .notes/
 .superpowers/
 build/*.json
+.env
+# Grid-intensity data stays local, real or mock: we do not redistribute Electricity Maps data.
+# See sources/snapshots/grid/README.md.
+sources/snapshots/grid/*
+!sources/snapshots/grid/README.md
