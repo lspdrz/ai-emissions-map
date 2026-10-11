@@ -309,6 +309,20 @@ def test_org_without_routes_is_a_warning():
     assert validation_warnings(d) == ["organizations/idle.yaml: has no routes and will not be rated"]
 
 
+
+def test_pinned_must_be_a_boolean():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["pinned"] = "yes"
+    assert any(e.startswith("routes/acme-m-70b.yaml: pinned:") for e in validate_sources(d))
+
+
+def test_org_with_only_pinned_routes_is_a_warning():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["pinned"] = True
+    assert validate_sources(d) == []
+    assert validation_warnings(d) == ["organizations/acme.yaml: has no default routes and will not be rated"]
+
+
 # Fixes from the final review.
 
 def test_cloud_region_whose_zone_is_not_in_the_grid():

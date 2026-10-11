@@ -295,6 +295,9 @@ def validation_warnings(data: dict, release_date: date | None = None) -> list[st
     """Problems that do not stop a release. Call on data that validate_sources passed."""
     warnings = [f"organizations/{name}.yaml: has no routes and will not be rated"
                 for name, o in sorted(data["organizations"].items()) if not o["routes"]]
+    warnings += [f"organizations/{name}.yaml: has no default routes and will not be rated"
+                 for name, o in sorted(data["organizations"].items())
+                 if o["routes"] and all(data["routes"].get(r, {}).get("pinned") for r in o["routes"])]
     if release_date is not None:
         warnings += [f"routes/{name}.yaml: no primary location evidence verified within the window for "
                      f"{release_date.isoformat()}; the route will be treated as unknown"

@@ -200,3 +200,43 @@ rulings:
     executor: none
     lands_in: [docs/README.md]
     applied_in: []
+
+  - id: R-2026-10-11-d
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      A provider such as Google Vertex AI lets customers choose where requests are processed (a
+      global endpoint, or the US, the EU or one of several countries). How do those options enter
+      the map and the organization's rating?
+    ruling: >-
+      Each option a customer must choose is its own route, marked pinned: true, rated and shown.
+      The organization's rating averages only its default routes; pinned routes are left out.
+    reasoning: >-
+      Otherwise a provider with many pinnable regions would be rated mostly on options a customer
+      has to request, not on where its service runs by default.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/location-disclosure.md, docs/reference/identity.md, docs/methodology.md, build/rate.py]
+    applied_in: []
+
+  - id: R-2026-10-11-e
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      A provider says a request may be processed in any of its locations worldwide (a global
+      endpoint). Is that undisclosed (E) or a set of countries (D)?
+    ruling: >-
+      A set of countries: the candidates are every region the provider lists for that model, and
+      the score is a range across them.
+    reasoning: >-
+      The provider does bound where it runs, by its published list of regions; treating that as
+      undisclosed would throw that information away.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/location-disclosure.md]
+    applied_in: []
+

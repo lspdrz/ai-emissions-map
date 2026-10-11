@@ -54,9 +54,11 @@ of an organization's models would give the same slug, keep the owner as well
   the provider offers it under another name, `served_as` records that name and
   `served_model_evidence` shows the two are the same model.
 - One route per organization and model. Where the location is uncertain across several places,
-  those places are candidates on one route, not separate routes. A different default location that
-  a customer can choose (a pinnable region) is a separate route with a qualifier:
-  `<org>-<model>-<qualifier>`.
+  those places are candidates on one route, not separate routes. A location a customer can choose
+  instead of the default (a pinnable region or jurisdiction) is a separate route with a qualifier,
+  `<org>-<model>-<qualifier>` (for example `-eu`, `-de`), and carries `pinned: true`. Pinned routes
+  are rated and shown, but not averaged into the organization's rating (see
+  [`location-disclosure.md`](location-disclosure.md#organization-rating)).
 - An aggregator's route has `upstreams` (other organizations' routes serving the same model)
   instead of a location.
 

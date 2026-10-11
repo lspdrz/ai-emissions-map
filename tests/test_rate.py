@@ -64,3 +64,22 @@ def test_stale_route_is_not_called_undisclosed(sources, fixtures_dir):
     assert routes["alpinehost-test-70b"]["gap"] == "Location evidence not re-verified within 90 days of the release."
     assert routes["aggregator-test-70b"]["gap"] == "An upstream route's location is undisclosed or unverified."
     assert routes["vaguehost-test-70b"]["gap"] == "Reported in press, not disclosed by the provider."
+
+
+def test_pinned_routes_are_rated_but_not_averaged(sources, fixtures_dir):
+    # A region a customer must choose is shown as its own route, but the organization is rated on
+    # where its service runs by default; otherwise many pinnable regions would outweigh the default.
+    sources["routes"]["alpinehost-test-8b"]["pinned"] = True
+    routes, orgs = _rate(sources, fixtures_dir)
+    assert routes["alpinehost-test-8b"]["letter"] == "C"
+    org = orgs["alpinehost"]
+    assert (org["letter"], org["mean"], org["spread"]) == ("A", 4.0, {"A": 1})
+    assert (org["routes"], org["pinned_routes"]) == (["alpinehost-test-70b"], ["alpinehost-test-8b"])
+    assert org["summary"] == "A (1 route at A; 1 pinned route not counted)"
+
+
+def test_org_with_only_pinned_routes_is_not_rated(sources, fixtures_dir):
+    sources["routes"]["vaguehost-test-70b"]["pinned"] = True
+    _, orgs = _rate(sources, fixtures_dir)
+    org = orgs["vaguehost"]
+    assert (org["letter"], org["mean"], org["summary"]) == (None, None, "Not rated (no default routes)")
