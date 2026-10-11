@@ -40,7 +40,8 @@ When a provider states only that a request may be processed in any of its locati
 endpoint, for example), the candidates are every region the provider lists for that model, and the
 confidence is `country_set`, or `country` if they all lie in one country. The score is a range
 across all of them. When it commits to a jurisdiction (the United States, the European Union, a
-single country), the candidates are its regions for that model within the jurisdiction.
+single country), the candidates are all of its regions within that jurisdiction, because the
+commitment is to the jurisdiction, not to the region the endpoint is named after.
 
 ## Aggregator routes
 

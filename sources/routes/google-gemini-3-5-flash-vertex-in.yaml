@@ -1,0 +1,17 @@
+name: google-gemini-3-5-flash-vertex-in
+model: gemini-3.5-flash
+pinned: true
+location:
+  confidence: country
+  candidates: ["cloud:gcp:asia-south1", "cloud:gcp:asia-south2"]
+  last_verified: "2026-10-12"
+  evidence:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/data-residency
+    shows: 'Data residency: locational endpoints "ensure that ML processing remains entirely within the broader multi-regional or country jurisdiction associated with that region"; "Gemini 3.5 Flash ( gemini-3.5-flash )" is marked supported for India (asia-south1)'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 9066ccf05f795c6f150fcf5565318cacf64f1805ea32b866fc7ca38f018c7d36
+    kind: primary
+    capture: auto
+comments: >-
+  The in-country endpoint for India. Google commits to the country, not the region, so candidates are all its regions in India.

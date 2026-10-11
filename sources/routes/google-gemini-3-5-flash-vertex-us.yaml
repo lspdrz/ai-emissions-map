@@ -1,0 +1,17 @@
+name: google-gemini-3-5-flash-vertex-us
+model: gemini-3.5-flash
+pinned: true
+location:
+  confidence: country
+  candidates: ["cloud:gcp:us-central1", "cloud:gcp:us-east1", "cloud:gcp:us-east4", "cloud:gcp:us-east5", "cloud:gcp:us-south1", "cloud:gcp:us-west1", "cloud:gcp:us-west2", "cloud:gcp:us-west3", "cloud:gcp:us-west4"]
+  last_verified: "2026-10-12"
+  evidence:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/data-residency
+    shows: 'Data residency: "When you use jurisdictional endpoints, ML processing stays within that specific geographical region (such as the United States or the European Union)"; "Gemini 3.5 Flash ( gemini-3.5-flash )" is marked supported for the US multi-region'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 9066ccf05f795c6f150fcf5565318cacf64f1805ea32b866fc7ca38f018c7d36
+    kind: primary
+    capture: auto
+comments: >-
+  The US multi-region endpoint. Google does not name the regions behind it; candidates are all its US regions.
