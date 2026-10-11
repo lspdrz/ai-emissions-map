@@ -241,19 +241,13 @@ def _check_upstream_cycles(routes: dict) -> list[str]:
     return errors
 
 
-def _check_gap_map_ids(orgs: dict, gap_map_orgs: set[str]) -> list[str]:
-    return [f"organizations/{name}.yaml: ids.gap_map {o['ids']['gap_map']!r} is not in the pinned os-ai-map release"
-            for name, o in orgs.items()
-            if o["ids"].get("gap_map") and o["ids"]["gap_map"] not in gap_map_orgs]
-
-
 def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zones: set[str] | None = None,
-                     cloud_regions: dict[tuple[str, str], list[str]] | None = None, gap_map_orgs: set[str] | None = None,
+                     cloud_regions: dict[tuple[str, str], list[str]] | None = None,
                      root: Path = ROOT) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
     The optional sets switch on the checks against outside data: model_ids (EcoLogits plus sources/models/),
-    grid_zones (the grid snapshot), cloud_regions ((vendor, region) -> grid zones) and gap_map_orgs (the pinned os-ai-map release).
+    grid_zones (the grid snapshot) and cloud_regions ((vendor, region) -> grid zones).
     """
     schemas = _load_schemas(root)
     errors = [f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
@@ -271,8 +265,6 @@ def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zone
     errors += _check_evidence(facilities, routes)
     errors += _check_models(routes, model_ids)
     errors += _check_upstream_cycles(routes)
-    if gap_map_orgs is not None:
-        errors += _check_gap_map_ids(valid["organizations"], gap_map_orgs)
     return errors
 
 
@@ -311,13 +303,11 @@ def main(argv: list[str] | None = None) -> int:
     snapshots = root / "sources" / "snapshots"
     grid_path = max((snapshots / "grid").glob("*.csv"), default=None)
     cloud_path = snapshots / "cloud_regions.csv"
-    pin_path = snapshots / "os-ai-map.pin.json"
     errs = validate_sources(
         data,
         model_ids=model_ids(data.get("models")),
         grid_zones=_csv_values(grid_path, "zone") if grid_path else None,
         cloud_regions=load_cloud_regions(cloud_path) if cloud_path.exists() else None,
-        gap_map_orgs=set(json.loads(pin_path.read_text())["org_slugs"]) if pin_path.exists() else None,
         root=root,
     )
     for e in errs:

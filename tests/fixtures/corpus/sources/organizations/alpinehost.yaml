@@ -3,7 +3,7 @@ display_name: Alpine Host
 type: inference_host
 homepage: https://alpinehost.example
 country: CH
-ids: { gap_map: null, ossd: null, hf_provider: null, openrouter: null }
+ids: { ossd: null, hf_provider: null, openrouter: null }
 contact: { url: https://alpinehost.example/contact, notified: '2026-08-01' }
 routes:
 - alpinehost-test-70b

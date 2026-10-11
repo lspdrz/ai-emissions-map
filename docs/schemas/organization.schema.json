@@ -45,12 +45,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "gap_map": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
         "ossd": {
           "type": [
             "string",

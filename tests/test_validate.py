@@ -286,12 +286,11 @@ def test_unknown_model_and_label_without_evidence():
     assert any("served_as 'm-70b-v1.5' differs" in e for e in errs)
 
 
-def test_gap_map_ids_checked():
+def test_gap_map_id_is_not_a_field():
+    # Our organizations are serving providers, not the Gap Map's model makers; the link was dropped (2026-10-11).
     d = _fixture()
     d["organizations"]["acme"]["ids"]["gap_map"] = "acme-ai"
-    assert validate_sources(d, gap_map_orgs={"something-else"}) == [
-        "organizations/acme.yaml: ids.gap_map 'acme-ai' is not in the pinned os-ai-map release"]
-    assert validate_sources(d, gap_map_orgs={"acme-ai"}) == []
+    assert any(e.startswith("organizations/acme.yaml: ids:") and "gap_map" in e for e in validate_sources(d))
 
 
 def test_malformed_record_is_reported_once():
