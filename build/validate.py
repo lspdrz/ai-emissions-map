@@ -133,6 +133,28 @@ def _primary(items: list | None) -> bool:
     return any(e["kind"] == "primary" for e in items or [])
 
 
+_SHOWS_PLACEHOLDER = "TODO:"   # how build.fetch_source's evidence entries begin until a person writes `shows`
+
+
+def _check_shows_written(dirname: str, records: dict) -> list[str]:
+    """Every evidence entry's `shows` has been written by a person, at any depth of the record."""
+    errors: list[str] = []
+
+    def walk(node, path: str, file: str) -> None:
+        if isinstance(node, dict):
+            if isinstance(node.get("shows"), str) and node["shows"].startswith(_SHOWS_PLACEHOLDER):
+                errors.append(f"{file}: {path}.shows is still the fetch_source placeholder")
+            for key, value in node.items():
+                walk(value, f"{path}.{key}" if path else key, file)
+        elif isinstance(node, list):
+            for i, item in enumerate(node):
+                walk(item, f"{path}[{i}]", file)
+
+    for name, record in records.items():
+        walk(record, "", f"{dirname}/{name}.yaml")
+    return errors
+
+
 def _check_route_shape(routes: dict) -> list[str]:
     errors = []
     for name, r in routes.items():
@@ -257,6 +279,7 @@ def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zone
         errs, valid[dirname] = _check_identity(dirname, data.get(dirname) or {}, schemas[schema_name])
         errors += errs
         errors += _check_aliases(dirname, valid[dirname])
+        errors += _check_shows_written(dirname, valid[dirname])
     errors += _check_rosters(valid["organizations"], data.get("routes") or {})
     # Cross-file checks read only records that passed their schema, so a malformed file is reported once.
     facilities, routes = valid["facilities"], valid["routes"]

@@ -11,9 +11,15 @@ dependencies = [
 ]
 
 [dependency-groups]
+browser = [
+    "playwright>=1.47",
+]
 dev = ["pytest>=8"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-markers = ["ecologits: runs the real pinned EcoLogits package"]
+markers = [
+    "ecologits: runs the real pinned EcoLogits package",
+    "browser: drives headless Chromium (uv sync --group browser && uv run playwright install chromium)",
+]

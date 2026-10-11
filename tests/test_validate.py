@@ -369,3 +369,19 @@ def test_cli_reports_a_broken_model_file_instead_of_crashing(tmp_path, fixtures_
     model.write_text(model.read_text().replace("total_b: 8\n", ""))
     assert main(["--root", str(root)]) == 1
     assert "ERROR: models/test-8b.yaml: 'total_b' is a required property" in capsys.readouterr().out
+
+
+def test_browser_capture_is_accepted():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["location"]["evidence"][0]["capture"] = "browser"
+    assert validate_sources(d) == []
+    d["routes"]["acme-m-70b"]["location"]["evidence"][0]["capture"] = "screenshot"
+    assert any("capture" in e for e in validate_sources(d))
+
+
+def test_unwritten_shows_placeholder_is_an_error():
+    # build.fetch_source leaves this placeholder for the curator; it must never reach main.
+    d = _fixture()
+    d["facilities"]["acme-1"]["location_evidence"][0]["shows"] = "TODO: quote what the page says, in double quotes"
+    assert validate_sources(d) == [
+        "facilities/acme-1.yaml: location_evidence[0].shows is still the fetch_source placeholder"]

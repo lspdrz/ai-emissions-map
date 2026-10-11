@@ -154,6 +154,7 @@
         "capture": {
           "enum": [
             "auto",
+            "browser",
             "manual"
           ]
         },
