@@ -186,7 +186,7 @@ def test_upstream_weight_must_be_positive():
 # Cross-file checks (Task 3).
 
 ZONES = {"CH", "DE", "FR"}
-CLOUD = {("cloudx", "eu-de"): "DE", ("cloudx", "eu-fr"): "FR"}
+CLOUD = {("cloudx", "eu-de"): ["DE"], ("cloudx", "eu-fr"): ["FR"]}
 MODELS = {"test-70b", "test-8b"}
 
 
@@ -216,7 +216,7 @@ def test_unknown_zone_reported(sources):
 
 
 def test_unknown_cloud_region_reported(sources):
-    errs = validate_sources(sources, cloud_regions={("cloudx", "eu-de"): "DE"})
+    errs = validate_sources(sources, cloud_regions={("cloudx", "eu-de"): ["DE"]})
     assert errs == ["routes/multihost-test-70b.yaml: cloud region cloudx:eu-fr is not in the cloud-region data"]
 
 
@@ -314,7 +314,7 @@ def test_org_without_routes_is_a_warning():
 
 def test_cloud_region_whose_zone_is_not_in_the_grid():
     # The validator must catch what would otherwise crash compute_routes after "0 errors".
-    errs = validate_sources(_cloud_fixture(), grid_zones={"CH", "DE"}, cloud_regions={("cloudx", "eu-pl"): "PL"})
+    errs = validate_sources(_cloud_fixture(), grid_zones={"CH", "DE"}, cloud_regions={("cloudx", "eu-pl"): ["DE", "PL"]})
     assert errs == ["routes/acme-m-70b.yaml: cloud region cloudx:eu-pl maps to grid zone 'PL', "
                     "which is not in the grid data"]
 

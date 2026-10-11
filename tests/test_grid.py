@@ -20,7 +20,7 @@ def _location(sources, route):
 
 def test_load_grid_and_cloud(grid, cloud):
     assert grid["CH"] == {"direct": 30.0, "lifecycle": 45.0, "fallback": False, "source": "electricitymaps"}
-    assert cloud[("cloudx", "eu-de")] == "DE"
+    assert cloud[("cloudx", "eu-de")] == ["DE"]
 
 
 def test_candidates_resolve_to_zones(sources, cloud):
@@ -49,3 +49,9 @@ def test_unrecognised_candidate(sources, cloud):
     location = {"confidence": "country", "candidates": ["planet:mars"], "evidence": []}
     with pytest.raises(GridError, match="unrecognised"):
         resolve_zones(location, sources["facilities"], cloud)
+
+
+def test_region_spanning_two_zones_resolves_to_both(sources):
+    location = {"confidence": "region", "candidates": ["cloud:azure:northeurope"], "evidence": []}
+    cloud = {("azure", "northeurope"): ["FI", "IE"]}
+    assert resolve_zones(location, sources["facilities"], cloud) == ["FI", "IE"]

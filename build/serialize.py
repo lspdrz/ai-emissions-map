@@ -100,7 +100,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m build.serialize", description="Compute route scores and ratings.")
     parser.add_argument("--release-date", type=date.fromisoformat, required=True)
     parser.add_argument("--grid", type=Path, help="grid CSV (default: newest sources/snapshots/grid/*.csv)")
-    parser.add_argument("--cloud", type=Path, default=ROOT / "sources" / "cloud_regions.csv")
+    parser.add_argument("--cloud", type=Path, default=ROOT / "sources" / "snapshots" / "cloud_regions.csv")
     args = parser.parse_args(argv)
     grid = args.grid or max((ROOT / "sources" / "snapshots" / "grid").glob("*.csv"))
     errors = serialize(ROOT, args.release_date, ROOT / "build", EcoLogitsEnergyModel(), grid, args.cloud)

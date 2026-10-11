@@ -27,12 +27,16 @@ def load_grid(path: Path) -> dict[str, dict]:
         }
 
 
-def load_cloud_regions(path: Path) -> dict[tuple[str, str], str]:
+def load_cloud_regions(path: Path) -> dict[tuple[str, str], list[str]]:
+    """(vendor, region) -> its grid zones, sorted. A region drawing on several zones has one row per zone."""
+    regions: dict[tuple[str, str], list[str]] = {}
     with path.open(encoding="utf-8", newline="") as fh:
-        return {(row["vendor"], row["region"]): row["zone"] for row in csv.DictReader(fh)}
+        for row in csv.DictReader(fh):
+            regions.setdefault((row["vendor"], row["region"]), []).append(row["zone"])
+    return {key: sorted(set(zones)) for key, zones in regions.items()}
 
 
-def resolve_zones(location: dict, facilities: dict, cloud_regions: dict[tuple[str, str], str]) -> list[str]:
+def resolve_zones(location: dict, facilities: dict, cloud_regions: dict[tuple[str, str], list[str]]) -> list[str]:
     if location["confidence"] == "unknown":
         raise GridError("an unknown location cannot be resolved to grid zones")
     zones: set[str] = set()
@@ -46,7 +50,7 @@ def resolve_zones(location: dict, facilities: dict, cloud_regions: dict[tuple[st
             vendor, _, region = rest.partition(":")
             if (vendor, region) not in cloud_regions:
                 raise GridError(f"cloud region {vendor}:{region} not found")
-            zones.add(cloud_regions[(vendor, region)])
+            zones.update(cloud_regions[(vendor, region)])
         elif kind == "zone":
             zones.add(rest)
         else:

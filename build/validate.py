@@ -144,7 +144,7 @@ def _check_route_shape(routes: dict) -> list[str]:
 
 
 def _check_references(facilities: dict, routes: dict, all_routes: dict, grid_zones: set[str] | None,
-                      cloud_regions: dict[tuple[str, str], str] | None) -> list[str]:
+                      cloud_regions: dict[tuple[str, str], list[str]] | None) -> list[str]:
     errors = []
     for name, f in facilities.items():
         if grid_zones is not None and f["grid_zone"] not in grid_zones:
@@ -167,9 +167,10 @@ def _check_references(facilities: dict, routes: dict, all_routes: dict, grid_zon
                     continue
                 if (vendor, region) not in cloud_regions:
                     errors.append(f"{where}: cloud region {vendor}:{region} is not in the cloud-region data")
-                elif grid_zones is not None and cloud_regions[(vendor, region)] not in grid_zones:
-                    errors.append(f"{where}: cloud region {vendor}:{region} maps to grid zone "
-                                  f"{cloud_regions[(vendor, region)]!r}, which is not in the grid data")
+                elif grid_zones is not None:
+                    errors += [f"{where}: cloud region {vendor}:{region} maps to grid zone {zone!r}, "
+                               "which is not in the grid data"
+                               for zone in cloud_regions[(vendor, region)] if zone not in grid_zones]
             elif kind == "zone" and grid_zones is not None and rest not in grid_zones:
                 errors.append(f"{where}: grid zone {rest!r} is not in the grid data")
     return errors
@@ -247,12 +248,12 @@ def _check_gap_map_ids(orgs: dict, gap_map_orgs: set[str]) -> list[str]:
 
 
 def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zones: set[str] | None = None,
-                     cloud_regions: dict[tuple[str, str], str] | None = None, gap_map_orgs: set[str] | None = None,
+                     cloud_regions: dict[tuple[str, str], list[str]] | None = None, gap_map_orgs: set[str] | None = None,
                      root: Path = ROOT) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
     The optional sets switch on the checks against outside data: model_ids (EcoLogits plus sources/models/),
-    grid_zones (the grid snapshot), cloud_regions ((vendor, region) -> grid zone) and gap_map_orgs (the pinned os-ai-map release).
+    grid_zones (the grid snapshot), cloud_regions ((vendor, region) -> grid zones) and gap_map_orgs (the pinned os-ai-map release).
     """
     schemas = _load_schemas(root)
     errors = [f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
@@ -309,7 +310,7 @@ def main(argv: list[str] | None = None) -> int:
     data = load_sources(root)
     snapshots = root / "sources" / "snapshots"
     grid_path = max((snapshots / "grid").glob("*.csv"), default=None)
-    cloud_path = root / "sources" / "cloud_regions.csv"
+    cloud_path = snapshots / "cloud_regions.csv"
     pin_path = snapshots / "os-ai-map.pin.json"
     errs = validate_sources(
         data,

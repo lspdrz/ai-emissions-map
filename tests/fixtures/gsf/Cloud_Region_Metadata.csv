@@ -1,0 +1,11 @@
+year,cloud-provider,cloud-region,cfe-region,em-zone-id,wt-region-id,location,geolocation,provider-cfe-hourly,provider-cfe-annual,power-usage-effectiveness,water-usage-effectiveness
+2024,Amazon Web Services,eu-central-1,Germany,DE,DE,Europe (Frankfurt),"50.1109,8.6821",,,1.15,0.1
+2023,Amazon Web Services,eu-central-1,Germany,DE,DE,Europe (Frankfurt),"50.1109,8.6821",,,1.16,0.1
+2023,Amazon Web Services,eu-west-3,France,FR,FR,Europe (Paris),"48.8566,2.3522",,,1.14,0.1
+2024,Amazon Web Services,ca-west-1,Alberta,,,Canada West (Calgary),"51.04,-114.07",,,,
+2023,Amazon Web Services,ca-west-1,Alberta,CA-AB,CA_AB,Canada West (Calgary),"51.04,-114.07",,,,
+2023,Microsoft Azure,northeurope,Finland,FI,FI,Finland,"60.2065, 24.6753",,,,
+2023,Microsoft Azure,northeurope,Ireland,IE,IE,Ireland,"53.35,-6.2603 ",,,1.19,
+2024,Google Cloud,europe-west6,Zurich,CH,CH,Zurich,"47.37,8.54",,,1.08,
+2024,Google Cloud,us-east2,Ohio,,,Columbus,"39.96,-83.0",,,,
+2024,Oracle Cloud,eu-zurich-1,Zurich,CH,CH,Zurich,"47.37,8.54",,,,
