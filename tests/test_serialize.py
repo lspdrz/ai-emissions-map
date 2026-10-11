@@ -54,3 +54,30 @@ def test_broken_model_file_is_reported_not_raised(tmp_path, fixtures_dir, capsys
                      ecologits_models=[]) > 0
     assert "ERROR: models/test-8b.yaml: active_b:" in capsys.readouterr().out
     assert not out.exists()
+
+
+def test_release_meta_records_input_provenance(tmp_path, fixtures_dir):
+    import shutil
+    inputs = tmp_path / "inputs"
+    inputs.mkdir()
+    shutil.copy(fixtures_dir / "grid.csv", inputs / "2025.csv")
+    shutil.copy(fixtures_dir / "cloud_regions.csv", inputs / "cloud_regions.csv")
+    (inputs / "2025.provenance.json").write_text(json.dumps(
+        {"year": 2025, "retrieved": "2026-10-08", "licence": "ODbL-1.0", "attribution": "Electricity Maps",
+         "files": []}))
+    (inputs / "cloud_regions.provenance.json").write_text(json.dumps(
+        {"repository": "https://github.com/Green-Software-Foundation/real-time-cloud", "commit": "8f99b3b",
+         "retrieved": "2026-10-08", "skipped": []}))
+    out = tmp_path / "out"
+    assert serialize(root=fixtures_dir / "corpus", release=date(2026, 10, 8), out_dir=out, energy_model=ENERGY,
+                     grid_path=inputs / "2025.csv", cloud_path=inputs / "cloud_regions.csv", ecologits_models=[]) == 0
+    meta = json.loads((out / "routes.json").read_text())["meta"]
+    assert meta["grid_data"] == {"year": 2025, "retrieved": "2026-10-08", "licence": "ODbL-1.0",
+                                 "attribution": "Electricity Maps"}
+    assert meta["cloud_regions"]["commit"] == "8f99b3b"
+
+
+def test_meta_without_provenance_says_so(tmp_path, fixtures_dir):
+    assert run(tmp_path, fixtures_dir) == 0
+    meta = json.loads((tmp_path / "routes.json").read_text())["meta"]
+    assert meta["grid_data"] is None and meta["cloud_regions"] is None

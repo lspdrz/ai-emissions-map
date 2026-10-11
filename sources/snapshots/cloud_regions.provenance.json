@@ -1,0 +1,61 @@
+{
+  "source": "Green Software Foundation real-time-cloud, Cloud_Region_Metadata.csv (em-zone-id)",
+  "repository": "https://github.com/Green-Software-Foundation/real-time-cloud",
+  "commit": "8f99b3bc01ecb342905b80a485573fda9494a052",
+  "url": "https://raw.githubusercontent.com/Green-Software-Foundation/real-time-cloud/8f99b3bc01ecb342905b80a485573fda9494a052/Cloud_Region_Metadata.csv",
+  "licence": "see the source repository's License.md",
+  "retrieved": "2026-10-11",
+  "sha256": "8aac9c58f018af723042d84aa6239905bf959103104becec4c16b22aaaf1c58c",
+  "skipped": [
+    {
+      "vendor": "Amazon Web Services",
+      "region": "ca-west-1",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Amazon Web Services",
+      "region": "cn-north-1",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Amazon Web Services",
+      "region": "cn-northwest-1",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Google Cloud",
+      "region": "europe-north2",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Google Cloud",
+      "region": "europe-west10",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Google Cloud",
+      "region": "northamerica-south1",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Google Cloud",
+      "region": "us-central2",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Google Cloud",
+      "region": "us-east2",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Microsoft Azure",
+      "region": "westcentralus",
+      "reason": "no em-zone-id in any year"
+    },
+    {
+      "vendor": "Microsoft Azure",
+      "region": "westus3",
+      "reason": "no em-zone-id in any year"
+    }
+  ]
+}

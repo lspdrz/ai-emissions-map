@@ -64,6 +64,15 @@ def write_outputs(out_dir: Path, results: dict[str, dict], route_ratings: dict[s
         json.dumps({"meta": meta, "organizations": orgs}, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _provenance(data_path: Path, *keys: str) -> dict | None:
+    """The named fields of the provenance file written beside an imported snapshot, if there is one."""
+    path = data_path.with_name(f"{data_path.stem}.provenance.json")
+    if not path.exists():
+        return None
+    provenance = json.loads(path.read_text(encoding="utf-8"))
+    return {k: provenance[k] for k in keys if k in provenance}
+
+
 def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyModel, grid_path: Path, cloud_path: Path,
               ecologits_models: list[dict] | None = None, grid_zones_override: set[str] | None = None) -> int:
     """Validate, then compute and write. Returns the number of validation errors; 0 means outputs were written."""
@@ -89,6 +98,8 @@ def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyMode
         "ecologits_version": importlib.metadata.version("ecologits"),
         "pue": list(PUE),
         "grid_file": grid_path.name,
+        "grid_data": _provenance(grid_path, "year", "retrieved", "licence", "attribution"),
+        "cloud_regions": _provenance(cloud_path, "repository", "commit", "retrieved"),
         "score_basis": "Full SCI, (E x I) + M per 1,000 output tokens; E and M from EcoLogits, "
                        "I consumption-based direct factors from Electricity Maps",
     }
