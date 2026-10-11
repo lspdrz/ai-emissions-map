@@ -385,3 +385,11 @@ def test_unwritten_shows_placeholder_is_an_error():
     d["facilities"]["acme-1"]["location_evidence"][0]["shows"] = "TODO: quote what the page says, in double quotes"
     assert validate_sources(d) == [
         "facilities/acme-1.yaml: location_evidence[0].shows is still the fetch_source placeholder"]
+
+
+def test_organization_may_name_its_disclosure_file():
+    d = _fixture()
+    d["organizations"]["acme"]["disclosure_url"] = "https://acme.example/.well-known/ai-serving-locations.json"
+    assert validate_sources(d) == []
+    d["organizations"]["acme"]["disclosure_url"] = "http://acme.example/plain-http.json"
+    assert any("disclosure_url" in e for e in validate_sources(d))

@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lspdrz/ai-emissions-map/docs/schemas/serving-locations.v1.schema.json",
+  "title": "AI serving locations (ai-emissions-map/serving-locations/v1)",
+  "description": "Where each model an organization serves actually runs. Suggested location: /.well-known/ai-serving-locations.json on the organization's own domain. Facilities are identified by name and city, never street address.",
+  "type": "object",
+  "required": [
+    "schema",
+    "organization",
+    "contact",
+    "published",
+    "valid_until",
+    "services"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "ai-emissions-map/serving-locations/v1"
+    },
+    "organization": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "published": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "valid_until": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "After this date the file is treated as stale"
+    },
+    "services": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "service",
+          "endpoint",
+          "models"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "service": {
+            "type": "string",
+            "minLength": 1
+          },
+          "endpoint": {
+            "type": "string",
+            "minLength": 1
+          },
+          "models": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "model",
+                "default_routing"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The exact model version actually served (a Hugging Face repository id where one exists)"
+                },
+                "served_as": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "default_routing": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "facility": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The facility's name; with operator and city this is level A"
+                      },
+                      "operator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Who operates the building (may differ from the provider)"
+                      },
+                      "ownership": {
+                        "enum": [
+                          "owned",
+                          "colocation",
+                          "hpc_center",
+                          "gpu_cloud"
+                        ]
+                      },
+                      "region": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A cloud or provider region, when facilities are not named (level B)"
+                      },
+                      "city": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "country": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{2}$",
+                        "description": "ISO 3166-1 alpha-2"
+                      },
+                      "grid_zone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Electricity Maps zone code (recommended)"
+                      },
+                      "share_of_traffic": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Shown, not used to average"
+                      }
+                    }
+                  },
+                  "description": "Where requests go when the customer does not pin a region; this is what the rating uses"
+                },
+                "pinnable_regions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "facility": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The facility's name; with operator and city this is level A"
+                      },
+                      "operator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Who operates the building (may differ from the provider)"
+                      },
+                      "ownership": {
+                        "enum": [
+                          "owned",
+                          "colocation",
+                          "hpc_center",
+                          "gpu_cloud"
+                        ]
+                      },
+                      "region": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A cloud or provider region, when facilities are not named (level B)"
+                      },
+                      "city": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "country": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{2}$",
+                        "description": "ISO 3166-1 alpha-2"
+                      },
+                      "grid_zone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Electricity Maps zone code (recommended)"
+                      },
+                      "share_of_traffic": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Shown, not used to average"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

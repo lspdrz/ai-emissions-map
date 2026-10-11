@@ -33,6 +33,11 @@
       "type": "string",
       "minLength": 1
     },
+    "disclosure_url": {
+      "type": "string",
+      "pattern": "^https://",
+      "description": "The organization's serving-locations file, if it publishes one"
+    },
     "country": {
       "type": "string",
       "pattern": "^[A-Z]{2}$",

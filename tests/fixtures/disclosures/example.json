@@ -1,0 +1,31 @@
+{
+  "schema": "ai-emissions-map/serving-locations/v1",
+  "organization": "Multi Host",
+  "published": "2026-10-01",
+  "valid_until": "2027-03-31",
+  "contact": "sustainability@multihost.example",
+  "services": [
+    {
+      "service": "Multi Host API",
+      "endpoint": "https://api.multihost.example/v1",
+      "models": [
+        {
+          "model": "test-70b",
+          "default_routing": [
+            {"facility": "Geneva 1", "operator": "Multi Host", "ownership": "owned", "city": "Geneva",
+             "country": "CH", "grid_zone": "CH", "share_of_traffic": 0.8},
+            {"facility": "Zurich Colo 3", "operator": "ColoCorp AG", "ownership": "colocation", "city": "Zurich",
+             "country": "CH", "grid_zone": "CH", "share_of_traffic": 0.2}
+          ],
+          "pinnable_regions": [{"region": "ch-geneva", "facility": "Geneva 1", "grid_zone": "CH"}]
+        },
+        {
+          "model": "test-8b",
+          "served_as": "small",
+          "default_routing": [{"region": "eu-de", "country": "DE", "grid_zone": "DE"},
+                              {"country": "FR"}]
+        }
+      ]
+    }
+  ]
+}
