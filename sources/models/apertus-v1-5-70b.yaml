@@ -1,0 +1,16 @@
+name: apertus-v1-5-70b
+display_name: Apertus 1.5 70B
+architecture: dense
+active_b: { min: 70, max: 72 }
+total_b: { min: 70, max: 72 }
+evidence:
+- url: https://huggingface.co/swiss-ai/Apertus-v1.5-70B
+  shows: 'Model card: "Apertus 1.5 thus uses the same architecture as the original release, a decoder-only transformer"; "adding a multimodal mix of 4T tokens to the 8B model and 2T tokens to the 70B model"; file summary "Model size 72B params"'
+  accessed: "2026-10-11"
+  http_status: 200
+  content_sha256: b52673e962e302b43e4a17ecb44f9f5b4698ef7b8f1657ae710ff5363ab41ce9
+  kind: primary
+  capture: auto
+comments: >-
+  The developer calls it the 70B model; the released weights hold 72.0B parameters, which likely
+  include the multimodal encoders added in 1.5. Both ends are evaluated.
