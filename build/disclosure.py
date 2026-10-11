@@ -42,11 +42,25 @@ def _models(doc: dict):
             yield f"services[{i}].models[{j}]", model
 
 
+def _schema_errors(doc: dict) -> list[str]:
+    schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    return [_schema_msg(e) if e.json_path != "$" else f"(root): {e.message}"
+            for e in sorted(jsonschema.Draft202012Validator(schema).iter_errors(doc), key=lambda e: e.json_path)]
+
+
+def _dates_ok(doc: dict) -> list[str]:
+    errors = []
+    for key in ("published", "valid_until"):
+        try:
+            date.fromisoformat(doc[key])
+        except ValueError:
+            errors.append(f"{key} {doc[key]} is not a real date")
+    return errors
+
+
 def check_disclosure(doc: dict, today: date) -> list[str]:
     """Every problem with the file, one message each. An expired file is a problem: it rates nothing."""
-    schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
-    errors = [_schema_msg(e) if e.json_path != "$" else f"(root): {e.message}"
-              for e in sorted(jsonschema.Draft202012Validator(schema).iter_errors(doc), key=lambda e: e.json_path)]
+    errors = _schema_errors(doc) or _dates_ok(doc)
     if errors:
         return errors
     if doc["valid_until"] < doc["published"]:
@@ -72,7 +86,7 @@ def _entry_level(entry: dict) -> str:
 
 def model_levels(doc: dict, today: date) -> dict[str, dict]:
     """Model -> {"level", "zones", "served_as"} for each model the file lists; empty once it has expired."""
-    if date.fromisoformat(doc["valid_until"]) < today:
+    if _schema_errors(doc) or _dates_ok(doc) or date.fromisoformat(doc["valid_until"]) < today:
         return {}
     levels = {}
     for _, model in _models(doc):
@@ -121,7 +135,10 @@ def _load(source: str) -> dict:
             raise DisclosureError(f"{source}: HTTP {response.status_code}")
         text = response.text
     else:
-        text = Path(source).read_text(encoding="utf-8")
+        try:
+            text = Path(source).read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as err:
+            raise DisclosureError(f"{source}: {type(err).__name__}: {err}") from None
     try:
         doc = json.loads(text)
     except json.JSONDecodeError as err:
@@ -145,7 +162,7 @@ def main(argv: list[str] | None = None) -> int:
     errors = check_disclosure(doc, today)
     for e in errors:
         print("ERROR:", e)
-    if errors and not doc.get("services"):
+    if _schema_errors(doc) or _dates_ok(doc):
         return 1
     for model, info in sorted(model_levels(doc, today).items()):
         print(f"{model}: {info['level']}  zones={','.join(info['zones']) or '-'}")

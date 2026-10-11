@@ -4,8 +4,9 @@ This directory holds the yearly grid carbon-intensity snapshots that `build.seri
 (`<year>.csv`, with `<year>.provenance.json` beside it). **Nothing in it except this README is committed**:
 `.gitignore` excludes every other file, whether real or mock.
 
-The data comes from Electricity Maps, whose terms do not let this project redistribute it. Each
-maintainer obtains it under their own access and imports it locally:
+The data comes from Electricity Maps. Its free historical datasets are published under the ODbL, but
+this project does not redistribute Electricity Maps data in its repository. Each maintainer obtains it
+under their own access and imports it locally:
 
     uv run python -m build.import_grid --year <year> --retrieved <download date> <yearly CSVs, one per zone>
 

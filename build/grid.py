@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 from build.ranges import Range
@@ -25,6 +26,15 @@ def load_grid(path: Path) -> dict[str, dict]:
             }
             for row in csv.DictReader(fh)
         }
+
+
+def latest_grid(directory: Path, allow_mock: bool = False) -> Path | None:
+    """The newest real snapshot, <year>.csv. A <year>.MOCK.csv counts only with allow_mock, and never beats real data."""
+    real = sorted(p for p in directory.glob("*.csv") if re.fullmatch(r"\d{4}", p.stem))
+    if real:
+        return real[-1]
+    mocks = sorted(p for p in directory.glob("*.csv") if re.fullmatch(r"\d{4}\.MOCK", p.stem))
+    return mocks[-1] if allow_mock and mocks else None
 
 
 def load_cloud_regions(path: Path) -> dict[tuple[str, str], list[str]]:

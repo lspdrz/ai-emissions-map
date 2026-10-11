@@ -14,7 +14,7 @@ from pathlib import Path
 from build.compute import compute_routes
 from build.config import METHODOLOGY_VERSION, PUE
 from build.energy import EcoLogitsEnergyModel, EnergyModel
-from build.grid import load_cloud_regions, load_grid
+from build.grid import latest_grid, load_cloud_regions, load_grid
 from build.models import model_ids, model_specs
 from build.ranges import Range
 from build.rate import rate_orgs, rate_routes
@@ -110,11 +110,20 @@ def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyMode
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m build.serialize", description="Compute route scores and ratings.")
     parser.add_argument("--release-date", type=date.fromisoformat, required=True)
-    parser.add_argument("--grid", type=Path, help="grid CSV (default: newest sources/snapshots/grid/*.csv)")
-    parser.add_argument("--cloud", type=Path, default=ROOT / "sources" / "snapshots" / "cloud_regions.csv")
+    parser.add_argument("--grid", type=Path, help="grid CSV (default: newest sources/snapshots/grid/<year>.csv)")
+    parser.add_argument("--cloud", type=Path, help="default: sources/snapshots/cloud_regions.csv")
+    parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
-    grid = args.grid or max((ROOT / "sources" / "snapshots" / "grid").glob("*.csv"))
-    errors = serialize(ROOT, args.release_date, ROOT / "build", EcoLogitsEnergyModel(), grid, args.cloud)
+    grid_dir = args.root / "sources" / "snapshots" / "grid"
+    grid = args.grid or latest_grid(grid_dir)
+    if grid is None:
+        print(f"no grid snapshot in {grid_dir}: import one with build.import_grid, or pass --grid "
+              "(a mock file is used only when named with --grid)")
+        return 1
+    if ".MOCK" in grid.name:
+        print(f"WARNING: {grid.name} is mock data; nothing built from it may be published")
+    cloud = args.cloud or args.root / "sources" / "snapshots" / "cloud_regions.csv"
+    errors = serialize(args.root, args.release_date, args.root / "build", EcoLogitsEnergyModel(), grid, cloud)
     print("wrote build/routes.json and build/organizations.json" if errors == 0
           else f"stopped: {errors} validation error(s)")
     return 1 if errors else 0

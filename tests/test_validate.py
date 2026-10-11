@@ -393,3 +393,14 @@ def test_organization_may_name_its_disclosure_file():
     assert validate_sources(d) == []
     d["organizations"]["acme"]["disclosure_url"] = "http://acme.example/plain-http.json"
     assert any("disclosure_url" in e for e in validate_sources(d))
+
+
+def test_manual_capture_needs_no_http_status():
+    # build.fetch_source --manual leaves http_status out: nothing was fetched over HTTP.
+    d = _fixture()
+    ev = d["routes"]["acme-m-70b"]["location"]["evidence"][0]
+    del ev["http_status"]
+    ev["capture"] = "manual"
+    assert validate_sources(d) == []
+    del ev["capture"]                                   # an automatic capture still needs its status
+    assert any("'http_status' is a required property" in e for e in validate_sources(d))

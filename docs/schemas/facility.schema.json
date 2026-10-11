@@ -78,7 +78,6 @@
         "url",
         "shows",
         "accessed",
-        "http_status",
         "content_sha256",
         "kind"
       ],
@@ -119,6 +118,21 @@
         "anomaly": {
           "type": "string"
         }
+      },
+      "if": {
+        "properties": {
+          "capture": {
+            "const": "manual"
+          }
+        },
+        "required": [
+          "capture"
+        ]
+      },
+      "else": {
+        "required": [
+          "http_status"
+        ]
       }
     }
   }

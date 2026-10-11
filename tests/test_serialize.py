@@ -81,3 +81,9 @@ def test_meta_without_provenance_says_so(tmp_path, fixtures_dir):
     assert run(tmp_path, fixtures_dir) == 0
     meta = json.loads((tmp_path / "routes.json").read_text())["meta"]
     assert meta["grid_data"] is None and meta["cloud_regions"] is None
+
+
+def test_cli_without_grid_data_explains_itself(tmp_path, capsys):
+    from build.serialize import main
+    assert main(["--release-date", "2026-10-08", "--root", str(tmp_path)]) == 1
+    assert "no grid snapshot in" in capsys.readouterr().out

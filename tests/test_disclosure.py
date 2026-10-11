@@ -97,3 +97,27 @@ def test_unknown_organization_is_named(doc, sources):
     from build.disclosure import DisclosureError
     with pytest.raises(DisclosureError, match="no organization 'nobody'"):
         compare_with_routes(doc, TODAY, "nobody", sources)
+
+
+def test_cli_stops_at_schema_errors(doc, tmp_path, capsys):
+    from build.disclosure import main
+    del _routing(doc, "test-70b")[0:2]
+    doc["services"][0]["models"][0].pop("default_routing")
+    path = tmp_path / "bad.json"
+    path.write_text(json.dumps(doc))
+    assert main([str(path)]) == 1
+    out = capsys.readouterr().out
+    assert "ERROR: services[0].models[0]: 'default_routing' is a required property" in out
+    assert "Traceback" not in out
+
+
+def test_impossible_date_is_an_error_not_a_crash(doc):
+    doc["valid_until"] = "2027-02-30"
+    assert check_disclosure(doc, TODAY) == ["valid_until 2027-02-30 is not a real date"]
+    assert model_levels(doc, TODAY) == {}
+
+
+def test_cli_reports_a_missing_file(tmp_path, capsys):
+    from build.disclosure import main
+    assert main([str(tmp_path / "nope.json")]) == 1
+    assert capsys.readouterr().out.startswith(f"ERROR: {tmp_path / 'nope.json'}: ")

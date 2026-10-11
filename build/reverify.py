@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -87,8 +88,11 @@ def reverify(root: Path, today: date, fetcher=fetch, write: bool = False, oldest
             target = root / "sources" / file
             with target.open(encoding="utf-8", newline="") as fh:   # newline="": keep the file's line endings
                 text = fh.read()
-            with target.open("w", encoding="utf-8", newline="") as fh:
-                fh.write(set_scalars(text, updates))
+            new = set_scalars(text, updates)   # raises before anything is written if the edit cannot be proven
+            temp = target.with_name(f".{target.name}.reverify")
+            with temp.open("w", encoding="utf-8", newline="") as fh:
+                fh.write(new)
+            os.replace(temp, target)
     return report
 
 

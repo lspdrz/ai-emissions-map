@@ -18,7 +18,7 @@ Do not commit `build/*.json`; they are generated.
 
 Each import writes a `.provenance.json` beside its data: where it came from, when, and a content hash.
 Grid-intensity snapshots (`sources/snapshots/grid/`) stay local and are never committed: we do not
-redistribute Electricity Maps data (see `sources/snapshots/grid/README.md`).
+redistribute Electricity Maps data in this repository (see `sources/snapshots/grid/README.md`).
 
     # Grid intensity: download the yearly, consumption-based CSVs (one per zone) from the Electricity Maps
     # data portal (free account, ODbL), then:

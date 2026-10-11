@@ -55,3 +55,16 @@ def test_region_spanning_two_zones_resolves_to_both(sources):
     location = {"confidence": "region", "candidates": ["cloud:azure:northeurope"], "evidence": []}
     cloud = {("azure", "northeurope"): ["FI", "IE"]}
     assert resolve_zones(location, sources["facilities"], cloud) == ["FI", "IE"]
+
+
+def test_latest_grid_ignores_mock_files_unless_asked(tmp_path):
+    from build.grid import latest_grid
+    assert latest_grid(tmp_path) is None
+    (tmp_path / "2025.MOCK.csv").write_text("")
+    assert latest_grid(tmp_path) is None                     # a mock is never picked up silently
+    assert latest_grid(tmp_path, allow_mock=True) == tmp_path / "2025.MOCK.csv"
+    (tmp_path / "2023.csv").write_text("")
+    (tmp_path / "2024.csv").write_text("")
+    (tmp_path / "notes.csv").write_text("")
+    assert latest_grid(tmp_path) == tmp_path / "2024.csv"
+    assert latest_grid(tmp_path, allow_mock=True) == tmp_path / "2024.csv"   # real data wins over a mock

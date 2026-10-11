@@ -121,3 +121,15 @@ def test_windows_line_endings_are_kept(root):
     reverify(root, TODAY, fetcher=_fetcher(pages), write=True, only=["routes/alpinehost-test-70b.yaml"])
     raw = path.read_bytes()
     assert b"last_verified: '2026-12-01'\r\n" in raw and b"\n" not in raw.replace(b"\r\n", b"")
+
+
+def test_failed_edit_leaves_the_file_untouched(root):
+    # A duplicated key makes set_scalars' read-back check fail; the curated file must survive intact.
+    path = root / "sources" / "facilities" / "alp-1.yaml"
+    path.write_text(path.read_text() + "last_verified: '2026-09-21'\n")
+    before = path.read_bytes()
+    url = "https://alpinehost.example/datacenters"
+    with pytest.raises(Exception):
+        reverify(root, TODAY, fetcher=_fetcher({url: _page(url, "2" * 64, "")}), write=True,
+                 only=["facilities/alp-1.yaml"])
+    assert path.read_bytes() == before

@@ -313,7 +313,7 @@ def _csv_values(path: Path, *columns: str) -> set:
 
 
 def main(argv: list[str] | None = None) -> int:
-    from build.grid import load_cloud_regions
+    from build.grid import latest_grid, load_cloud_regions
     from build.models import model_ids
 
     parser = argparse.ArgumentParser(prog="python -m build.validate", description="Validate sources/.")
@@ -324,7 +324,9 @@ def main(argv: list[str] | None = None) -> int:
     root = args.root
     data = load_sources(root)
     snapshots = root / "sources" / "snapshots"
-    grid_path = max((snapshots / "grid").glob("*.csv"), default=None)
+    grid_path = latest_grid(snapshots / "grid", allow_mock=True)
+    if grid_path is not None and ".MOCK" in grid_path.name:
+        print(f"NOTE: checking zones against the mock grid snapshot {grid_path.name}")
     cloud_path = snapshots / "cloud_regions.csv"
     errs = validate_sources(
         data,
