@@ -12,6 +12,7 @@ Dry run by default; `--write` edits sources/ in place with build.yamledit.
 Usage:
     uv run python -m build.reverify                 # report only
     uv run python -m build.reverify --oldest 10 --write
+    uv run python -m build.reverify --org alpinehost   # one organization's routes and their facilities
 """
 
 from __future__ import annotations
@@ -28,6 +29,10 @@ from build.validate import ROOT, load_sources
 from build.yamledit import set_scalars
 
 _QUOTED = re.compile(r'"([^"]{8,})"')
+
+
+class ReverifyError(Exception):
+    pass
 
 
 def confirms(entry: dict, result: dict) -> tuple[bool, str]:
@@ -60,6 +65,22 @@ def _claims(data: dict) -> list[tuple[str, tuple, str, list]]:
         evidence = [(("location", "evidence", i), e) for i, e in enumerate(loc["evidence"])]
         claims.append((f"routes/{name}.yaml", ("location", "last_verified"), loc["last_verified"], evidence))
     return sorted(claims, key=lambda c: (c[2], c[0]))
+
+
+def org_claim_files(data: dict, org: str) -> list[str]:
+    """The claim files an organization's refresh covers: its routes, then the facilities they cite."""
+    if org not in data["organizations"]:
+        raise ReverifyError(f"no organization {org!r} in sources/organizations/")
+    routes, facilities = [], set()
+    for name in data["organizations"][org].get("routes") or []:
+        if name not in data["routes"]:
+            continue  # a roster entry with no file is build.validate's error to report
+        routes.append(f"routes/{name}.yaml")
+        for candidate in (data["routes"][name].get("location") or {}).get("candidates", []):
+            kind, _, slug = candidate.partition(":")
+            if kind == "facility":
+                facilities.add(f"facilities/{slug}.yaml")
+    return sorted(routes) + sorted(facilities)
 
 
 def reverify(root: Path, today: date, fetcher=fetch, write: bool = False, oldest: int | None = None,
@@ -98,11 +119,20 @@ def reverify(root: Path, today: date, fetcher=fetch, write: bool = False, oldest
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m build.reverify", description=__doc__.splitlines()[0])
+    parser.add_argument("--org", help="only this organization's routes and the facilities they cite")
     parser.add_argument("--oldest", type=int, help="only the N claims verified longest ago")
     parser.add_argument("--write", action="store_true", help="re-date confirmed claims in sources/")
     parser.add_argument("--json", action="store_true", help="print the report as JSON")
+    parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
-    report = reverify(ROOT, date.today(), write=args.write, oldest=args.oldest)
+    only = None
+    if args.org:
+        try:
+            only = org_claim_files(load_sources(args.root), args.org)
+        except ReverifyError as e:
+            print(f"ERROR: {e}")
+            return 1
+    report = reverify(args.root, date.today(), write=args.write, oldest=args.oldest, only=only)
     if args.json:
         print(json.dumps(report, indent=2))
     else:

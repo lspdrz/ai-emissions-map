@@ -1,0 +1,23 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      # Grid data is never committed, so CI has none: zone checks against the grid are skipped.
+      - name: Validate sources
+        run: uv run python -m build.validate
+      # No headless browser in CI; browser capture is exercised locally.
+      - name: Run tests
+        run: uv run pytest -q -m "not browser"

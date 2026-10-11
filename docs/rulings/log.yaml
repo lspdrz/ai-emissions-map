@@ -1,0 +1,202 @@
+# The maintainer's rulings, in the order they were made. Append only; see README.md in this
+# directory for the entry format and the rules tests/test_rulings.py enforces.
+version: 1
+
+rulings:
+  - id: R-2026-10-08-a
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Which power usage effectiveness (PUE) should the energy estimate apply to each route?
+    ruling: >-
+      One fixed range, 1.1 to 1.6, for every route, in place of EcoLogits' default of 1.09 to 1.14.
+      Using each facility's published PUE is the major aim for v2.
+    reasoning: >-
+      EcoLogits' default describes efficient hyperscale facilities only and would bias every score
+      downward; the industry average is about 1.56.
+    status: in-force
+    executor: none
+    lands_in: [docs/methodology.md, build/config.py]
+    applied_in: []
+
+  - id: R-2026-10-08-b
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Does the carbon score include the embodied emissions of the hardware (M), or only
+      operational emissions?
+    ruling: >-
+      The score is the full Software Carbon Intensity, (E x I) + M, always shown with its
+      operational and embodied parts. An operational-only view is a v2 option.
+    status: in-force
+    executor: none
+    lands_in: [docs/methodology.md]
+    applied_in: []
+
+  - id: R-2026-10-08-c
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Where do the design spec, the methodology and the reference documents live?
+    ruling: >-
+      In a gitignored .notes/ directory, outside version control.
+    status: replaced
+    executor: none
+    lands_in: []
+    applied_in: []
+    replaced_by: R-2026-10-11-c
+
+  - id: R-2026-10-08-d
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      How is the repository laid out, and how is curated data represented in code?
+    ruling: >-
+      As in os-ai-map: code in build/, curated YAML in sources/<dir>/<slug>.yaml, imported data in
+      sources/snapshots/, JSON Schemas in docs/schemas/, tests in tests/. Records stay plain dicts;
+      validation returns one message per problem.
+    status: in-force
+    executor: none
+    lands_in: [AGENTS.md]
+    applied_in: []
+
+  - id: R-2026-10-08-e
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      How are records identified, and how does an identifier survive a rename?
+    ruling: >-
+      The filename stem is the slug and the record's name; there are no UUIDs. A renamed record
+      keeps its old slug in aliases:, which no other record may claim.
+    reasoning: >-
+      UUIDs were tried first and dropped the same day. With the filename as the slug, uniqueness is
+      mechanical and a rename leaves a trail.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-10-08-f
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      How is a route tied to the organization that serves it?
+    ruling: >-
+      Routes are flat files, sources/routes/<org>-<model>.yaml, and each appears on exactly one
+      organization's routes: roster.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-10-08-g
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      What does an evidence entry record, and where does the verification date live?
+    ruling: >-
+      Every entry quotes what the page shows (shows) and records its HTTP status; last_verified
+      moves off the entries onto the claim (a route's location, or a facility).
+    reasoning: >-
+      Re-confirming a conclusion is stronger than opening a URL.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/evidence-and-freshness.md]
+    applied_in: []
+
+  - id: R-2026-10-08-h
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Where are parameter counts recorded for models EcoLogits does not know?
+    ruling: >-
+      One file per model, sources/models/<slug>.yaml, with the same identity and evidence rules as
+      every other record.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-10-08-i
+    date: "2026-10-08"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Where does the mapping from cloud regions to grid zones come from?
+    ruling: >-
+      From the Green Software Foundation real-time-cloud repository's Cloud_Region_Metadata.csv,
+      imported as-is at a pinned commit.
+    status: in-force
+    executor: none
+    lands_in: [AGENTS.md]
+    applied_in: []
+
+  - id: R-2026-10-11-a
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Should organizations carry a link to their Gap Map (os-ai-map) identifiers?
+    ruling: >-
+      No. The link and its pinned identifier file are dropped.
+    reasoning: >-
+      The organizations here are serving providers, the link fed no score or rating, and mappings
+      were ambiguous (google vs google-cloud).
+    status: in-force
+    executor: none
+    lands_in: [AGENTS.md]
+    applied_in: []
+
+  - id: R-2026-10-11-b
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      May grid-intensity data, real or mock, be committed to the repository?
+    ruling: >-
+      No. Grid data stays local to each maintainer, real or mock, and the repository and its
+      history never hold it.
+    reasoning: >-
+      The project does not redistribute its grid data provider's data.
+    status: in-force
+    executor: none
+    lands_in: [sources/snapshots/grid/README.md, AGENTS.md]
+    applied_in: []
+
+  - id: R-2026-10-11-c
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Should the methodology, disclosure formats, reference rules and rulings be committed, or kept
+      in the gitignored .notes/?
+    ruling: >-
+      Committed in docs/, as in os-ai-map. Only the design spec, plans, ledgers and private notes
+      stay out of the repository.
+    reasoning: >-
+      Nothing in them is sensitive, the GitHub repository is private so committing is not
+      publishing, and providers being rated must be able to read the rules.
+    status: in-force
+    executor: none
+    lands_in: [docs/README.md]
+    applied_in: []

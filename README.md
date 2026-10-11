@@ -5,6 +5,11 @@ embodied emissions) and location-disclosure ratings for the organizations that r
 The layout follows [os-ai-map](https://github.com/currentai-org/os-ai-map): curated YAML in `sources/`,
 imported data in `sources/snapshots/`, JSON Schemas in `docs/schemas/`, code in `build/`.
 
+## Documentation
+
+Start at [`docs/README.md`](docs/README.md), which routes each task to its workflow. The method is
+in [`docs/methodology.md`](docs/methodology.md). Agents start at [`CLAUDE.md`](CLAUDE.md).
+
 ## Commands
 
     uv sync
@@ -31,7 +36,7 @@ redistribute Electricity Maps data in this repository (see `sources/snapshots/gr
     uv run python -m build.fetch_source <url>                  # evidence entry to paste; write `shows` yourself
     uv run python -m build.fetch_source --browser <url>        # pages that only render with JavaScript
     uv run python -m build.fetch_source --manual page.html --url <url>   # a page you saved by hand
-    uv run python -m build.reverify [--oldest N] [--write]     # re-fetch evidence, re-date what still holds
+    uv run python -m build.reverify [--org <slug>] [--oldest N] [--write]   # re-fetch evidence, re-date what holds
     uv run python -m build.disclosure <url-or-file> [--org <slug>]       # read a serving-locations file
 
 `shows` quotes the page in double quotes; re-verification looks for those quoted passages when a page's

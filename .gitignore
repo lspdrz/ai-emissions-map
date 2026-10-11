@@ -9,3 +9,4 @@ build/*.json
 # See sources/snapshots/grid/README.md.
 sources/snapshots/grid/*
 !sources/snapshots/grid/README.md
+.claude/settings.local.json

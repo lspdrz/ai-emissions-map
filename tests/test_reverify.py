@@ -4,7 +4,8 @@ from datetime import date
 import pytest
 import yaml
 
-from build.reverify import confirms, reverify
+from build.reverify import ReverifyError, confirms, main, org_claim_files, reverify
+from build.validate import load_sources
 
 TODAY = date(2026, 12, 1)
 ALP_URL = "https://alpinehost.example/docs/regions"
@@ -133,3 +134,24 @@ def test_failed_edit_leaves_the_file_untouched(root):
         reverify(root, TODAY, fetcher=_fetcher({url: _page(url, "2" * 64, "")}), write=True,
                  only=["facilities/alp-1.yaml"])
     assert path.read_bytes() == before
+
+
+def test_org_covers_its_routes_and_the_facilities_they_cite(root):
+    assert org_claim_files(load_sources(root), "alpinehost") == [
+        "routes/alpinehost-test-70b.yaml", "routes/alpinehost-test-8b.yaml", "facilities/alp-1.yaml"]
+
+
+def test_org_run_checks_only_that_organization(root):
+    only = org_claim_files(load_sources(root), "multihost")
+    report = reverify(root, TODAY, fetcher=_fetcher({}), only=only)
+    assert {row["file"] for row in report} == {"routes/multihost-test-70b.yaml"}
+
+
+def test_unknown_organization_raises(root):
+    with pytest.raises(ReverifyError, match="no organization 'nohost'"):
+        org_claim_files(load_sources(root), "nohost")
+
+
+def test_cli_names_an_unknown_organization(root, capsys):
+    assert main(["--org", "nohost", "--root", str(root)]) == 1
+    assert "ERROR: no organization 'nohost' in sources/organizations/" in capsys.readouterr().out
