@@ -17,7 +17,21 @@ expect(home.includes('name="robots" content="noindex'), "draft pages are noindex
 for (const o of data.organizations) expect(home.includes(o.display_name), `overview names ${o.display_name}`);
 expect(home.includes(String(data.meta.counts.routes)), "overview shows the route count");
 
-// Tasks 5 and 6 append their checks here.
+// All routes
+const routesPage = page("routes/index.html");
+for (const r of data.routes) expect(routesPage.includes(r.label), `routes page lists ${r.slug} as "${r.label}"`);
+
+// Organizations
+const orgsPage = page("organizations/index.html");
+for (const o of data.organizations) {
+  expect(orgsPage.includes(o.display_name), `organizations page names ${o.display_name}`);
+  const p = page(`organizations/${o.slug}/index.html`);
+  expect(p.includes(o.display_name), `${o.slug} page has its name`);
+  expect(p.includes(o.rating.summary), `${o.slug} page shows its rating summary`);
+  for (const e of o.evidence) expect(p.includes(e.url), `${o.slug} page links ${e.url}`);
+}
+
+// Task 6 appends its checks here.
 
 if (failures.length) {
   console.error(failures.map((f) => `FAIL ${f}`).join("\n"));
