@@ -1,6 +1,5 @@
 name: google-gemini-3-5-flash-vertex-in
 model: gemini-3.5-flash
-pinned: true
 location:
   confidence: country
   candidates: ["cloud:gcp:asia-south1", "cloud:gcp:asia-south2"]

@@ -1,6 +1,5 @@
 name: google-gemini-3-5-flash-vertex-au
 model: gemini-3.5-flash
-pinned: true
 location:
   confidence: country
   candidates: ["cloud:gcp:australia-southeast1", "cloud:gcp:australia-southeast2"]
