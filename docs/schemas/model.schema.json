@@ -4,16 +4,16 @@
   "type": "object",
   "required": [
     "name",
+    "source",
     "architecture",
     "active_b",
-    "total_b",
-    "evidence"
+    "total_b"
   ],
   "additionalProperties": false,
   "properties": {
     "name": {
       "$ref": "#/$defs/slug",
-      "description": "The model id routes use in `model:`; must equal the filename stem. Takes precedence over an EcoLogits catalogue entry with the same id."
+      "description": "The model id routes use in `model:`; must equal the filename stem."
     },
     "display_name": {
       "type": "string",
@@ -21,6 +21,32 @@
     },
     "aliases": {
       "$ref": "#/$defs/aliases"
+    },
+    "source": {
+      "enum": [
+        "ecologits",
+        "curated"
+      ],
+      "description": "Where the parameter counts come from: copied from the pinned EcoLogits package (the default whenever EcoLogits has the model), or curated from the developer's own publications with evidence"
+    },
+    "ecologits": {
+      "type": "object",
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "description": "The EcoLogits catalogue entry this record copies; written and kept in step by `python -m build.models --add/--sync`",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
     },
     "architecture": {
       "enum": [
@@ -93,6 +119,42 @@
       "type": "string"
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "const": "ecologits"
+          }
+        },
+        "required": [
+          "source"
+        ]
+      },
+      "then": {
+        "required": [
+          "ecologits"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "const": "curated"
+          }
+        },
+        "required": [
+          "source"
+        ]
+      },
+      "then": {
+        "required": [
+          "evidence"
+        ]
+      }
+    }
+  ],
   "$defs": {
     "slug": {
       "type": "string",

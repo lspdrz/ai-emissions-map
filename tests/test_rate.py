@@ -17,7 +17,7 @@ ENERGY = FixedEnergyModel({
 
 def _rate(sources, fixtures_dir, release=date(2026, 10, 8)):
     grid, cloud = load_grid(fixtures_dir / "grid.csv"), load_cloud_regions(fixtures_dir / "cloud_regions.csv")
-    models = model_specs(sources["models"], ecologits_models=[])
+    models = model_specs(sources["models"])
     results = compute_routes(sources, models, grid, cloud, ENERGY, release)
     routes = rate_routes(sources, results)
     return routes, rate_orgs(sources, routes)

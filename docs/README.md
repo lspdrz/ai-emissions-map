@@ -10,7 +10,7 @@ the exact checks to run.
 |---|---|---|
 | Add an organization that serves AI models | [`workflows/add-organization.md`](workflows/add-organization.md) | `add-organization` |
 | Add a physical data center | [`workflows/add-facility.md`](workflows/add-facility.md) | `add-facility` |
-| Add a model that EcoLogits does not know | [`workflows/add-model.md`](workflows/add-model.md) | `add-model` |
+| Add the record for a model a route serves | [`workflows/add-model.md`](workflows/add-model.md) | `add-model` |
 | Record where an organization serves a model | [`workflows/add-route.md`](workflows/add-route.md) | `add-route` |
 | Re-check an organization's evidence | [`workflows/refresh-organization.md`](workflows/refresh-organization.md) | `refresh-organization` |
 

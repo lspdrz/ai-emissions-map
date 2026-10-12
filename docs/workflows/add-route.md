@@ -2,7 +2,7 @@
 
 ## Use this when
 You are recording where an organization serves a model. The organization must already exist
-([`add-organization.md`](add-organization.md)), and the model must be in EcoLogits or
+([`add-organization.md`](add-organization.md)), and the model must have a record in
 `sources/models/` ([`add-model.md`](add-model.md)).
 
 ## Inputs you need
