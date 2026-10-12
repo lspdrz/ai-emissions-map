@@ -121,6 +121,7 @@ def add_record(models_dir: Path, ecologits_id: str, package: list[dict], version
     path = models_dir / f"{slug}.yaml"
     if path.exists():
         raise ModelsError(f"sources/models/{slug}.yaml already exists")
+    models_dir.mkdir(parents=True, exist_ok=True)
     lines = [f"name: {slug}", f"display_name: {ecologits_id}", "source: ecologits",
              *_managed_lines(ecologits_record(entry, version)).values()]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

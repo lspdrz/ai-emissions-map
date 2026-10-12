@@ -114,3 +114,8 @@ def test_every_real_catalogue_entry_round_trips_through_a_written_record(tmp_pat
         add_record(root / "sources" / "models", entry["name"], package, version)
     records = {p.stem: yaml.safe_load(p.read_text()) for p in (root / "sources" / "models").glob("*.yaml")}
     assert check_ecologits_records(records, package, version) == []
+
+
+def test_add_creates_the_models_directory_for_the_first_record(tmp_path):
+    assert main(["--add", "gemini-3.5-flash", "--root", str(tmp_path)], package=PACKAGE, version="0.11.2") == 0
+    assert (tmp_path / "sources" / "models" / "gemini-3-5-flash.yaml").exists()
