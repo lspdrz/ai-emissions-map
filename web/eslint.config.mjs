@@ -59,6 +59,15 @@ const eslintConfig = defineConfig([
   // Only once a feature exists: ESLint rejects the rule with no zones.
   ...(FEATURE_DIRS.length ? [{ files: ["features/**"], ...FEATURE_ISOLATION }] : []),
 
+  // Fonts are self-hosted with next/font/local: Turbopack's next/font/google loader fails whenever Google
+  // Fonts answers with `/l/font?kit=…&v=…` URLs (vercel/next.js#99114), which broke the first Vercel build.
+  {
+    rules: {
+      "no-restricted-imports": ["error", { paths: [{ name: "next/font/google",
+        message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds." }] }],
+    },
+  },
+
   {
     files: ["features/**/lib/**", "features/**/utils/**", "lib/**"],
     rules: { "no-restricted-imports": ["error", { patterns: [NO_UI] }] },
