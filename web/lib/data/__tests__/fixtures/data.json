@@ -1,0 +1,17 @@
+{
+  "schema": "aem-data/1",
+  "meta": {"release_date": "2026-10-08", "methodology_version": "0.1.0", "ecologits_version": "0.11.2",
+           "pue": [1.1, 1.6], "band_upper": [0.03, 0.1, 0.3, 1.0],
+           "grid": {"year": 2025, "mock": true, "attribution": "placeholder"},
+           "counts": {"organizations": 1, "routes": 1, "models": 1, "zones": 1, "scored": 1},
+           "intensity_spread": null, "featured_model": "m"},
+  "organizations": [{"slug": "acme", "display_name": "Acme", "type": "inference_host", "country": "CH",
+                     "homepage": "https://acme.example", "description": null, "notified": null,
+                     "rating": {"letter": "C", "mean": 2.0, "spread": {"C": 1}, "summary": "C (1 route at C)"},
+                     "routes": ["acme-m"], "evidence": []}],
+  "models": [{"slug": "m", "display_name": "M", "source": "curated", "architecture": "dense", "active_b": 70, "total_b": 70}],
+  "routes": [{"slug": "acme-m", "org": "acme", "model": "m", "label": "Switzerland", "default": false, "scored": true,
+              "level": "country", "letter": "C", "gap": "Location disclosed only to a country.",
+              "score": {"low": 0.075, "high": 0.084}, "embodied": {"low": 0.057, "high": 0.057}, "band": [2, 2],
+              "served_as": null}]
+}
