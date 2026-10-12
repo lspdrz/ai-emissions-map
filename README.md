@@ -16,6 +16,7 @@ in [`docs/methodology.md`](docs/methodology.md). Agents start at [`CLAUDE.md`](C
     uv run pytest                          # all tests (-m "not ecologits and not browser" for the fast loop)
     uv run python -m build.validate        # validate sources/ (must print "0 error(s)")
     uv run python -m build.serialize --release-date 2026-10-08   # sources/ -> build/routes.json, build/organizations.json
+    uv run python -m build.export --release-date 2026-10-12 [--grid <file>]   # sources/ -> web/data/ (committed)
 
 Do not commit `build/*.json`; they are generated.
 

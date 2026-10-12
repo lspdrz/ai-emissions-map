@@ -25,6 +25,7 @@ build/                   Python modules; each is `python -m build.<module>` and 
 build/*.json             generated outputs, never committed
 docs/                    methodology, workflows, reference rules, schemas, rulings
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
+web/                     the Next.js site; web/data/ is written by build.export and committed
 tests/                   pytest; fixtures hold invented values
 ```
 
@@ -34,7 +35,8 @@ tests/                   pytest; fixtures hold invented values
   `validate` (load and check `sources/`), `models` (parameter counts), `evidence` (the
   verification window), `grid` (intensity and location → zone resolution), `energy` (EcoLogits
   adapter), `compute` (route scores), `rate` (route levels, organization ratings), `serialize`
-  (writes `build/routes.json` and `build/organizations.json`).
+  (writes `build/routes.json` and `build/organizations.json`), `export` (writes the site's
+  data, `web/data/data.json` and `web/data/methodology.md`).
 - **Imports:** `import_grid` (yearly grid files, local only), `import_cloud_regions` (pinned GSF
   commit).
 - **Evidence:** `fetch_source` (capture a page: `auto`, `browser`, `manual`), `reverify`
