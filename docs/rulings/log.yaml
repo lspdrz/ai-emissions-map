@@ -200,3 +200,64 @@ rulings:
     executor: none
     lands_in: [docs/README.md]
     applied_in: []
+
+  - id: R-2026-10-11-d
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      A provider such as Google Vertex AI lets customers choose where requests are processed (a
+      global endpoint, or the US, the EU or one of several countries). How do those options enter
+      the map and the organization's rating?
+    ruling: >-
+      Each choice is its own route, rated on its own evidence, and every route counts in the
+      organization's rating. The route used when the customer makes no choice is labelled
+      default: true; the label does not change any rating.
+    reasoning: >-
+      A route's level and an organization's rating are different questions: the organization is
+      rated on every way it lets customers use its models. An earlier draft left the non-default
+      options out of the average; that mixed the two up.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/location-disclosure.md, docs/reference/identity.md, docs/methodology.md]
+    applied_in: []
+
+  - id: R-2026-10-11-e
+    date: "2026-10-11"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      A provider says a request may be processed in any of its locations worldwide (a global
+      endpoint). Is that undisclosed (E) or a set of countries (D)?
+    ruling: >-
+      A set of countries: the candidates are every region the provider lists for that model, and
+      the score is a range across them.
+    reasoning: >-
+      The provider does bound where it runs, by its published list of regions; treating that as
+      undisclosed would throw that information away.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/location-disclosure.md]
+    applied_in: []
+
+  - id: R-2026-10-12-a
+    date: "2026-10-12"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Should a model that EcoLogits already includes also have a record in sources/models/?
+    ruling: >-
+      Yes. Every model a route serves has a visible record. EcoLogits stays the primary source:
+      its records copy the pinned package and are checked against it, and only a model EcoLogits
+      lacks, or whose developer's model card contradicts it, is curated with evidence.
+    reasoning: >-
+      The parameter counts behind every score should be visible in the repository, and an
+      EcoLogits upgrade should show every changed model explicitly in a pull request.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/identity.md, docs/workflows/add-model.md, AGENTS.md, build/models.py]
+    applied_in: []
+

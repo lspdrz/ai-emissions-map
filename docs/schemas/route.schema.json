@@ -28,6 +28,10 @@
         "$ref": "#/$defs/evidence"
       }
     },
+    "default": {
+      "type": "boolean",
+      "description": "Where the service runs unless the customer chooses otherwise. Marks one route per organization and model when the customer can choose among several locations; a label only, every route counts in the organization's rating."
+    },
     "location": {
       "type": "object",
       "required": [

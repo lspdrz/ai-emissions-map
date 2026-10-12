@@ -2,7 +2,7 @@
 
 ## Use this when
 You are recording where an organization serves a model. The organization must already exist
-([`add-organization.md`](add-organization.md)), and the model must be in EcoLogits or
+([`add-organization.md`](add-organization.md)), and the model must have a record in
 `sources/models/` ([`add-model.md`](add-model.md)).
 
 ## Inputs you need
@@ -53,6 +53,9 @@ You are recording where an organization serves a model. The organization must al
      `corroborating` evidence.
    - **Aggregator:** replace `location` with `upstreams` (routes serving the same model, each
      with a positive `weight`) and primary `upstream_evidence`.
+   - **Locations the customer can choose** (regional or jurisdictional endpoints): one route per
+     choice, `<org>-<model>-<qualifier>`. Mark the one used unless the customer chooses otherwise
+     with `default: true`; usually it is the route without a qualifier.
 6. **Add the slug to the organization's `routes:` list.** Edit the text in place. Never load the
    YAML and dump it back, which would destroy comments and layout.
 
@@ -76,8 +79,9 @@ per route on the evidence that settled its confidence.
   plainly disclosed, and tell the maintainer.
 - The cloud region is not in `sources/snapshots/cloud_regions.csv`: do not invent a zone; ask the
   maintainer to update the import.
-- The provider serves the model from several places with different defaults per customer: ask
-  whether each pinnable region should be its own route.
+- The provider lets customers choose where requests run, but has no default you can identify:
+  record every choice as a route and ask the maintainer which one, if any, to mark
+  `default: true` (see [`../reference/identity.md`](../reference/identity.md#routes)).
 
 ## Relevant reference material
 [`../reference/identity.md`](../reference/identity.md) ·

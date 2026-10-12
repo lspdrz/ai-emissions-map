@@ -15,7 +15,7 @@ from build.compute import compute_routes
 from build.config import METHODOLOGY_VERSION, PUE
 from build.energy import EcoLogitsEnergyModel, EnergyModel
 from build.grid import latest_grid, load_cloud_regions, load_grid
-from build.models import model_ids, model_specs
+from build.models import model_specs, packaged_ecologits_models
 from build.ranges import Range
 from build.rate import rate_orgs, rate_routes
 from build.validate import ROOT, load_sources, validate_sources, validation_warnings
@@ -80,15 +80,15 @@ def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyMode
     grid = load_grid(grid_path)
     cloud = load_cloud_regions(cloud_path)
     zones = grid_zones_override if grid_zones_override is not None else set(grid)
-    errs = validate_sources(data, model_ids=model_ids(data.get("models"), ecologits_models), grid_zones=zones,
-                            cloud_regions=cloud)
+    package = packaged_ecologits_models() if ecologits_models is None else ecologits_models
+    errs = validate_sources(data, ecologits_models=package, grid_zones=zones, cloud_regions=cloud)
     for e in errs:
         print("ERROR:", e)
     if errs:
         return len(errs)
     for w in validation_warnings(data, release):
         print("WARNING:", w)
-    models = model_specs(data.get("models"), ecologits_models)  # parameters are read only once validated
+    models = model_specs(data.get("models"))  # parameters are read only once validated
     results = compute_routes(data, models, grid, cloud, energy_model, release)
     route_ratings = rate_routes(data, results)
     org_ratings = rate_orgs(data, route_ratings)

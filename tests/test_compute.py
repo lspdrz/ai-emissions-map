@@ -22,7 +22,7 @@ def env(fixtures_dir):
 
 
 def run(sources, env, release=RELEASE):
-    models = model_specs(sources["models"], ecologits_models=[])
+    models = model_specs(sources["models"])
     return compute_routes(sources, models, *env, ENERGY, release)
 
 

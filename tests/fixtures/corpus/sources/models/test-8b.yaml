@@ -1,5 +1,6 @@
 name: test-8b
 display_name: Test 8B
+source: curated
 architecture: dense
 active_b: 8
 total_b: 8
