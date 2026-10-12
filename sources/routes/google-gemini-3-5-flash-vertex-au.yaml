@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-au
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "Australia"
   candidates: ["cloud:gcp:australia-southeast1", "cloud:gcp:australia-southeast2"]
   last_verified: "2026-10-12"
   evidence:

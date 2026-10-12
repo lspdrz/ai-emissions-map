@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-us
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "United States (9 regions)"
   candidates: ["cloud:gcp:us-central1", "cloud:gcp:us-east1", "cloud:gcp:us-east4", "cloud:gcp:us-east5", "cloud:gcp:us-south1", "cloud:gcp:us-west1", "cloud:gcp:us-west2", "cloud:gcp:us-west3", "cloud:gcp:us-west4"]
   last_verified: "2026-10-12"
   evidence:

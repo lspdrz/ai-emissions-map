@@ -51,6 +51,8 @@ organization's models would give the same route slug, keep the model's owner as 
 - `model` is the model actually served: the slug of its record in `sources/models/`. If
   the provider offers it under another name, `served_as` records that name and
   `served_model_evidence` shows the two are the same model.
+- `location.label` is optional: where the route runs, in words for readers ("United States (9
+  regions)"). Without it the site shows a count of grid zones.
 - One route per organization and model. Where the location is uncertain across several places,
   those places are candidates on one route, not separate routes. Where the customer can choose
   among several locations (regional or jurisdictional endpoints), each choice is a separate route

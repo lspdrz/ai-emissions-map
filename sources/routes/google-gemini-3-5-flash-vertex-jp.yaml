@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-jp
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "Japan"
   candidates: ["cloud:gcp:asia-northeast1", "cloud:gcp:asia-northeast2"]
   last_verified: "2026-10-12"
   evidence:

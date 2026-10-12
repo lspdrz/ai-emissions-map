@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-gb
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "United Kingdom"
   candidates: ["cloud:gcp:europe-west2"]
   last_verified: "2026-10-12"
   evidence:

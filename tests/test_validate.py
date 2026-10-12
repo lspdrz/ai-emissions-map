@@ -447,3 +447,20 @@ def test_manual_capture_needs_no_http_status():
     assert validate_sources(d) == []
     del ev["capture"]                                   # an automatic capture still needs its status
     assert any("'http_status' is a required property" in e for e in validate_sources(d))
+
+
+def test_location_label_is_optional_text():
+    d = _fixture()
+    assert validate_sources(d) == []
+    d["routes"]["acme-m-70b"]["location"]["label"] = "Zurich, Switzerland"
+    assert validate_sources(d) == []
+    d["routes"]["acme-m-70b"]["location"]["label"] = ""
+    assert any(e.startswith("routes/acme-m-70b.yaml: location.label:") for e in validate_sources(d))
+
+
+def test_organization_description_is_optional_text():
+    d = _fixture()
+    d["organizations"]["acme"]["description"] = "Says it serves from Switzerland."
+    assert validate_sources(d) == []
+    d["organizations"]["acme"]["description"] = 5
+    assert any(e.startswith("organizations/acme.yaml: description:") for e in validate_sources(d))

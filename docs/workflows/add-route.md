@@ -49,6 +49,7 @@ You are recording where an organization serves a model. The organization must al
        kind: primary
        capture: auto
    ```
+   Add `label:` under `location:` with where it runs in words, as a reader would say it.
    - **Nothing disclosed:** `confidence: unknown`, `candidates: []`, and any press coverage as
      `corroborating` evidence.
    - **Aggregator:** replace `location` with `upstreams` (routes serving the same model, each

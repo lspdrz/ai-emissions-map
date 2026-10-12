@@ -11,6 +11,7 @@ served_model_evidence:
   capture: auto
 location:
   confidence: country
+  label: "Switzerland"
   candidates: ["zone:CH"]
   last_verified: "2026-10-11"
   evidence:

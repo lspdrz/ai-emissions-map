@@ -3,6 +3,7 @@ model: gemini-3-5-flash
 default: true
 location:
   confidence: country_set
+  label: "Global endpoint (24 regions)"
   candidates: ["cloud:gcp:asia-northeast1", "cloud:gcp:asia-south1", "cloud:gcp:asia-southeast1", "cloud:gcp:australia-southeast1", "cloud:gcp:europe-central2", "cloud:gcp:europe-north1", "cloud:gcp:europe-southwest1", "cloud:gcp:europe-west1", "cloud:gcp:europe-west12", "cloud:gcp:europe-west2", "cloud:gcp:europe-west3", "cloud:gcp:europe-west4", "cloud:gcp:europe-west8", "cloud:gcp:europe-west9", "cloud:gcp:northamerica-northeast1", "cloud:gcp:us-central1", "cloud:gcp:us-east1", "cloud:gcp:us-east4", "cloud:gcp:us-east5", "cloud:gcp:us-south1", "cloud:gcp:us-west1", "cloud:gcp:us-west2", "cloud:gcp:us-west3", "cloud:gcp:us-west4"]
   last_verified: "2026-10-12"
   evidence:

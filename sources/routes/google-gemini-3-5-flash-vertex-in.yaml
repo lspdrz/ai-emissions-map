@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-in
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "India"
   candidates: ["cloud:gcp:asia-south1", "cloud:gcp:asia-south2"]
   last_verified: "2026-10-12"
   evidence:

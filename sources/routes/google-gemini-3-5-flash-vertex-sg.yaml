@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-sg
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "Singapore"
   candidates: ["cloud:gcp:asia-southeast1"]
   last_verified: "2026-10-12"
   evidence:

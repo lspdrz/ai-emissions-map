@@ -51,6 +51,11 @@
             "facility"
           ]
         },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Where the route runs, in words for readers (e.g. 'United States (9 regions)'). Optional; the site falls back to a count of grid zones."
+        },
         "candidates": {
           "type": "array",
           "items": {

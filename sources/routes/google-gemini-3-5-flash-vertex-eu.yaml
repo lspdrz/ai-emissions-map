@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-eu
 model: gemini-3-5-flash
 location:
   confidence: country_set
+  label: "European Union (9 regions)"
   candidates: ["cloud:gcp:europe-central2", "cloud:gcp:europe-north1", "cloud:gcp:europe-southwest1", "cloud:gcp:europe-west1", "cloud:gcp:europe-west12", "cloud:gcp:europe-west3", "cloud:gcp:europe-west4", "cloud:gcp:europe-west8", "cloud:gcp:europe-west9"]
   last_verified: "2026-10-12"
   evidence:

@@ -1,5 +1,7 @@
 name: google
 display_name: Google
+description: >-
+  Publishes exactly where each Vertex AI endpoint processes requests, but never commits to less than a country. The default global endpoint may process a request anywhere it lists the model.
 type: model_lab
 homepage: https://cloud.google.com/vertex-ai
 country: US

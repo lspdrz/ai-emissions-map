@@ -2,6 +2,7 @@ name: google-gemini-3-5-flash-vertex-de
 model: gemini-3-5-flash
 location:
   confidence: country
+  label: "Germany"
   candidates: ["cloud:gcp:europe-west3"]
   last_verified: "2026-10-12"
   evidence:

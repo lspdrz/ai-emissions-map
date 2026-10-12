@@ -1,5 +1,7 @@
 name: infomaniak
 display_name: Infomaniak
+description: >-
+  States that its AI services run in its data centers in Switzerland, but names none of them.
 type: cloud
 homepage: https://www.infomaniak.com
 country: CH
