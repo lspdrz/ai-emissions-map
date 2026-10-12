@@ -84,6 +84,8 @@ nothing is fetched over the network. Every model a route serves has a record in 
   never the zone table. It carries `"mock": true` while the grid data is a mock, and it must not
   contain values derived from Electricity Maps data before Electricity Maps has consented in
   writing.
+- **The website deploys from `web/` only.** Vercel's Root Directory is `web`; a push that changes
+  nothing under `web/` is skipped. To publish new results, run `build.export` and commit `web/data/`.
 - About the cloud-region data's license, committed files say only "see the source repository's
   License.md".
 - `build.fetch_source` leaves `shows` as a `TODO:` placeholder; validation fails until a person
