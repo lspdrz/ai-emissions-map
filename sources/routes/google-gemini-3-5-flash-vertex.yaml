@@ -1,5 +1,5 @@
 name: google-gemini-3-5-flash-vertex
-model: gemini-3.5-flash
+model: gemini-3-5-flash
 default: true
 location:
   confidence: country_set
