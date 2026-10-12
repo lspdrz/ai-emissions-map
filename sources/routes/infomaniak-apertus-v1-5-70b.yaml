@@ -1,0 +1,35 @@
+name: infomaniak-apertus-v1-5-70b
+model: apertus-v1-5-70b
+served_as: swiss-ai/Apertus-v1.5-70B
+served_model_evidence:
+- url: https://www.infomaniak.com/en/hosting/ai-services/open-source-models
+  shows: 'Open-source models page (AI Services API) lists "swiss-ai/Apertus-v1.5-70B", marked Beta'
+  accessed: "2026-10-11"
+  http_status: 200
+  content_sha256: 8d3842965e84bc6069067e99dc1330101097a6464c84198c348380d4cacf330c
+  kind: primary
+  capture: auto
+location:
+  confidence: country
+  label: "Switzerland"
+  candidates: ["zone:CH"]
+  last_verified: "2026-10-11"
+  evidence:
+  - url: https://www.infomaniak.com/en/hosting/ai-tools
+    shows: 'AI Services page: "Our AI and GPU services are powered from the heart of Europe in our data centers located in Switzerland"; names no data center'
+    accessed: "2026-10-11"
+    http_status: 200
+    content_sha256: 3ed4724e70e62b31249a2cd6b2586a85a3b79359b04aeaf395a11f402531a386
+    kind: primary
+    capture: auto
+  - url: https://www.infomaniak.com/en/support/faq/2845/quick-start-guide-llm-api
+    shows: 'API quick-start guide: "guarantee data protection through end-to-end processing in Switzerland"'
+    accessed: "2026-10-11"
+    http_status: 200
+    content_sha256: 9cf82d26f3c699bc864233720f2d8d1d9dedf36be49cca494c64842a593d1650
+    kind: primary
+    capture: auto
+comments: >-
+  Infomaniak operates several data centers in Switzerland and does not say which one serves its AI
+  services. Press coverage of its Geneva D4 facility mentions GPUs, but no Infomaniak page ties this
+  service to D4, so the route stays at country level.

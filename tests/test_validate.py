@@ -24,7 +24,7 @@ def _fixture():
         "routes": {"acme-m-70b": {"name": "acme-m-70b", "model": "m-70b",
                                   "location": {"confidence": "facility", "candidates": ["facility:acme-1"],
                                                "last_verified": "2026-09-20", "evidence": [_evidence()]}}},
-        "models": {"m-70b": {"name": "m-70b", "architecture": "dense", "active_b": 70, "total_b": 70,
+        "models": {"m-70b": {"name": "m-70b", "source": "curated", "architecture": "dense", "active_b": 70, "total_b": 70,
                              "evidence": [_evidence()]}},
         "stray_files": [],
     }
@@ -163,10 +163,26 @@ def test_model_files_are_schema_checked():
     assert any(e.startswith("models/m-70b.yaml: evidence[0]:") and "'shows'" in e for e in errs)
 
 
-def test_model_needs_evidence():
+def test_curated_model_needs_evidence():
     d = _fixture()
     d["models"]["m-70b"]["evidence"] = []
     assert any(e.startswith("models/m-70b.yaml: evidence:") for e in validate_sources(d))
+
+
+def test_ecologits_model_needs_its_id_but_no_evidence():
+    d = _fixture()
+    record = d["models"]["m-70b"]
+    record["source"] = "ecologits"
+    del record["evidence"]
+    assert any(e.startswith("models/m-70b.yaml:") and "'ecologits'" in e for e in validate_sources(d))
+    record["ecologits"] = {"id": "m-70b", "version": "0.11.2"}
+    assert validate_sources(d) == []
+
+
+def test_model_must_say_where_its_numbers_come_from():
+    d = _fixture()
+    del d["models"]["m-70b"]["source"]
+    assert any(e.startswith("models/m-70b.yaml:") and "'source'" in e for e in validate_sources(d))
 
 
 def test_model_name_must_match_filename():
@@ -187,11 +203,10 @@ def test_upstream_weight_must_be_positive():
 
 ZONES = {"CH", "DE", "FR"}
 CLOUD = {("cloudx", "eu-de"): ["DE"], ("cloudx", "eu-fr"): ["FR"]}
-MODELS = {"test-70b", "test-8b"}
 
 
 def test_fixture_corpus_passes_every_check(sources):
-    assert validate_sources(sources, model_ids=MODELS, grid_zones=ZONES, cloud_regions=CLOUD) == []
+    assert validate_sources(sources, grid_zones=ZONES, cloud_regions=CLOUD, ecologits_models=[]) == []
     assert validation_warnings(sources, date(2026, 10, 8)) == []
 
 
@@ -278,12 +293,24 @@ def test_route_shape():
     assert validate_sources(d) == ["routes/acme-agg.yaml: route cannot have both a location and upstreams"]
 
 
-def test_unknown_model_and_label_without_evidence():
+def test_route_model_needs_a_record_and_a_label_needs_evidence():
     d = _fixture()
     d["routes"]["acme-m-70b"]["served_as"] = "m-70b-v1.5"
-    errs = validate_sources(d, model_ids={"something-else"})
-    assert "routes/acme-m-70b.yaml: model 'm-70b' is not in EcoLogits or sources/models/" in errs
+    d["models"] = {}
+    errs = validate_sources(d)
+    assert ("routes/acme-m-70b.yaml: model 'm-70b' has no sources/models/m-70b.yaml; for an EcoLogits model, "
+            "run `python -m build.models --add <ecologits id>`") in errs
     assert any("served_as 'm-70b-v1.5' differs" in e for e in errs)
+
+
+def test_ecologits_records_are_checked_against_the_package():
+    d = _fixture()
+    d["models"]["m-70b"] = {"name": "m-70b", "source": "ecologits", "ecologits": {"id": "m-70b", "version": "0.11.2"},
+                            "architecture": "dense", "active_b": 70, "total_b": 70}
+    package = [{"name": "m-70b", "architecture": {"type": "dense", "parameters": 72}}]
+    assert validate_sources(d, ecologits_models=package, ecologits_version="0.11.2") == [
+        "models/m-70b.yaml: out of date with EcoLogits 0.11.2 (active_b 70 → 72; total_b 70 → 72); "
+        "run `python -m build.models --sync`"]
 
 
 def test_gap_map_id_is_not_a_field():
@@ -309,6 +336,21 @@ def test_org_without_routes_is_a_warning():
     assert validation_warnings(d) == ["organizations/idle.yaml: has no routes and will not be rated"]
 
 
+
+def test_default_must_be_a_boolean():
+    d = _fixture()
+    d["routes"]["acme-m-70b"]["default"] = "yes"
+    assert any(e.startswith("routes/acme-m-70b.yaml: default:") for e in validate_sources(d))
+
+
+def test_one_default_route_per_model():
+    d = _with_route(_fixture(), "acme-m-70b-eu")
+    d["routes"]["acme-m-70b"]["default"] = True
+    d["routes"]["acme-m-70b-eu"]["default"] = True
+    assert "organizations/acme.yaml: routes acme-m-70b and acme-m-70b-eu are both marked default for model 'm-70b'" \
+        in validate_sources(d)
+
+
 # Fixes from the final review.
 
 def test_cloud_region_whose_zone_is_not_in_the_grid():
@@ -329,6 +371,7 @@ def test_aggregator_upstream_must_serve_the_same_model():
     d = _with_route(_fixture(), "acme-agg")
     d["routes"]["acme-m-8b"] = copy.deepcopy(d["routes"]["acme-m-70b"]) | {"name": "acme-m-8b", "model": "m-8b"}
     d["organizations"]["acme"]["routes"].append("acme-m-8b")
+    d["models"]["m-8b"] = copy.deepcopy(d["models"]["m-70b"]) | {"name": "m-8b", "active_b": 8, "total_b": 8}
     agg = d["routes"]["acme-agg"]
     del agg["location"]
     agg["upstreams"] = [{"route": "acme-m-8b", "weight": 1}]
@@ -404,3 +447,20 @@ def test_manual_capture_needs_no_http_status():
     assert validate_sources(d) == []
     del ev["capture"]                                   # an automatic capture still needs its status
     assert any("'http_status' is a required property" in e for e in validate_sources(d))
+
+
+def test_location_label_is_optional_text():
+    d = _fixture()
+    assert validate_sources(d) == []
+    d["routes"]["acme-m-70b"]["location"]["label"] = "Zurich, Switzerland"
+    assert validate_sources(d) == []
+    d["routes"]["acme-m-70b"]["location"]["label"] = ""
+    assert any(e.startswith("routes/acme-m-70b.yaml: location.label:") for e in validate_sources(d))
+
+
+def test_organization_description_is_optional_text():
+    d = _fixture()
+    d["organizations"]["acme"]["description"] = "Says it serves from Switzerland."
+    assert validate_sources(d) == []
+    d["organizations"]["acme"]["description"] = 5
+    assert any(e.startswith("organizations/acme.yaml: description:") for e in validate_sources(d))

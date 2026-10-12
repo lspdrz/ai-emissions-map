@@ -17,7 +17,7 @@ and [`docs/reference/`](docs/reference/).
 sources/organizations/   one file per organization, with its routes: roster
 sources/facilities/      one file per physical data center, shared by tenants
 sources/routes/          one file per route, <org>-<model>.yaml
-sources/models/          parameter counts for models EcoLogits lacks
+sources/models/          one record per model a route serves: copied from EcoLogits, or curated
 sources/snapshots/       imported data, each file with a <stem>.provenance.json
   cloud_regions.csv      cloud region -> grid zone(s), from the Green Software Foundation (committed)
   grid/                  yearly grid intensity: LOCAL ONLY, never committed (see its README)
@@ -25,6 +25,7 @@ build/                   Python modules; each is `python -m build.<module>` and 
 build/*.json             generated outputs, never committed
 docs/                    methodology, workflows, reference rules, schemas, rulings
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
+web/                     the Next.js site; web/data/ is written by build.export and committed
 tests/                   pytest; fixtures hold invented values
 ```
 
@@ -34,7 +35,8 @@ tests/                   pytest; fixtures hold invented values
   `validate` (load and check `sources/`), `models` (parameter counts), `evidence` (the
   verification window), `grid` (intensity and location → zone resolution), `energy` (EcoLogits
   adapter), `compute` (route scores), `rate` (route levels, organization ratings), `serialize`
-  (writes `build/routes.json` and `build/organizations.json`).
+  (writes `build/routes.json` and `build/organizations.json`), `export` (writes the site's
+  data, `web/data/data.json` and `web/data/methodology.md`).
 - **Imports:** `import_grid` (yearly grid files, local only), `import_cloud_regions` (pinned GSF
   commit).
 - **Evidence:** `fetch_source` (capture a page: `auto`, `browser`, `manual`), `reverify`
@@ -58,12 +60,32 @@ on the claim. Details: [`docs/reference/identity.md`](docs/reference/identity.md
   **Never load-modify-dump** a file in `sources/`: it destroys comments, quoting and layout.
 - Run `uv run python -m build.validate` after every change; it must print `0 error(s)`.
 
+## EcoLogits
+
+EcoLogits is a pinned Python dependency (`ecologits==…` in `pyproject.toml`, locked in `uv.lock`).
+Its model catalogue ships inside the installed package, and `build.energy` runs it in-process:
+nothing is fetched over the network. Every model a route serves has a record in `sources/models/`;
+`source: ecologits` records copy the package, and `build.validate` fails if they stop matching it.
+
+**Upgrading EcoLogits** is its own PR:
+
+1. Change the pin in `pyproject.toml`, then `uv lock` and `uv sync`.
+2. `uv run python -m build.validate` lists every model record that changed, with old and new values.
+3. `uv run python -m build.models --sync` rewrites those records; the PR shows each change as a diff.
+4. Run the tests, and say in the PR and the changelog that scores move with the new version.
+
 ## Traps
 
-- **Grid data is never committed, real or mock.** `sources/snapshots/grid/` is gitignored except
-  its README. Each maintainer imports it locally. CI has none, so `build.validate` skips zone
-  checks there and real scores cannot be built in CI. `*.MOCK.csv` files are development
-  placeholders: never publish numbers built from them.
+- **Raw grid data is never committed, real or mock.** `sources/snapshots/grid/` is gitignored
+  except its README. Each maintainer imports it locally. CI has none, so `build.validate` skips
+  zone checks there and real scores cannot be built in CI. `*.MOCK.csv` files are development
+  placeholders.
+- **The site's data file is committed, and holds only what the site displays:** per-route results,
+  never the zone table. It carries `"mock": true` while the grid data is a mock, and it must not
+  contain values derived from Electricity Maps data before Electricity Maps has consented in
+  writing.
+- **The website deploys from `web/` only.** Vercel's Root Directory is `web`; a push that changes
+  nothing under `web/` is skipped. To publish new results, run `build.export` and commit `web/data/`.
 - About the cloud-region data's license, committed files say only "see the source repository's
   License.md".
 - `build.fetch_source` leaves `shows` as a `TODO:` placeholder; validation fails until a person

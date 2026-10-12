@@ -1,0 +1,11 @@
+name: infomaniak
+display_name: Infomaniak
+description: >-
+  States that its AI services run in its data centers in Switzerland, but names none of them.
+type: cloud
+homepage: https://www.infomaniak.com
+country: CH
+ids: { ossd: null, hf_provider: null, openrouter: null }
+contact: { url: https://www.infomaniak.com/en/support, notified: null }
+routes:
+- infomaniak-apertus-v1-5-70b

@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* Design tokens from the agreed design (Claude Design canvas, 2026-10-12). Tailwind v4 generates
+   utilities from @theme: text-ink, text-body, text-muted, border-rule, bg-panel, bg-band-4, font-serif.
+   Carbon bands run amber to brick; disclosure letters stay neutral (never colored), so the two scales
+   cannot be confused. text-muted is ~8:1 on white; white text is used only on bands 4 and 5. */
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --color-ink: #14181f;
+  --color-body: #2b323c;
+  --color-muted: #4a5361;
+  --color-rule: #d9dee5;
+  --color-panel: #f3f5f8;
+  --color-link: #1d4e89;
+  --color-link-hover: #123459;
+  --color-draft: #f9cf8a;
+
+  --color-band-1: #fdf0d5;
+  --color-band-2: #f9cf8a;
+  --color-band-3: #ee9b4f;
+  --color-band-4: #c9541f;
+  --color-band-5: #7a2a12;
+
+  --color-shade-1: #fdf0d5;
+  --color-shade-2: #fce3b8;
+  --color-shade-3: #f8d3a6;
+  --color-shade-4: #f0b992;
+  --color-shade-5: #e39a80;
+}
+
+@layer base {
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  a {
+    color: var(--color-link);
+  }
+  a:hover {
+    color: var(--color-link-hover);
+  }
+}
+@layer components {
+  .methodology { font-size: 17px; line-height: 1.7; color: var(--color-body); }
+  .methodology p, .methodology ul, .methodology pre, .methodology table { margin: 0 0 1.25em; }
+  .methodology h3 { margin: 2.2em 0 0.6em; font-family: var(--font-serif); font-size: 28px; font-weight: 500; color: var(--color-ink); }
+  .methodology ul { padding-left: 1.25em; list-style: disc; }
+  .methodology strong { color: var(--color-ink); }
+  .methodology pre { overflow-x: auto; border-radius: 6px; background: var(--color-panel); padding: 20px 24px; text-align: center; font-family: var(--font-mono); }
+  .methodology table { width: 100%; border-collapse: collapse; }
+  .methodology th, .methodology td { border-top: 1px solid var(--color-rule); padding: 10px 12px; text-align: left; }
+}

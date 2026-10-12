@@ -15,7 +15,7 @@ from build.compute import compute_routes
 from build.config import METHODOLOGY_VERSION, PUE
 from build.energy import EcoLogitsEnergyModel, EnergyModel
 from build.grid import latest_grid, load_cloud_regions, load_grid
-from build.models import model_ids, model_specs
+from build.models import model_specs, packaged_ecologits_models
 from build.ranges import Range
 from build.rate import rate_orgs, rate_routes
 from build.validate import ROOT, load_sources, validate_sources, validation_warnings
@@ -73,22 +73,23 @@ def _provenance(data_path: Path, *keys: str) -> dict | None:
     return {k: provenance[k] for k in keys if k in provenance}
 
 
-def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyModel, grid_path: Path, cloud_path: Path,
-              ecologits_models: list[dict] | None = None, grid_zones_override: set[str] | None = None) -> int:
-    """Validate, then compute and write. Returns the number of validation errors; 0 means outputs were written."""
+def compute_release(root: Path, release: date, energy_model: EnergyModel, grid_path: Path, cloud_path: Path,
+                    ecologits_models: list[dict] | None = None,
+                    grid_zones_override: set[str] | None = None) -> tuple[int, dict | None]:
+    """Validate and compute a release. (error count, None) on validation errors; else (0, the release)."""
     data = load_sources(root)
     grid = load_grid(grid_path)
     cloud = load_cloud_regions(cloud_path)
     zones = grid_zones_override if grid_zones_override is not None else set(grid)
-    errs = validate_sources(data, model_ids=model_ids(data.get("models"), ecologits_models), grid_zones=zones,
-                            cloud_regions=cloud)
+    package = packaged_ecologits_models() if ecologits_models is None else ecologits_models
+    errs = validate_sources(data, ecologits_models=package, grid_zones=zones, cloud_regions=cloud)
     for e in errs:
         print("ERROR:", e)
     if errs:
-        return len(errs)
+        return len(errs), None
     for w in validation_warnings(data, release):
         print("WARNING:", w)
-    models = model_specs(data.get("models"), ecologits_models)  # parameters are read only once validated
+    models = model_specs(data.get("models"))  # parameters are read only once validated
     results = compute_routes(data, models, grid, cloud, energy_model, release)
     route_ratings = rate_routes(data, results)
     org_ratings = rate_orgs(data, route_ratings)
@@ -103,7 +104,18 @@ def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyMode
         "score_basis": "Full SCI, (E x I) + M per 1,000 output tokens; E and M from EcoLogits, "
                        "I consumption-based direct factors from Electricity Maps",
     }
-    write_outputs(out_dir, results, route_ratings, org_ratings, meta)
+    return 0, {"data": data, "results": results, "route_ratings": route_ratings, "org_ratings": org_ratings,
+               "meta": meta}
+
+
+def serialize(root: Path, release: date, out_dir: Path, energy_model: EnergyModel, grid_path: Path, cloud_path: Path,
+              ecologits_models: list[dict] | None = None, grid_zones_override: set[str] | None = None) -> int:
+    """Validate, then compute and write. Returns the number of validation errors; 0 means outputs were written."""
+    errors, rel = compute_release(root, release, energy_model, grid_path, cloud_path, ecologits_models,
+                                  grid_zones_override)
+    if errors:
+        return errors
+    write_outputs(out_dir, rel["results"], rel["route_ratings"], rel["org_ratings"], rel["meta"])
     return 0
 
 

@@ -34,6 +34,7 @@ record where it serves a model, use [`add-route.md`](add-route.md) afterwards (o
    ```
    `ids` holds the organization's names on Hugging Face's provider list and on OpenRouter where it
    has them. `notified` stays `null` until the pre-publication notice is sent.
+   Add `description:`, one or two plain sentences on what it discloses about where it serves.
 5. **If it has a serving-locations file**, read it:
    `uv run python -m build.disclosure <disclosure_url> --org <slug>`.
    Its proposals feed [`add-route.md`](add-route.md).

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import yaml
@@ -35,3 +36,25 @@ def test_code_license_is_mit():
 def test_contributor_files_exist():
     for name in ("CONTRIBUTING.md", "CHANGELOG.md", ".github/pull_request_template.md"):
         assert (REPO / name).exists(), f"{name} is missing"
+
+
+def test_web_ci_lints_tests_builds_and_checks():
+    workflow = yaml.safe_load((GITHUB / "workflows" / "web.yml").read_text(encoding="utf-8"))
+    runs = "\n".join(step.get("run", "") for step in workflow["jobs"]["web"]["steps"])
+    for command in ("npm ci", "npm run lint", "npm test", "npm run build", "npm run check"):
+        assert command in runs, f"web.yml does not run {command}"
+
+
+def test_vercel_skips_builds_outside_web():
+    config = json.loads((REPO / "web" / "vercel.json").read_text(encoding="utf-8"))
+    assert config["ignoreCommand"] == "sh scripts/ignore-build.sh"
+
+
+def test_the_committed_website_data_holds_only_what_it_displays():
+    # Ruling R-2026-10-12-b: the committed data file holds per-route results, never grid values.
+    from build.export import check_contract
+    path = REPO / "web" / "data" / "data.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert check_contract(data) == []
+    assert "g_per_kwh" not in path.read_text(encoding="utf-8")
+

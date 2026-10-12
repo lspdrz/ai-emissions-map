@@ -34,6 +34,15 @@ every candidate to be a `facility:`, and `region` needs every candidate to be a 
 `cloud:`. Whether the candidates span one country (`country`) or several (`country_set`) is not
 checked yet; get it right by hand.
 
+## Providers that may run anywhere in their network
+
+When a provider states only that a request may be processed in any of its locations (a "global"
+endpoint, for example), the candidates are every region the provider lists for that model, and the
+confidence is `country_set`, or `country` if they all lie in one country. The score is a range
+across all of them. When it commits to a jurisdiction (the United States, the European Union, a
+single country), the candidates are all of its regions within that jurisdiction, because the
+commitment is to the jurisdiction, not to the region the endpoint is named after.
+
 ## Aggregator routes
 
 An aggregator route lists `upstreams`: routes of other organizations that serve the same model,
@@ -45,9 +54,15 @@ measured traffic.
 
 ## Organization rating
 
-An organization's rating is the mean value of its routes, each counting equally, rounded to the
-nearest letter with ties rounding down (2.5 → C). It is always shown with the spread, for example
-"C (2 routes at B, 1 at E)". An organization with no routes is not rated.
+An organization's rating is the mean value of all its routes, each counting equally, rounded to
+the nearest letter with ties rounding down (2.5 → C). It is always shown with the spread, for
+example "C (2 routes at B, 1 at E)". An organization with no routes is not rated.
+
+A route's level and an organization's rating answer different questions. Each route is rated on
+how precisely its own location is disclosed. The organization is rated on all the ways it lets
+customers use its models, so where a customer can choose among regions or jurisdictions, every
+choice is a route and counts. The route marked `default: true` is the one used unless the
+customer chooses; it is shown as such, and counts like any other.
 
 ## Gaps
 

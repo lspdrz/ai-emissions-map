@@ -1,0 +1,489 @@
+{
+  "meta": {
+    "band_upper": [
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "counts": {
+      "models": 2,
+      "organizations": 2,
+      "routes": 11,
+      "scored": 11,
+      "zones": 27
+    },
+    "ecologits_version": "0.11.2",
+    "featured_model": "gemini-3-5-flash",
+    "grid": {
+      "attribution": "MOCK — not real data (values derived from Ember, ember-energy.org, CC BY 4.0)",
+      "mock": true,
+      "name": "placeholder grid data",
+      "year": 2025
+    },
+    "intensity_spread": 20,
+    "methodology_version": "0.1.0",
+    "pue": [
+      1.1,
+      1.6
+    ],
+    "release_date": "2026-10-12"
+  },
+  "models": [
+    {
+      "active_b": {
+        "max": 72,
+        "min": 70
+      },
+      "architecture": "dense",
+      "display_name": "Apertus 1.5 70B",
+      "slug": "apertus-v1-5-70b",
+      "source": "curated",
+      "total_b": {
+        "max": 72,
+        "min": 70
+      }
+    },
+    {
+      "active_b": {
+        "max": 240,
+        "min": 90
+      },
+      "architecture": "moe",
+      "display_name": "Gemini 3.5 Flash",
+      "slug": "gemini-3-5-flash",
+      "source": "ecologits",
+      "total_b": 900
+    }
+  ],
+  "organizations": [
+    {
+      "country": "US",
+      "description": "Publishes exactly where each Vertex AI endpoint processes requests, but never commits to less than a country. The default global endpoint may process a request anywhere it lists the model.",
+      "display_name": "Google",
+      "evidence": [
+        {
+          "accessed": "2026-10-12",
+          "quotes": [
+            "export GOOGLE_CLOUD_LOCATION = global"
+          ],
+          "routes": [
+            "google-gemini-3-5-flash-vertex"
+          ],
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/sdks/overview"
+        },
+        {
+          "accessed": "2026-10-12",
+          "quotes": [
+            "Requests submitted to a global endpoint may be processed in any Google Cloud location around the world",
+            "Gemini 3.5 Flash ( gemini-3.5-flash )",
+            "ensure that ML processing remains entirely within the broader multi-regional or country jurisdiction associated with that region",
+            "When you use jurisdictional endpoints, ML processing stays within that specific geographical region (such as the United States or the European Union)",
+            "strictly covers data residency within EU member states"
+          ],
+          "routes": [
+            "google-gemini-3-5-flash-vertex",
+            "google-gemini-3-5-flash-vertex-au",
+            "google-gemini-3-5-flash-vertex-ca",
+            "google-gemini-3-5-flash-vertex-de",
+            "google-gemini-3-5-flash-vertex-eu",
+            "google-gemini-3-5-flash-vertex-gb",
+            "google-gemini-3-5-flash-vertex-in",
+            "google-gemini-3-5-flash-vertex-jp",
+            "google-gemini-3-5-flash-vertex-sg",
+            "google-gemini-3-5-flash-vertex-us"
+          ],
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/data-residency"
+        },
+        {
+          "accessed": "2026-10-12",
+          "quotes": [
+            "Don't use the global endpoint if you have ML processing requirements, because you can't control or know which region your ML processing requests are sent to"
+          ],
+          "routes": [
+            "google-gemini-3-5-flash-vertex"
+          ],
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/locations"
+        }
+      ],
+      "homepage": "https://cloud.google.com/vertex-ai",
+      "notified": null,
+      "rating": {
+        "letter": "C",
+        "mean": 1.8,
+        "spread": {
+          "C": 8,
+          "D": 2
+        },
+        "summary": "C (8 routes at C, 2 routes at D)"
+      },
+      "routes": [
+        "google-gemini-3-5-flash-vertex",
+        "google-gemini-3-5-flash-vertex-au",
+        "google-gemini-3-5-flash-vertex-ca",
+        "google-gemini-3-5-flash-vertex-de",
+        "google-gemini-3-5-flash-vertex-eu",
+        "google-gemini-3-5-flash-vertex-gb",
+        "google-gemini-3-5-flash-vertex-in",
+        "google-gemini-3-5-flash-vertex-jp",
+        "google-gemini-3-5-flash-vertex-sg",
+        "google-gemini-3-5-flash-vertex-us"
+      ],
+      "slug": "google",
+      "type": "model_lab"
+    },
+    {
+      "country": "CH",
+      "description": "States that its AI services run in its data centers in Switzerland, but names none of them.",
+      "display_name": "Infomaniak",
+      "evidence": [
+        {
+          "accessed": "2026-10-11",
+          "quotes": [
+            "Our AI and GPU services are powered from the heart of Europe in our data centers located in Switzerland"
+          ],
+          "routes": [
+            "infomaniak-apertus-v1-5-70b"
+          ],
+          "url": "https://www.infomaniak.com/en/hosting/ai-tools"
+        },
+        {
+          "accessed": "2026-10-11",
+          "quotes": [
+            "guarantee data protection through end-to-end processing in Switzerland"
+          ],
+          "routes": [
+            "infomaniak-apertus-v1-5-70b"
+          ],
+          "url": "https://www.infomaniak.com/en/support/faq/2845/quick-start-guide-llm-api"
+        }
+      ],
+      "homepage": "https://www.infomaniak.com",
+      "notified": null,
+      "rating": {
+        "letter": "C",
+        "mean": 2.0,
+        "spread": {
+          "C": 1
+        },
+        "summary": "C (1 route at C)"
+      },
+      "routes": [
+        "infomaniak-apertus-v1-5-70b"
+      ],
+      "slug": "infomaniak",
+      "type": "cloud"
+    }
+  ],
+  "routes": [
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only as a set of possible countries.",
+      "label": "Global endpoint (24 regions)",
+      "letter": "D",
+      "level": "country_set",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 10.542361,
+        "low": 0.689466
+      },
+      "score_lifecycle": {
+        "high": 12.281979,
+        "low": 0.744803
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Australia",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 8.48645,
+        "low": 3.124307
+      },
+      "score_lifecycle": {
+        "high": 9.751626,
+        "low": 3.567005
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-au"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Canada",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 3.425744,
+        "low": 1.353513
+      },
+      "score_lifecycle": {
+        "high": 3.900185,
+        "low": 1.519525
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-ca"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Germany",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 5.639803,
+        "low": 2.128235
+      },
+      "score_lifecycle": {
+        "high": 6.430538,
+        "low": 2.404922
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-de"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only as a set of possible countries.",
+      "label": "European Union (9 regions)",
+      "letter": "D",
+      "level": "country_set",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 9.277185,
+        "low": 0.689466
+      },
+      "score_lifecycle": {
+        "high": 10.700508,
+        "low": 0.744803
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-eu"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "United Kingdom",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 4.058332,
+        "low": 1.574862
+      },
+      "score_lifecycle": {
+        "high": 4.532774,
+        "low": 1.740874
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-gb"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "India",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 10.542361,
+        "low": 3.843692
+      },
+      "score_lifecycle": {
+        "high": 12.281979,
+        "low": 4.452402
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-in"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Japan",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 7.537567,
+        "low": 2.792283
+      },
+      "score_lifecycle": {
+        "high": 8.644597,
+        "low": 3.179644
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-jp"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Singapore",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 7.695714,
+        "low": 2.84762
+      },
+      "score_lifecycle": {
+        "high": 8.960891,
+        "low": 3.290319
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-sg"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 1.053539,
+        "low": 0.523454
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "United States (9 regions)",
+      "letter": "C",
+      "level": "country",
+      "model": "gemini-3-5-flash",
+      "org": "google",
+      "score": {
+        "high": 6.114244,
+        "low": 2.294247
+      },
+      "score_lifecycle": {
+        "high": 7.063126,
+        "low": 2.626271
+      },
+      "scored": true,
+      "served_as": null,
+      "slug": "google-gemini-3-5-flash-vertex-us"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.05748,
+        "low": 0.056597
+      },
+      "gap": "Location disclosed only to a country.",
+      "label": "Switzerland",
+      "letter": "C",
+      "level": "country",
+      "model": "apertus-v1-5-70b",
+      "org": "infomaniak",
+      "score": {
+        "high": 0.08417,
+        "low": 0.074679
+      },
+      "score_lifecycle": {
+        "high": 0.08417,
+        "low": 0.074679
+      },
+      "scored": true,
+      "served_as": "swiss-ai/Apertus-v1.5-70B",
+      "slug": "infomaniak-apertus-v1-5-70b"
+    }
+  ],
+  "schema": "aem-data/1"
+}

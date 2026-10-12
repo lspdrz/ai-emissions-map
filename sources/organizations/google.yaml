@@ -1,0 +1,20 @@
+name: google
+display_name: Google
+description: >-
+  Publishes exactly where each Vertex AI endpoint processes requests, but never commits to less than a country. The default global endpoint may process a request anywhere it lists the model.
+type: model_lab
+homepage: https://cloud.google.com/vertex-ai
+country: US
+ids: { ossd: null, hf_provider: null, openrouter: null }
+contact: { url: https://cloud.google.com/contact, notified: null }
+routes:
+- google-gemini-3-5-flash-vertex
+- google-gemini-3-5-flash-vertex-us
+- google-gemini-3-5-flash-vertex-eu
+- google-gemini-3-5-flash-vertex-ca
+- google-gemini-3-5-flash-vertex-de
+- google-gemini-3-5-flash-vertex-gb
+- google-gemini-3-5-flash-vertex-au
+- google-gemini-3-5-flash-vertex-in
+- google-gemini-3-5-flash-vertex-jp
+- google-gemini-3-5-flash-vertex-sg

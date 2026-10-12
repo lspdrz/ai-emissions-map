@@ -17,7 +17,7 @@ ENERGY = FixedEnergyModel({
 
 def _rate(sources, fixtures_dir, release=date(2026, 10, 8)):
     grid, cloud = load_grid(fixtures_dir / "grid.csv"), load_cloud_regions(fixtures_dir / "cloud_regions.csv")
-    models = model_specs(sources["models"], ecologits_models=[])
+    models = model_specs(sources["models"])
     results = compute_routes(sources, models, grid, cloud, ENERGY, release)
     routes = rate_routes(sources, results)
     return routes, rate_orgs(sources, routes)
@@ -64,3 +64,10 @@ def test_stale_route_is_not_called_undisclosed(sources, fixtures_dir):
     assert routes["alpinehost-test-70b"]["gap"] == "Location evidence not re-verified within 90 days of the release."
     assert routes["aggregator-test-70b"]["gap"] == "An upstream route's location is undisclosed or unverified."
     assert routes["vaguehost-test-70b"]["gap"] == "Reported in press, not disclosed by the provider."
+
+
+def test_every_route_counts_in_the_organization_rating(sources, fixtures_dir):
+    # Marking the default route is a label for readers; the rating still averages every route.
+    sources["routes"]["alpinehost-test-70b"]["default"] = True
+    _, orgs = _rate(sources, fixtures_dir)
+    assert orgs["alpinehost"]["summary"] == "B (1 route at A, 1 route at C)"

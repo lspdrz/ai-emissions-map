@@ -43,20 +43,23 @@ A route is one organization serving one model. Its slug is `<org>-<model>`
 organization whose slug begins it. A route on no roster or on two, or a roster entry with no file,
 is an error.
 
-The `<model>` part is the model's id made into a slug. A `sources/models/` slug is used as it is.
-An EcoLogits id is reduced to its last path segment (the repository name, without the owner),
-lowercased, with every character outside `a-z0-9` turned into a hyphen and repeated hyphens
-collapsed: `meta-llama/CodeLlama-13b-hf` served by `together` is `together-codellama-13b-hf`. If two
-of an organization's models would give the same slug, keep the owner as well
+The `<model>` part is the slug of the model's record in `sources/models/`
+(`together-codellama-13b-hf` serves the model recorded as `codellama-13b-hf`). If two of an
+organization's models would give the same route slug, keep the model's owner as well
 (`together-meta-llama-codellama-13b-hf`).
 
-- `model` is the model actually served: an EcoLogits catalogue id or a `sources/models/` slug. If
+- `model` is the model actually served: the slug of its record in `sources/models/`. If
   the provider offers it under another name, `served_as` records that name and
   `served_model_evidence` shows the two are the same model.
+- `location.label` is optional: where the route runs, in words for readers ("United States (9
+  regions)"). Without it the site shows a count of grid zones.
 - One route per organization and model. Where the location is uncertain across several places,
-  those places are candidates on one route, not separate routes. A different default location that
-  a customer can choose (a pinnable region) is a separate route with a qualifier:
-  `<org>-<model>-<qualifier>`.
+  those places are candidates on one route, not separate routes. Where the customer can choose
+  among several locations (regional or jurisdictional endpoints), each choice is a separate route
+  with a qualifier, `<org>-<model>-<qualifier>` (for example `-eu`, `-de`), and the route used
+  unless the customer chooses otherwise carries `default: true`. At most one route per
+  organization and model is the default. The label is for readers: every route counts in the
+  organization's rating.
 - An aggregator's route has `upstreams` (other organizations' routes serving the same model)
   instead of a location.
 
@@ -69,9 +72,21 @@ not listed, because they follow from the routes that cite the facility.
 
 ## Models
 
-`sources/models/<slug>.yaml` exists only for a model EcoLogits lacks, or where the developer's own
-model card contradicts EcoLogits. A curated file takes precedence over an EcoLogits entry with the
-same id, so it can only shadow an EcoLogits id that is itself kebab-case.
+Every model a route serves has a record, `sources/models/<slug>.yaml`, so the parameter counts
+behind every score are visible in the repository. A record says where its numbers come from:
+
+- **`source: ecologits`**, the default whenever EcoLogits has the model. The record copies the
+  pinned EcoLogits package (`ecologits: {id, version}`, architecture, parameter counts), is written
+  by `python -m build.models --add <ecologits id>`, and needs no evidence. `build.validate` checks
+  it still matches the installed package, so upgrading EcoLogits shows every changed model as a
+  diff (`python -m build.models --sync` applies it).
+- **`source: curated`**, for a model EcoLogits lacks, or whose developer's own model card
+  contradicts EcoLogits. Its counts come from the developer, with evidence.
+
+A record's slug is the EcoLogits id's last path segment (the repository name, without the owner),
+lowercased, with every character outside `a-z0-9` turned into a hyphen and repeated hyphens
+collapsed (`meta-llama/CodeLlama-13b-hf` → `codellama-13b-hf`, `gemini-3.5-flash` →
+`gemini-3-5-flash`); a curated model's slug is its developer's name for it, formed the same way.
 
 ## Dates
 
