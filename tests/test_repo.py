@@ -58,3 +58,10 @@ def test_the_committed_website_data_holds_only_what_it_displays():
     assert check_contract(data) == []
     assert "g_per_kwh" not in path.read_text(encoding="utf-8")
 
+
+def test_web_ci_also_runs_when_its_own_workflow_changes():
+    workflow = yaml.safe_load((GITHUB / "workflows" / "web.yml").read_text(encoding="utf-8"))
+    triggers = workflow[True]   # PyYAML reads the bare key `on` as True
+    for event in ("pull_request", "push"):
+        assert ".github/workflows/web.yml" in triggers[event]["paths"], f"web.yml {event} ignores its own changes"
+

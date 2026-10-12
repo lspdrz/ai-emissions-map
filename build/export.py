@@ -82,7 +82,7 @@ def check_contract(data: dict) -> list[str]:
 def _grid_meta(grid_path: Path) -> dict:
     prov_path = grid_path.with_name(f"{grid_path.stem}.provenance.json")
     prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {}
-    mock = bool(prov.get("mock")) or ".MOCK" in grid_path.name
+    mock = bool(prov.get("mock")) or ".MOCK" in grid_path.name.upper()
     return {"year": prov.get("year"), "mock": mock, "attribution": prov.get("attribution"),
             "name": _grid_name(prov, mock)}
 

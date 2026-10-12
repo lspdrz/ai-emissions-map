@@ -68,6 +68,21 @@ const eslintConfig = defineConfig([
     },
   },
 
+  // app/ is routing only: it may import a feature's ui/ entry point, @/lib and the app shell, never a
+  // feature's internals or the shared features/ folders. (Repeats the font ban: the last
+  // no-restricted-imports that matches a file replaces earlier ones.)
+  {
+    files: ["app/**"],
+    rules: {
+      "no-restricted-imports": ["error", {
+        paths: [{ name: "next/font/google",
+          message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds." }],
+        patterns: [{ regex: "^@/features/(?![a-z0-9-]+/ui$)",
+          message: "app/ imports only a feature's ui/ entry point (@/features/<name>/ui)." }],
+      }],
+    },
+  },
+
   {
     files: ["features/**/lib/**", "features/**/utils/**", "lib/**"],
     rules: { "no-restricted-imports": ["error", { patterns: [NO_UI] }] },

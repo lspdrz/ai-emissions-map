@@ -25,8 +25,9 @@ function bandShading(upper: number[]): string {
 
 /** A score range on the shared log scale; `shaded` draws the five bands behind it. */
 export function RangeBar({ range, upper, shaded = false }: { range: Range; upper: number[]; shaded?: boolean }) {
-  const left = pos(range.low);
-  const width = Math.max(pos(range.high) - left, 0.8);
+  const left = Math.min(pos(range.low), 99.2);
+  // At least 0.8% wide so a point estimate stays visible, but never past the end of the scale.
+  const width = Math.min(Math.max(pos(range.high) - left, 0.8), 100 - left);
   return (
     <div role="img" aria-label={`${fmtRange(range)} grams of CO2-equivalent per 1,000 output tokens`}
          className={`relative rounded-[3px] ${shaded ? "h-[22px]" : "h-3.5 bg-[#eef1f4]"}`}

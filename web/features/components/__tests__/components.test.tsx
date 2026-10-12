@@ -11,6 +11,7 @@ describe("shared components", () => {
     const html = renderToStaticMarkup(<LetterBadge letter="C" />);
     expect(html).toContain(">C<");
     expect(html).toContain('aria-label="Location disclosure C"');
+    expect(html).toContain('role="img"'); // a label on a role-less span is not announced
   });
   it("BandChip colors a span by its higher band, and says when a route is not scored", () => {
     expect(renderToStaticMarkup(<BandChip band={[4, 5]} />)).toContain("bg-band-5");
@@ -20,6 +21,14 @@ describe("shared components", () => {
     const html = renderToStaticMarkup(<RangeBar range={{ low: 0.01, high: 30 }} upper={[0.03, 0.1, 0.3, 1]} />);
     expect(html).toContain("left:0%");
     expect(html).toContain("width:100%");
+  });
+  it("RangeBar keeps a narrow range at the top of the scale inside the bar", () => {
+    const html = renderToStaticMarkup(<RangeBar range={{ low: 29.9, high: 30 }} upper={[0.03, 0.1, 0.3, 1]} />);
+    const left = Number(html.match(/left:([\d.]+)%/)![1]);
+    const width = Number(html.match(/width:([\d.]+)%/)![1]);
+    expect(left + width).toBeLessThanOrEqual(100);
+    const atTop = renderToStaticMarkup(<RangeBar range={{ low: 30, high: 30 }} upper={[0.03, 0.1, 0.3, 1]} />);
+    expect(Number(atTop.match(/width:([\d.]+)%/)![1])).toBeGreaterThan(0); // still visible
   });
   it("RangeBar shades the five bands behind the bar with the theme tokens", () => {
     const html = renderToStaticMarkup(<RangeBar range={{ low: 1, high: 3 }} upper={[0.03, 0.1, 0.3, 1]} shaded />);

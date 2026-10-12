@@ -158,3 +158,10 @@ def test_the_grid_is_named_for_the_estimate_label(tmp_path, fixtures_dir):
     _, out = run(tmp_path, fixtures_dir, grid=grid)
     assert _data(out)["meta"]["grid"]["name"] == "Electricity Maps"
 
+
+
+def test_a_lowercase_mock_file_name_flags_the_mock_too(tmp_path, fixtures_dir):
+    grid = tmp_path / "2025.mock.csv"
+    shutil.copy(fixtures_dir / "grid.csv", grid)
+    _, out = run(tmp_path, fixtures_dir, grid=grid)
+    assert _data(out)["meta"]["grid"]["mock"] is True

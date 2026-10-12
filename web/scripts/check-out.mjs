@@ -15,7 +15,10 @@ const home = page("index.html");
 expect(home.includes("PLACEHOLDER GRID DATA") === data.meta.grid.mock, "draft bar shown if and only if the grid is a mock");
 expect(home.includes('name="robots" content="noindex'), "draft pages are noindex");
 for (const o of data.organizations) expect(home.includes(o.display_name), `overview names ${o.display_name}`);
-expect(home.includes(String(data.meta.counts.routes)), "overview shows the route count");
+for (const [key, label] of [["organizations", "organizations"], ["routes", "serving routes"], ["models", "models"], ["zones", "grid zones"]]) {
+  // The number next to its own label, so a stray "11" elsewhere in the page cannot satisfy it.
+  expect(home.includes(`>${data.meta.counts[key]}</span><span>${label}</span>`), `overview shows ${data.meta.counts[key]} ${label}`);
+}
 
 // All routes
 const fmtG = (v) => (v >= 10 ? v.toFixed(1) : v >= 1 ? v.toFixed(2) : String(Number(v.toPrecision(2))));

@@ -14,6 +14,12 @@ export function parseData(raw: unknown): MapData {
     if (!Array.isArray(data[key])) fail(`${key} is not a list`);
   }
   const orgs = new Set(data.organizations.map((o) => o.slug));
+  const routes = new Set(data.routes.map((r) => r.slug));
+  for (const o of data.organizations) {
+    for (const name of [...o.routes, ...o.evidence.flatMap((e) => e.routes)]) {
+      if (!routes.has(name)) fail(`organization ${o.slug} lists route ${name}, which is not in the file`);
+    }
+  }
   for (const r of data.routes) {
     if (!r.label) fail(`route ${r.slug} has no label`);
     if (!orgs.has(r.org)) fail(`route ${r.slug} names organization ${r.org}, which is not in the file`);

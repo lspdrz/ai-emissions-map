@@ -16,6 +16,11 @@ describe("parseData", () => {
     raw.routes[0].org = "nobody";
     expect(() => parseData(raw)).toThrow(/acme-m.*nobody/);
   });
+  it("rejects an organization listing a route that is not in the file", () => {
+    const raw = fixture();
+    raw.organizations[0].routes.push("acme-missing");
+    expect(() => parseData(raw)).toThrow(/acme.*acme-missing/);
+  });
   it("rejects a route without a label", () => {
     const raw = fixture();
     delete raw.routes[0].label;
