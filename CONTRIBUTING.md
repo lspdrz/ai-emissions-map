@@ -22,7 +22,7 @@ Find your task in [`docs/README.md`](docs/README.md) and follow its workflow. In
 | `sources/organizations/<slug>.yaml` | An organization, with the `routes:` roster it serves |
 | `sources/routes/<org>-<model>.yaml` | Where the organization serves one model, with evidence |
 | `sources/facilities/<slug>.yaml` | A physical data center, shared by every route served from it |
-| `sources/models/<slug>.yaml` | Parameter counts for a model EcoLogits does not know |
+| `sources/models/<slug>.yaml` | The parameter counts of a model: copied from EcoLogits, or curated with evidence |
 
 Every location claim needs the organization's own publications as evidence, captured with
 `uv run python -m build.fetch_source <url>` and quoted in `shows`. Press coverage is recorded for

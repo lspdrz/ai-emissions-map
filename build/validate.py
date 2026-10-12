@@ -14,6 +14,7 @@ import jsonschema
 import yaml
 
 from build.evidence import location_established
+from build.models import check_ecologits_records, installed_ecologits_version
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -229,12 +230,13 @@ def _check_confidence_supported(where: str, loc: dict) -> list[str]:
     return [f"{where}: confidence {loc['confidence']!r} needs every candidate to be a {kinds} candidate"]
 
 
-def _check_models(routes: dict, model_ids: set[str] | None) -> list[str]:
+def _check_models(routes: dict, models: dict) -> list[str]:
     errors = []
     for name, r in routes.items():
         where = f"routes/{name}.yaml"
-        if model_ids is not None and r["model"] not in model_ids:
-            errors.append(f"{where}: model {r['model']!r} is not in EcoLogits or sources/models/")
+        if r["model"] not in models:
+            errors.append(f"{where}: model {r['model']!r} has no sources/models/{r['model']}.yaml; for an EcoLogits "
+                          "model, run `python -m build.models --add <ecologits id>`")
         if r.get("served_as") and r["served_as"] != r["model"] and not r.get("served_model_evidence"):
             errors.append(f"{where}: served_as {r['served_as']!r} differs from model {r['model']!r}; "
                           "add served_model_evidence")
@@ -280,13 +282,15 @@ def _check_upstream_cycles(routes: dict) -> list[str]:
     return errors
 
 
-def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zones: set[str] | None = None,
+def validate_sources(data: dict, *, ecologits_models: list[dict] | None = None, ecologits_version: str | None = None,
+                     grid_zones: set[str] | None = None,
                      cloud_regions: dict[tuple[str, str], list[str]] | None = None,
                      root: Path = ROOT) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
-    The optional sets switch on the checks against outside data: model_ids (EcoLogits plus sources/models/),
-    grid_zones (the grid snapshot) and cloud_regions ((vendor, region) -> grid zones).
+    The optional arguments switch on the checks against outside data: ecologits_models and ecologits_version
+    (the installed EcoLogits catalogue, which EcoLogits model records must match), grid_zones (the grid
+    snapshot) and cloud_regions ((vendor, region) -> grid zones).
     """
     schemas = _load_schemas(root)
     errors = [f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
@@ -303,7 +307,10 @@ def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zone
     errors += _check_route_shape(routes)
     errors += _check_references(facilities, routes, data.get("routes") or {}, grid_zones, cloud_regions)
     errors += _check_evidence(facilities, routes)
-    errors += _check_models(routes, model_ids)
+    errors += _check_models(routes, data.get("models") or {})
+    if ecologits_models is not None:
+        errors += check_ecologits_records(valid["models"], ecologits_models,
+                                          ecologits_version or installed_ecologits_version())
     errors += _check_upstream_cycles(routes)
     errors += _check_defaults(valid["organizations"], routes)
     return errors
@@ -332,7 +339,7 @@ def _csv_values(path: Path, *columns: str) -> set:
 
 def main(argv: list[str] | None = None) -> int:
     from build.grid import latest_grid, load_cloud_regions
-    from build.models import model_ids
+    from build.models import packaged_ecologits_models
 
     parser = argparse.ArgumentParser(prog="python -m build.validate", description="Validate sources/.")
     parser.add_argument("--release-date", type=date.fromisoformat, help="also warn about stale location evidence")
@@ -348,7 +355,7 @@ def main(argv: list[str] | None = None) -> int:
     cloud_path = snapshots / "cloud_regions.csv"
     errs = validate_sources(
         data,
-        model_ids=model_ids(data.get("models")),
+        ecologits_models=packaged_ecologits_models(),
         grid_zones=_csv_values(grid_path, "zone") if grid_path else None,
         cloud_regions=load_cloud_regions(cloud_path) if cloud_path.exists() else None,
         root=root,

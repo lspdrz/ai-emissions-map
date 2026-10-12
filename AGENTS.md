@@ -17,7 +17,7 @@ and [`docs/reference/`](docs/reference/).
 sources/organizations/   one file per organization, with its routes: roster
 sources/facilities/      one file per physical data center, shared by tenants
 sources/routes/          one file per route, <org>-<model>.yaml
-sources/models/          parameter counts for models EcoLogits lacks
+sources/models/          one record per model a route serves: copied from EcoLogits, or curated
 sources/snapshots/       imported data, each file with a <stem>.provenance.json
   cloud_regions.csv      cloud region -> grid zone(s), from the Green Software Foundation (committed)
   grid/                  yearly grid intensity: LOCAL ONLY, never committed (see its README)
@@ -57,6 +57,20 @@ on the claim. Details: [`docs/reference/identity.md`](docs/reference/identity.md
   `build.yamledit.set_scalars`, which changes exact value spans and proves nothing else changed.
   **Never load-modify-dump** a file in `sources/`: it destroys comments, quoting and layout.
 - Run `uv run python -m build.validate` after every change; it must print `0 error(s)`.
+
+## EcoLogits
+
+EcoLogits is a pinned Python dependency (`ecologits==…` in `pyproject.toml`, locked in `uv.lock`).
+Its model catalogue ships inside the installed package, and `build.energy` runs it in-process:
+nothing is fetched over the network. Every model a route serves has a record in `sources/models/`;
+`source: ecologits` records copy the package, and `build.validate` fails if they stop matching it.
+
+**Upgrading EcoLogits** is its own PR:
+
+1. Change the pin in `pyproject.toml`, then `uv lock` and `uv sync`.
+2. `uv run python -m build.validate` lists every model record that changed, with old and new values.
+3. `uv run python -m build.models --sync` rewrites those records; the PR shows each change as a diff.
+4. Run the tests, and say in the PR and the changelog that scores move with the new version.
 
 ## Traps
 

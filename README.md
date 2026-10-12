@@ -19,6 +19,11 @@ in [`docs/methodology.md`](docs/methodology.md). Agents start at [`CLAUDE.md`](C
 
 Do not commit `build/*.json`; they are generated.
 
+## Models
+
+    uv run python -m build.models --add <ecologits id>   # a model record copied from the pinned EcoLogits
+    uv run python -m build.models --sync                 # after upgrading EcoLogits: update every record
+
 ## Imported data (`sources/snapshots/`)
 
 Each import writes a `.provenance.json` beside its data: where it came from, when, and a content hash.

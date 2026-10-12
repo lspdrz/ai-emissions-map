@@ -242,3 +242,22 @@ rulings:
     lands_in: [docs/reference/location-disclosure.md]
     applied_in: []
 
+  - id: R-2026-10-12-a
+    date: "2026-10-12"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      Should a model that EcoLogits already includes also have a record in sources/models/?
+    ruling: >-
+      Yes. Every model a route serves has a visible record. EcoLogits stays the primary source:
+      its records copy the pinned package and are checked against it, and only a model EcoLogits
+      lacks, or whose developer's model card contradicts it, is curated with evidence.
+    reasoning: >-
+      The parameter counts behind every score should be visible in the repository, and an
+      EcoLogits upgrade should show every changed model explicitly in a pull request.
+    status: in-force
+    executor: none
+    lands_in: [docs/reference/identity.md, docs/workflows/add-model.md, AGENTS.md, build/models.py]
+    applied_in: []
+
