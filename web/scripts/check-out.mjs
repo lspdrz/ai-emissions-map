@@ -18,7 +18,14 @@ for (const o of data.organizations) expect(home.includes(o.display_name), `overv
 expect(home.includes(String(data.meta.counts.routes)), "overview shows the route count");
 
 // All routes
+const fmtG = (v) => (v >= 10 ? v.toFixed(1) : v >= 1 ? v.toFixed(2) : String(Number(v.toPrecision(2))));
+const fmtRange = (r) => (fmtG(r.low) === fmtG(r.high) ? fmtG(r.low) : `${fmtG(r.low)}–${fmtG(r.high)}`);
 const routesPage = page("routes/index.html");
+expect(routesPage.includes(`Estimate (EcoLogits × ${data.meta.grid.name})`), "routes page labels scores as estimates");
+for (const r of data.routes.filter((x) => x.score)) {
+  expect(routesPage.includes(fmtRange(r.score)), `routes page shows ${r.slug}'s score ${fmtRange(r.score)}`);
+  expect(routesPage.includes(fmtRange(r.score_lifecycle)), `routes page shows ${r.slug}'s life-cycle score`);
+}
 for (const r of data.routes) expect(routesPage.includes(r.label), `routes page lists ${r.slug} as "${r.label}"`);
 
 // Organizations

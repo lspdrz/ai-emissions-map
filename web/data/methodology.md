@@ -65,7 +65,7 @@ Each release states its methodology version (0.1.0), grid data year, EcoLogits v
 
 ### Choices made in the presentation
 
-Every carbon score is labeled as an estimate from EcoLogits and Electricity Maps, with its fixed assumptions one step away. Scores are shown as numeric ranges, with their band or band span. A route that is not scored is shown as *not scored*, in words, never as a band. Each score is drawn as a stacked range of its operational and embodied parts, so a reader comparing routes for the same model can see that only the operational part differs. The location rating uses letters and the carbon band uses a numbered color scale, so the two cannot be confused. Map markers are sized by location confidence, so a vague location looks vague.
+Every carbon score is labeled as an estimate from EcoLogits and the grid data used, with its fixed assumptions one step away. Scores are shown as numeric ranges, with their band or band span, and with the score using life-cycle grid factors alongside. A route that is not scored is shown as *not scored*, in words, never as a band. Each score is shown with its embodied part, which is the same on every route serving a model, so a reader comparing routes for the same model can see that only the operational part differs. The location rating uses letters and the carbon band uses a numbered color scale, so the two cannot be confused.
 
 ### Limitations
 

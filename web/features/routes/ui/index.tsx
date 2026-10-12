@@ -1,5 +1,6 @@
 import "server-only";
 import { BandChip } from "@/features/components/BandChip";
+import { EstimateLabel } from "@/features/components/EstimateLabel";
 import { LetterBadge } from "@/features/components/LetterBadge";
 import { RangeBar } from "@/features/components/RangeBar";
 import { sortRoutes } from "@/features/routes/lib/sortRoutes";
@@ -21,7 +22,8 @@ export function AllRoutes() {
           Each is rated on how precisely its location is disclosed, and scored on estimated emissions per 1,000 output
           tokens. Ordered from lowest to highest estimated emissions.</p>
       </section>
-      <div className="overflow-x-auto rounded-md border border-rule">
+      <EstimateLabel gridName={data.meta.grid.name} />
+      <div className="-mt-12 overflow-x-auto rounded-md border border-rule">
         <table className="w-full min-w-[1080px] border-collapse text-[15px]">
           <thead>
             <tr><th scope="col" className={TH}>Organization · model</th><th scope="col" className={TH}>Where it runs</th>
@@ -45,6 +47,8 @@ export function AllRoutes() {
                     <div className="font-mono">{fmtRange(r.score)}</div>
                     <div className="mt-2"><RangeBar range={r.score} upper={data.meta.band_upper} /></div>
                     <div className="mt-1.5 text-[13px] text-muted">of which embodied {fmtRange(r.embodied)} g</div>
+                    {r.score_lifecycle && (
+                      <div className="text-[13px] text-muted">with life-cycle grid factors {fmtRange(r.score_lifecycle)} g</div>)}
                   </>
                 ) : <span className="text-sm text-muted">Not scored</span>}</td>
                 <td className={TD}><BandChip band={r.band} /></td>

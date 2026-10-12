@@ -2,6 +2,7 @@ import "server-only";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BandChip } from "@/features/components/BandChip";
+import { EstimateLabel } from "@/features/components/EstimateLabel";
 import { LetterBadge } from "@/features/components/LetterBadge";
 import { OrganizationCard } from "@/features/components/OrganizationCard";
 import { ORG_TYPES } from "@/features/constants/letters";
@@ -83,7 +84,10 @@ export function OrganizationProfile({ slug }: { slug: string }) {
       )}
 
       <section className="flex flex-col gap-5">
-        <h2 className="font-serif text-[32px] font-medium">Routes</h2>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          <h2 className="font-serif text-[32px] font-medium">Routes</h2>
+          <EstimateLabel gridName={data.meta.grid.name} />
+        </div>
         <div className="overflow-x-auto rounded-md border border-rule">
           <table className="w-full min-w-[860px] border-collapse text-[15px]">
             <thead><tr><th scope="col" className={TH}>Where it runs</th><th scope="col" className={TH}>Disclosure</th>

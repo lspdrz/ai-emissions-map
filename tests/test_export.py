@@ -15,7 +15,7 @@ ENERGY = FixedEnergyModel({
     "test-8b": (Range.point(0.08), Range.point(0.007)),
 })
 ROUTE_KEYS = {"slug", "org", "model", "label", "default", "scored", "level", "letter", "gap", "score",
-              "embodied", "band", "served_as"}
+              "score_lifecycle", "embodied", "band", "served_as"}
 
 
 def run(tmp_path, fixtures_dir, grid=None, root=None):
@@ -54,7 +54,7 @@ def test_meta_flags_a_mock_grid_from_its_provenance(tmp_path, fixtures_dir):
     shutil.copy(fixtures_dir / "grid.csv", grid)
     grid.with_name("2025.provenance.json").write_text(json.dumps({"mock": True, "year": 2025, "attribution": "x"}))
     _, out = run(tmp_path, fixtures_dir, grid=grid)
-    assert _data(out)["meta"]["grid"] == {"year": 2025, "mock": True, "attribution": "x"}
+    assert _data(out)["meta"]["grid"] == {"year": 2025, "mock": True, "attribution": "x", "name": "placeholder grid data"}
 
 
 def test_a_mock_file_name_alone_flags_the_mock(tmp_path, fixtures_dir):
@@ -140,4 +140,21 @@ def test_export_refuses_to_write_outside_the_contract(tmp_path, fixtures_dir, mo
     with pytest.raises(ExportError, match="zones"):
         run(tmp_path, fixtures_dir)
     assert not (tmp_path / "out" / "data.json").exists()
+
+
+def test_routes_carry_the_life_cycle_score_alongside(tmp_path, fixtures_dir):
+    _, out = run(tmp_path, fixtures_dir)
+    routes = {r["slug"]: r for r in _data(out)["routes"]}
+    scored = routes["alpinehost-test-70b"]
+    assert scored["score_lifecycle"]["low"] >= scored["score"]["low"]   # life-cycle factors add upstream emissions
+    assert routes["vaguehost-test-70b"]["score_lifecycle"] is None
+
+
+def test_the_grid_is_named_for_the_estimate_label(tmp_path, fixtures_dir):
+    grid = tmp_path / "2025.csv"
+    shutil.copy(fixtures_dir / "grid.csv", grid)
+    grid.with_name("2025.provenance.json").write_text(json.dumps(
+        {"year": 2025, "source": "Electricity Maps historical datasets: yearly, consumption-based"}))
+    _, out = run(tmp_path, fixtures_dir, grid=grid)
+    assert _data(out)["meta"]["grid"]["name"] == "Electricity Maps"
 

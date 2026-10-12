@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { BandChip } from "@/features/components/BandChip";
+import { EstimateLabel } from "@/features/components/EstimateLabel";
 import { LetterBadge } from "@/features/components/LetterBadge";
 import { OrganizationCard } from "@/features/components/OrganizationCard";
 import { RangeAxis, RangeBar } from "@/features/components/RangeBar";
@@ -31,6 +32,10 @@ describe("shared components", () => {
     expect(html).toContain(">30<");
     expect(html).toContain("left:0%");
     expect(html).toContain("left:100%");
+  });
+  it("EstimateLabel names both models the score is estimated with", () => {
+    expect(renderToStaticMarkup(<EstimateLabel gridName="placeholder grid data" />))
+      .toContain("Estimate (EcoLogits × placeholder grid data)");
   });
   it("OrganizationCard links to the organization's page", () => {
     const org = { slug: "acme", display_name: "Acme", type: "cloud", country: null, homepage: "https://acme.example",

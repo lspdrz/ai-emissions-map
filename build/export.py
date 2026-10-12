@@ -40,15 +40,15 @@ ALLOWED_KEYS = {
     "": {"schema", "meta", "organizations", "models", "routes"},
     "meta": {"release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "grid", "counts",
              "intensity_spread", "featured_model"},
-    "meta.grid": {"year", "mock", "attribution"},
+    "meta.grid": {"year", "mock", "attribution", "name"},
     "meta.counts": {"organizations", "routes", "models", "zones", "scored"},
     "organizations[]": {"slug", "display_name", "type", "country", "homepage", "description", "notified", "rating",
                         "routes", "evidence"},
     "organizations[].rating": {"letter", "mean", "spread", "summary"},
     "organizations[].evidence[]": {"url", "quotes", "accessed", "routes"},
     "models[]": {"slug", "display_name", "source", "architecture", "active_b", "total_b"},
-    "routes[]": {"slug", "org", "model", "label", "default", "scored", "level", "letter", "gap", "score", "embodied",
-                 "band", "served_as"},
+    "routes[]": {"slug", "org", "model", "label", "default", "scored", "level", "letter", "gap", "score",
+                 "score_lifecycle", "embodied", "band", "served_as"},
 }
 
 
@@ -82,8 +82,17 @@ def check_contract(data: dict) -> list[str]:
 def _grid_meta(grid_path: Path) -> dict:
     prov_path = grid_path.with_name(f"{grid_path.stem}.provenance.json")
     prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {}
-    return {"year": prov.get("year"), "mock": bool(prov.get("mock")) or ".MOCK" in grid_path.name,
-            "attribution": prov.get("attribution")}
+    mock = bool(prov.get("mock")) or ".MOCK" in grid_path.name
+    return {"year": prov.get("year"), "mock": mock, "attribution": prov.get("attribution"),
+            "name": _grid_name(prov, mock)}
+
+
+def _grid_name(prov: dict, mock: bool) -> str:
+    """The grid source's name for the score's estimate label ("EcoLogits × <name>")."""
+    if mock:
+        return "placeholder grid data"
+    source = prov.get("source") or ""
+    return "Electricity Maps" if source.startswith("Electricity Maps") else (source or "grid data")
 
 
 def _label(route: dict, record: dict) -> str:
@@ -122,7 +131,8 @@ def build_data(rel: dict, grid_path: Path) -> dict:
             "slug": name, "org": rec["org"], "model": rec["model"], "label": _label(r, rec),
             "default": bool(r.get("default")), "scored": rec["scored"], "level": rec["rating"]["level"],
             "letter": rec["rating"]["letter"], "gap": rec["rating"]["gap"],
-            "score": rec["score_direct_g_per_1k_tokens"], "embodied": rec["embodied_g_per_1k_tokens"],
+            "score": rec["score_direct_g_per_1k_tokens"],
+            "score_lifecycle": rec["score_lifecycle_g_per_1k_tokens"], "embodied": rec["embodied_g_per_1k_tokens"],
             "band": rec["band"], "served_as": rec.get("served_as"),
         })
     orgs = []

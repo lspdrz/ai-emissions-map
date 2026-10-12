@@ -4,7 +4,7 @@ import type { Route } from "@/lib/data/types";
 
 const route = (slug: string, score: [number, number] | null): Route => ({
   slug, org: "o", model: "m", label: slug, default: false, scored: !!score, level: "country", letter: "C",
-  gap: null, score: score && { low: score[0], high: score[1] }, embodied: { low: 0, high: 0 }, band: null, served_as: null,
+  gap: null, score: score && { low: score[0], high: score[1] }, score_lifecycle: null, embodied: { low: 0, high: 0 }, band: null, served_as: null,
 });
 
 describe("sortRoutes", () => {

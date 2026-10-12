@@ -6,7 +6,7 @@ export type Params = number | { min: number; max: number };
 
 export interface Route {
   slug: string; org: string; model: string; label: string; default: boolean; scored: boolean;
-  level: string; letter: string; gap: string | null; score: Range | null; embodied: Range;
+  level: string; letter: string; gap: string | null; score: Range | null; score_lifecycle: Range | null; embodied: Range;
   band: [number, number] | null; served_as: string | null;
 }
 export interface Evidence { url: string; quotes: string[]; accessed: string; routes: string[] }
@@ -22,7 +22,7 @@ export interface Model {
 }
 export interface Meta {
   release_date: string; methodology_version: string; ecologits_version: string; pue: [number, number];
-  band_upper: number[]; grid: { year: number | null; mock: boolean; attribution: string | null };
+  band_upper: number[]; grid: { year: number | null; mock: boolean; attribution: string | null; name: string };
   counts: { organizations: number; routes: number; models: number; zones: number; scored: number };
   intensity_spread: number | null; featured_model: string | null;
 }

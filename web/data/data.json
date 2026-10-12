@@ -18,6 +18,7 @@
     "grid": {
       "attribution": "MOCK — not real data (values derived from Ember, ember-energy.org, CC BY 4.0)",
       "mock": true,
+      "name": "placeholder grid data",
       "year": 2025
     },
     "intensity_spread": 20,
@@ -195,6 +196,10 @@
         "high": 10.542361,
         "low": 0.689466
       },
+      "score_lifecycle": {
+        "high": 12.281979,
+        "low": 0.744803
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex"
@@ -218,6 +223,10 @@
       "score": {
         "high": 8.48645,
         "low": 3.124307
+      },
+      "score_lifecycle": {
+        "high": 9.751626,
+        "low": 3.567005
       },
       "scored": true,
       "served_as": null,
@@ -243,6 +252,10 @@
         "high": 3.425744,
         "low": 1.353513
       },
+      "score_lifecycle": {
+        "high": 3.900185,
+        "low": 1.519525
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex-ca"
@@ -266,6 +279,10 @@
       "score": {
         "high": 5.639803,
         "low": 2.128235
+      },
+      "score_lifecycle": {
+        "high": 6.430538,
+        "low": 2.404922
       },
       "scored": true,
       "served_as": null,
@@ -291,6 +308,10 @@
         "high": 9.277185,
         "low": 0.689466
       },
+      "score_lifecycle": {
+        "high": 10.700508,
+        "low": 0.744803
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex-eu"
@@ -314,6 +335,10 @@
       "score": {
         "high": 4.058332,
         "low": 1.574862
+      },
+      "score_lifecycle": {
+        "high": 4.532774,
+        "low": 1.740874
       },
       "scored": true,
       "served_as": null,
@@ -339,6 +364,10 @@
         "high": 10.542361,
         "low": 3.843692
       },
+      "score_lifecycle": {
+        "high": 12.281979,
+        "low": 4.452402
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex-in"
@@ -362,6 +391,10 @@
       "score": {
         "high": 7.537567,
         "low": 2.792283
+      },
+      "score_lifecycle": {
+        "high": 8.644597,
+        "low": 3.179644
       },
       "scored": true,
       "served_as": null,
@@ -387,6 +420,10 @@
         "high": 7.695714,
         "low": 2.84762
       },
+      "score_lifecycle": {
+        "high": 8.960891,
+        "low": 3.290319
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex-sg"
@@ -411,6 +448,10 @@
         "high": 6.114244,
         "low": 2.294247
       },
+      "score_lifecycle": {
+        "high": 7.063126,
+        "low": 2.626271
+      },
       "scored": true,
       "served_as": null,
       "slug": "google-gemini-3-5-flash-vertex-us"
@@ -432,6 +473,10 @@
       "model": "apertus-v1-5-70b",
       "org": "infomaniak",
       "score": {
+        "high": 0.08417,
+        "low": 0.074679
+      },
+      "score_lifecycle": {
         "high": 0.08417,
         "low": 0.074679
       },

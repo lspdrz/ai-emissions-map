@@ -1,5 +1,6 @@
 import "server-only";
 import Link from "next/link";
+import { EstimateLabel } from "@/features/components/EstimateLabel";
 import { OrganizationCard } from "@/features/components/OrganizationCard";
 import { BAND_CHIP_CLASSES } from "@/features/constants/bands";
 import { LETTERS } from "@/features/constants/letters";
@@ -78,7 +79,10 @@ export function Overview() {
           </div>
           <p className="max-w-[820px] leading-relaxed text-body">{featured.model.display_name} on every route that serves
             it. The model is the same, so the differences come from where it runs.</p>
-          <FeaturedChart routes={featured.routes} upper={meta.band_upper} />
+          <div className="flex flex-col gap-2">
+            <EstimateLabel gridName={meta.grid.name} />
+            <FeaturedChart routes={featured.routes} upper={meta.band_upper} />
+          </div>
           <p className="text-sm leading-relaxed text-muted">Bars span the estimate&apos;s range on a logarithmic scale; the
             shading behind them marks bands 1 to 5.
             {featured.model.source === "ecologits" && featured.model.active_b !== null &&
