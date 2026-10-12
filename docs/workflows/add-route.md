@@ -53,9 +53,9 @@ You are recording where an organization serves a model. The organization must al
      `corroborating` evidence.
    - **Aggregator:** replace `location` with `upstreams` (routes serving the same model, each
      with a positive `weight`) and primary `upstream_evidence`.
-   - **A location the customer can choose** (a regional or jurisdictional endpoint): a separate
-     route `<org>-<model>-<qualifier>` with `pinned: true`. The route without a qualifier is the
-     default.
+   - **Locations the customer can choose** (regional or jurisdictional endpoints): one route per
+     choice, `<org>-<model>-<qualifier>`. Mark the one used unless the customer chooses otherwise
+     with `default: true`; usually it is the route without a qualifier.
 6. **Add the slug to the organization's `routes:` list.** Edit the text in place. Never load the
    YAML and dump it back, which would destroy comments and layout.
 
@@ -80,8 +80,8 @@ per route on the evidence that settled its confidence.
 - The cloud region is not in `sources/snapshots/cloud_regions.csv`: do not invent a zone; ask the
   maintainer to update the import.
 - The provider lets customers choose where requests run, but has no default you can identify:
-  ask the maintainer which option is the default route. Each other option is a pinned route
-  (`pinned: true`; see [`../reference/identity.md`](../reference/identity.md#routes)).
+  record every choice as a route and ask the maintainer which one, if any, to mark
+  `default: true` (see [`../reference/identity.md`](../reference/identity.md#routes)).
 
 ## Relevant reference material
 [`../reference/identity.md`](../reference/identity.md) ·
