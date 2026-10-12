@@ -33,6 +33,52 @@ class ExportError(Exception):
     pass
 
 
+# The contract: every field the data file may hold, and nothing else (ruling R-2026-10-12-b). The
+# export refuses to write anything outside it, and a repository test checks the committed file against
+# it, so no grid value can reach the repository or the website by accident.
+ALLOWED_KEYS = {
+    "": {"schema", "meta", "organizations", "models", "routes"},
+    "meta": {"release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "grid", "counts",
+             "intensity_spread", "featured_model"},
+    "meta.grid": {"year", "mock", "attribution"},
+    "meta.counts": {"organizations", "routes", "models", "zones", "scored"},
+    "organizations[]": {"slug", "display_name", "type", "country", "homepage", "description", "notified", "rating",
+                        "routes", "evidence"},
+    "organizations[].rating": {"letter", "mean", "spread", "summary"},
+    "organizations[].evidence[]": {"url", "quotes", "accessed", "routes"},
+    "models[]": {"slug", "display_name", "source", "architecture", "active_b", "total_b"},
+    "routes[]": {"slug", "org", "model", "label", "default", "scored", "level", "letter", "gap", "score", "embodied",
+                 "band", "served_as"},
+}
+
+
+def check_contract(data: dict) -> list[str]:
+    """Every field outside ALLOWED_KEYS, one message each; empty when the data keeps to the contract."""
+    problems: list[str] = []
+
+    def check(obj, where: str) -> None:
+        if not isinstance(obj, dict):
+            return
+        extra = sorted(set(obj) - ALLOWED_KEYS[where])
+        problems.extend(f"{where or 'top level'}: field {k!r} is not in the contract" for k in extra)
+
+    check(data, "")
+    meta = data.get("meta", {})
+    check(meta, "meta")
+    check(meta.get("grid"), "meta.grid")
+    check(meta.get("counts"), "meta.counts")
+    for org in data.get("organizations", []):
+        check(org, "organizations[]")
+        check(org.get("rating"), "organizations[].rating")
+        for e in org.get("evidence", []):
+            check(e, "organizations[].evidence[]")
+    for m in data.get("models", []):
+        check(m, "models[]")
+    for r in data.get("routes", []):
+        check(r, "routes[]")
+    return problems
+
+
 def _grid_meta(grid_path: Path) -> dict:
     prov_path = grid_path.with_name(f"{grid_path.stem}.provenance.json")
     prov = json.loads(prov_path.read_text(encoding="utf-8")) if prov_path.exists() else {}
@@ -143,6 +189,9 @@ def export(root: Path, release: date, out_dir: Path, energy_model: EnergyModel, 
     if errors:
         return errors
     map_data = build_data(rel, grid_path)
+    problems = check_contract(map_data)
+    if problems:
+        raise ExportError("the data file would leave its contract: " + "; ".join(problems))
     methodology = fill_methodology(methodology_path.read_text(encoding="utf-8"), _methodology_values(map_data))
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "data.json").write_text(json.dumps(map_data, indent=2, sort_keys=True, ensure_ascii=False) + "\n",

@@ -48,3 +48,13 @@ def test_web_ci_lints_tests_builds_and_checks():
 def test_vercel_skips_builds_outside_web():
     config = json.loads((REPO / "web" / "vercel.json").read_text(encoding="utf-8"))
     assert config["ignoreCommand"] == "sh scripts/ignore-build.sh"
+
+
+def test_the_committed_website_data_holds_only_what_it_displays():
+    # Ruling R-2026-10-12-b: the committed data file holds per-route results, never grid values.
+    from build.export import check_contract
+    path = REPO / "web" / "data" / "data.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert check_contract(data) == []
+    assert "g_per_kwh" not in path.read_text(encoding="utf-8")
+

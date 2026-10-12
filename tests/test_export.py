@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from build.energy import FixedEnergyModel
-from build.export import SCHEMA, ExportError, export, fill_methodology
+from build.export import SCHEMA, ExportError, check_contract, export, fill_methodology
 from build.ranges import Range
 
 REPO = Path(__file__).resolve().parents[1]
@@ -117,3 +117,27 @@ def test_validation_errors_stop_the_export(tmp_path, fixtures_dir):
     p.write_text(p.read_text().replace("type: inference_host", "type: bakery"))
     code, out = run(tmp_path, fixtures_dir, root=root)
     assert code > 0 and not (out / "data.json").exists()
+
+
+def test_the_contract_allows_only_what_the_website_displays(tmp_path, fixtures_dir):
+    _, out = run(tmp_path, fixtures_dir)
+    data = _data(out)
+    assert check_contract(data) == []
+    data["meta"]["zone_intensity"] = {"CH": 30}
+    data["organizations"][0]["intensity_note"] = "x"
+    data["routes"][0]["intensity_direct_g_per_kwh"] = {"low": 30, "high": 30}
+    problems = check_contract(data)
+    assert any("meta" in p and "zone_intensity" in p for p in problems)
+    assert any("intensity_note" in p for p in problems)
+    assert any("intensity_direct_g_per_kwh" in p for p in problems)
+
+
+def test_export_refuses_to_write_outside_the_contract(tmp_path, fixtures_dir, monkeypatch):
+    import build.export as export_module
+    real = export_module.build_data
+    monkeypatch.setattr(export_module, "build_data",
+                        lambda rel, grid: {**real(rel, grid), "zones": {"CH": 30}})
+    with pytest.raises(ExportError, match="zones"):
+        run(tmp_path, fixtures_dir)
+    assert not (tmp_path / "out" / "data.json").exists()
+
