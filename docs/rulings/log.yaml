@@ -177,10 +177,11 @@ rulings:
       history never hold it.
     reasoning: >-
       The project does not redistribute its grid data provider's data.
-    status: in-force
+    status: replaced
     executor: none
     lands_in: [sources/snapshots/grid/README.md, AGENTS.md]
     applied_in: []
+    replaced_by: R-2026-10-12-b
 
   - id: R-2026-10-11-c
     date: "2026-10-11"
@@ -259,5 +260,28 @@ rulings:
     status: in-force
     executor: none
     lands_in: [docs/reference/identity.md, docs/workflows/add-model.md, AGENTS.md, build/models.py]
+    applied_in: []
+
+  - id: R-2026-10-12-b
+    date: "2026-10-12"
+    by: lspdrz
+    venue: session
+    refs: []
+    question: >-
+      May the per-route results the site displays be committed to the repository, while raw grid
+      data stays local?
+    ruling: >-
+      Yes. Raw grid data (zone tables, downloads, API responses) stays local, real or mock. The
+      site's data file, holding only the per-route results the site displays, is committed. While
+      the grid data is a mock the file is flagged as such, and before it contains values derived
+      from Electricity Maps data, their written consent is required.
+    reasoning: >-
+      Whatever the site displays is published anyway, so keeping the same numbers out of the
+      repository protects nothing; and route values can be traced back to zone values, so the real
+      safeguard is publishing nothing beyond what the site needs, with the provider's consent.
+      Committing the file also lets the hosting service build the site from the repository.
+    status: in-force
+    executor: none
+    lands_in: [AGENTS.md, sources/snapshots/grid/README.md]
     applied_in: []
 

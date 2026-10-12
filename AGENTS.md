@@ -74,10 +74,14 @@ nothing is fetched over the network. Every model a route serves has a record in 
 
 ## Traps
 
-- **Grid data is never committed, real or mock.** `sources/snapshots/grid/` is gitignored except
-  its README. Each maintainer imports it locally. CI has none, so `build.validate` skips zone
-  checks there and real scores cannot be built in CI. `*.MOCK.csv` files are development
-  placeholders: never publish numbers built from them.
+- **Raw grid data is never committed, real or mock.** `sources/snapshots/grid/` is gitignored
+  except its README. Each maintainer imports it locally. CI has none, so `build.validate` skips
+  zone checks there and real scores cannot be built in CI. `*.MOCK.csv` files are development
+  placeholders.
+- **The site's data file is committed, and holds only what the site displays:** per-route results,
+  never the zone table. It carries `"mock": true` while the grid data is a mock, and it must not
+  contain values derived from Electricity Maps data before Electricity Maps has consented in
+  writing.
 - About the cloud-region data's license, committed files say only "see the source repository's
   License.md".
 - `build.fetch_source` leaves `shows` as a `TODO:` placeholder; validation fails until a person
