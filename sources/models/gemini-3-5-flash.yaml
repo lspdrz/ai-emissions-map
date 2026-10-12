@@ -1,0 +1,7 @@
+name: gemini-3-5-flash
+display_name: Gemini 3.5 Flash
+source: ecologits
+ecologits: { id: "gemini-3.5-flash", version: "0.11.2" }
+architecture: "moe"
+active_b: { min: 90, max: 240 }
+total_b: 900

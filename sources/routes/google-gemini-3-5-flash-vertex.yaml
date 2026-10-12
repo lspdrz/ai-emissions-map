@@ -1,0 +1,31 @@
+name: google-gemini-3-5-flash-vertex
+model: gemini-3-5-flash
+default: true
+location:
+  confidence: country_set
+  candidates: ["cloud:gcp:asia-northeast1", "cloud:gcp:asia-south1", "cloud:gcp:asia-southeast1", "cloud:gcp:australia-southeast1", "cloud:gcp:europe-central2", "cloud:gcp:europe-north1", "cloud:gcp:europe-southwest1", "cloud:gcp:europe-west1", "cloud:gcp:europe-west12", "cloud:gcp:europe-west2", "cloud:gcp:europe-west3", "cloud:gcp:europe-west4", "cloud:gcp:europe-west8", "cloud:gcp:europe-west9", "cloud:gcp:northamerica-northeast1", "cloud:gcp:us-central1", "cloud:gcp:us-east1", "cloud:gcp:us-east4", "cloud:gcp:us-east5", "cloud:gcp:us-south1", "cloud:gcp:us-west1", "cloud:gcp:us-west2", "cloud:gcp:us-west3", "cloud:gcp:us-west4"]
+  last_verified: "2026-10-12"
+  evidence:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/data-residency
+    shows: 'Data residency: "Requests submitted to a global endpoint may be processed in any Google Cloud location around the world"; the table row "Gemini 3.5 Flash ( gemini-3.5-flash )" is marked supported for the US and EU multi-regions and for Canada, Germany, the United Kingdom, Australia, India, Japan and Singapore'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 9066ccf05f795c6f150fcf5565318cacf64f1805ea32b866fc7ca38f018c7d36
+    kind: primary
+    capture: auto
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/locations
+    shows: 'Deployments and endpoints: "Don''t use the global endpoint if you have ML processing requirements, because you can''t control or know which region your ML processing requests are sent to"'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: ed7a8f7ba6629fb22b1a479955dbfe6aa6b1b4159d4f627011c0d20a7074a46b
+    kind: primary
+    capture: auto
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/sdks/overview
+    shows: 'Gen AI SDK setup for Vertex AI: "export GOOGLE_CLOUD_LOCATION = global"'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 6a11fd4ab9ead768984088b704a70d221c9b36770adb215613eec0666115afe7
+    kind: primary
+    capture: auto
+comments: >-
+  The global endpoint, which Google's SDK setup uses, is taken as the default. Candidates are every Google Cloud region where Vertex AI lists the model: the seven in-country regions, and every US and EU region for the two multi-regions, whose member regions Google does not name.
