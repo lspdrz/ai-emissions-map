@@ -1,0 +1,12 @@
+name: anthropic
+display_name: Anthropic
+description: >-
+  Lets API customers keep inference in the United States, but by default may route requests to select countries in the US, Europe, Asia and Australia without naming which.
+type: model_lab
+homepage: https://www.anthropic.com
+country: US
+ids: { ossd: null, hf_provider: null, openrouter: null }
+contact: { url: https://support.claude.com/en/, notified: null }
+routes:
+- anthropic-claude-opus-5-5
+- anthropic-claude-opus-5-5-us

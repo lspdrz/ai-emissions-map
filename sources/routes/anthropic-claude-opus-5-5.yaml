@@ -1,0 +1,25 @@
+name: anthropic-claude-opus-5-5
+model: claude-opus-5-5
+default: true
+location:
+  confidence: unknown
+  label: "Global (countries not named)"
+  candidates: []
+  last_verified: "2026-10-12"
+  evidence:
+  - url: https://platform.claude.com/docs/en/manage-claude/data-residency.md
+    shows: 'Data residency, inference_geo "global": "Default. Inference may run in any available geography for optimal performance and availability."'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 3fb1b9169f6b6d0fcf1e68884091ef40f61e62e44be0a67dd92ac906f503632c
+    kind: primary
+    capture: auto
+  - url: https://privacy.claude.com/en/articles/7996890-where-are-your-servers-located-do-you-host-your-models-on-eu-servers
+    shows: 'Privacy Center: "By default, we may route customer traffic to select countries in the US, Europe, Asia and Australia"; the countries are not named'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 95894f0e74223df4c107d9f157f4e1c79aa824cb5d64c807969d72bfe677e282
+    kind: primary
+    capture: auto
+comments: >-
+  The API's default (inference_geo "global"). Anthropic names continents, not countries, so there is nothing to resolve to grid zones: undisclosed and not scored (user ruling 2026-10-12).

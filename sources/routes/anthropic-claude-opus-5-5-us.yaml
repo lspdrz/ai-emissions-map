@@ -1,0 +1,17 @@
+name: anthropic-claude-opus-5-5-us
+model: claude-opus-5-5
+location:
+  confidence: country
+  label: "United States"
+  candidates: ["zone:US"]
+  last_verified: "2026-10-12"
+  evidence:
+  - url: https://platform.claude.com/docs/en/manage-claude/data-residency.md
+    shows: 'Data residency, inference_geo "us": "Inference runs only in US-based infrastructure."'
+    accessed: "2026-10-12"
+    http_status: 200
+    content_sha256: 3fb1b9169f6b6d0fcf1e68884091ef40f61e62e44be0a67dd92ac906f503632c
+    kind: primary
+    capture: auto
+comments: >-
+  Chosen per request or as a workspace default (inference_geo "us", priced at 1.1x). No region is named, so the candidate is the US-wide grid zone (the methodology's fallback to a country total).

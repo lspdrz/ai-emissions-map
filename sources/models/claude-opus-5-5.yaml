@@ -1,0 +1,7 @@
+name: claude-opus-5-5
+display_name: Claude Opus 5.5
+source: ecologits
+ecologits: { id: "claude-opus-5-5", version: "0.11.2" }
+architecture: "moe"
+active_b: { min: 70, max: 200 }
+total_b: 670
