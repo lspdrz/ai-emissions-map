@@ -31,7 +31,10 @@ for (const o of data.organizations) {
   for (const e of o.evidence) expect(p.includes(e.url), `${o.slug} page links ${e.url}`);
 }
 
-// Task 6 appends its checks here.
+// Methodology
+const method = page("methodology/index.html");
+expect(method.includes("The carbon score"), "methodology page renders the full methodology");
+expect(!/\{n_[a-z_]+\}/.test(method), "no unfilled placeholder on the methodology page");
 
 if (failures.length) {
   console.error(failures.map((f) => `FAIL ${f}`).join("\n"));
