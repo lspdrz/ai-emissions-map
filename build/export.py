@@ -1,6 +1,6 @@
-"""sources/ -> web/data/data.json and web/data/methodology.md: everything the site is built from.
+"""sources/ -> web/data/data.json and web/data/methodology.md: everything the website is built from.
 
-The data file holds only what the site displays (ruling R-2026-10-12-b): per-route results, ratings,
+The data file holds only what the website displays (ruling R-2026-10-12-b): per-route results, ratings,
 evidence quotes, model facts and release metadata. Never grid intensities or the zone table. It is
 committed, and flagged as a mock while the grid data is one.
 
@@ -23,7 +23,7 @@ from build.grid import latest_grid
 from build.serialize import _publish, compute_release, route_record
 from build.validate import ROOT
 
-SCHEMA = "aem-site/1"
+SCHEMA = "aem-data/1"
 _QUOTED = re.compile(r'"([^"]{8,})"')
 _PLACEHOLDER = re.compile(r"\{([a-z_]+)\}")
 _COMMENT = re.compile(r"\A\s*<!--.*?-->\s*", re.S)
@@ -66,7 +66,7 @@ def _evidence(data: dict, routes: list[str]) -> list[dict]:
     return [by_url[url] for url in sorted(by_url)]
 
 
-def site_data(rel: dict, grid_path: Path) -> dict:
+def build_data(rel: dict, grid_path: Path) -> dict:
     data, results, meta = rel["data"], rel["results"], rel["meta"]
     records = {name: route_record(results[name], rel["route_ratings"][name]) for name in sorted(results)}
     routes = []
@@ -124,28 +124,28 @@ def fill_methodology(text: str, values: dict) -> str:
     return _PLACEHOLDER.sub(lambda m: str(values[m.group(1)]), body)
 
 
-def _methodology_values(site: dict) -> dict:
-    meta, routes = site["meta"], site["routes"]
+def _methodology_values(map_data: dict) -> dict:
+    meta, routes = map_data["meta"], map_data["routes"]
     return {
         "release_date": meta["release_date"], "methodology_version": meta["methodology_version"],
         "ecologits_version": meta["ecologits_version"], "grid_year": meta["grid"]["year"] or "the latest year",
         "n_orgs": meta["counts"]["organizations"], "n_routes": meta["counts"]["routes"],
         "n_models": meta["counts"]["models"], "n_scored": meta["counts"]["scored"],
         "n_unscored": meta["counts"]["routes"] - meta["counts"]["scored"],
-        "n_rated_a_or_b": sum(1 for o in site["organizations"] if o["rating"]["letter"] in ("A", "B")),
+        "n_rated_a_or_b": sum(1 for o in map_data["organizations"] if o["rating"]["letter"] in ("A", "B")),
     }
 
 
 def export(root: Path, release: date, out_dir: Path, energy_model: EnergyModel, grid_path: Path,
                 cloud_path: Path, methodology_path: Path, ecologits_models: list[dict] | None = None) -> int:
-    """Validate, compute and write the site's data. Returns the number of validation errors; 0 means written."""
+    """Validate, compute and write the website's data. Returns the number of validation errors; 0 means written."""
     errors, rel = compute_release(root, release, energy_model, grid_path, cloud_path, ecologits_models)
     if errors:
         return errors
-    site = site_data(rel, grid_path)
-    methodology = fill_methodology(methodology_path.read_text(encoding="utf-8"), _methodology_values(site))
+    map_data = build_data(rel, grid_path)
+    methodology = fill_methodology(methodology_path.read_text(encoding="utf-8"), _methodology_values(map_data))
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "data.json").write_text(json.dumps(site, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    (out_dir / "data.json").write_text(json.dumps(map_data, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
                                        encoding="utf-8")
     (out_dir / "methodology.md").write_text(methodology, encoding="utf-8")
     return 0
@@ -171,7 +171,7 @@ def main(argv: list[str] | None = None) -> int:
     if errors:
         print(f"stopped: {errors} validation error(s)")
         return 1
-    note = " (MOCK grid data: the site will show its draft bar)" if _grid_meta(grid)["mock"] else ""
+    note = " (MOCK grid data: the website will show its draft bar)" if _grid_meta(grid)["mock"] else ""
     print(f"wrote web/data/data.json and web/data/methodology.md{note}")
     return 0
 

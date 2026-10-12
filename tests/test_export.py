@@ -27,25 +27,25 @@ def run(tmp_path, fixtures_dir, grid=None, root=None):
     return code, out
 
 
-def _site(out):
+def _data(out):
     return json.loads((out / "data.json").read_text())
 
 
 def test_writes_the_contract(tmp_path, fixtures_dir):
     code, out = run(tmp_path, fixtures_dir)
     assert code == 0
-    site = _site(out)
-    assert site["schema"] == SCHEMA
-    assert site["meta"]["band_upper"] == [0.03, 0.1, 0.3, 1.0]
-    assert site["meta"]["counts"]["organizations"] == 4
-    assert {o["slug"] for o in site["organizations"]} == {"aggregator", "alpinehost", "multihost", "vaguehost"}
+    map_data = _data(out)
+    assert map_data["schema"] == SCHEMA
+    assert map_data["meta"]["band_upper"] == [0.03, 0.1, 0.3, 1.0]
+    assert map_data["meta"]["counts"]["organizations"] == 4
+    assert {o["slug"] for o in map_data["organizations"]} == {"aggregator", "alpinehost", "multihost", "vaguehost"}
 
 
-def test_site_data_holds_only_what_the_site_displays(tmp_path, fixtures_dir):
+def test_data_holds_only_what_the_website_displays(tmp_path, fixtures_dir):
     _, out = run(tmp_path, fixtures_dir)
     text = (out / "data.json").read_text()
     assert "g_per_kwh" not in text      # no grid values, per ruling R-2026-10-12-b
-    for route in _site(out)["routes"]:
+    for route in _data(out)["routes"]:
         assert set(route) == ROUTE_KEYS
 
 
@@ -54,19 +54,19 @@ def test_meta_flags_a_mock_grid_from_its_provenance(tmp_path, fixtures_dir):
     shutil.copy(fixtures_dir / "grid.csv", grid)
     grid.with_name("2025.provenance.json").write_text(json.dumps({"mock": True, "year": 2025, "attribution": "x"}))
     _, out = run(tmp_path, fixtures_dir, grid=grid)
-    assert _site(out)["meta"]["grid"] == {"year": 2025, "mock": True, "attribution": "x"}
+    assert _data(out)["meta"]["grid"] == {"year": 2025, "mock": True, "attribution": "x"}
 
 
 def test_a_mock_file_name_alone_flags_the_mock(tmp_path, fixtures_dir):
     grid = tmp_path / "2025.MOCK.csv"
     shutil.copy(fixtures_dir / "grid.csv", grid)
     _, out = run(tmp_path, fixtures_dir, grid=grid)
-    assert _site(out)["meta"]["grid"]["mock"] is True
+    assert _data(out)["meta"]["grid"]["mock"] is True
 
 
 def test_a_real_grid_is_not_flagged(tmp_path, fixtures_dir):
     _, out = run(tmp_path, fixtures_dir)
-    assert _site(out)["meta"]["grid"]["mock"] is False
+    assert _data(out)["meta"]["grid"]["mock"] is False
 
 
 def test_labels_fall_back_to_a_zone_count_and_default_is_carried(tmp_path, fixtures_dir):
@@ -76,7 +76,7 @@ def test_labels_fall_back_to_a_zone_count_and_default_is_carried(tmp_path, fixtu
     p.write_text(p.read_text().replace("  confidence: country\n", '  confidence: country\n  label: "Switzerland"\n')
                  .replace("model: test-8b\n", "model: test-8b\ndefault: true\n"))
     _, out = run(tmp_path, fixtures_dir, root=root)
-    routes = {r["slug"]: r for r in _site(out)["routes"]}
+    routes = {r["slug"]: r for r in _data(out)["routes"]}
     assert (routes["alpinehost-test-8b"]["label"], routes["alpinehost-test-8b"]["default"]) == ("Switzerland", True)
     assert routes["multihost-test-70b"]["label"] == "2 grid zones"
     assert routes["vaguehost-test-70b"]["label"] == "Not disclosed"
@@ -86,7 +86,7 @@ def test_labels_fall_back_to_a_zone_count_and_default_is_carried(tmp_path, fixtu
 
 def test_organization_evidence_keeps_the_quoted_passages(tmp_path, fixtures_dir):
     _, out = run(tmp_path, fixtures_dir)
-    alpine = next(o for o in _site(out)["organizations"] if o["slug"] == "alpinehost")
+    alpine = next(o for o in _data(out)["organizations"] if o["slug"] == "alpinehost")
     by_url = {e["url"]: e for e in alpine["evidence"]}
     assert by_url["https://alpinehost.example/docs/regions"]["quotes"] == ["test-70b is served exclusively from ALP-1"]
     assert by_url["https://alpinehost.example/docs/regions"]["routes"] == ["alpinehost-test-70b"]
@@ -94,7 +94,7 @@ def test_organization_evidence_keeps_the_quoted_passages(tmp_path, fixtures_dir)
 
 def test_featured_model_is_the_one_with_the_most_routes(tmp_path, fixtures_dir):
     _, out = run(tmp_path, fixtures_dir)
-    assert _site(out)["meta"]["featured_model"] == "test-70b"
+    assert _data(out)["meta"]["featured_model"] == "test-70b"
 
 
 def test_methodology_is_written_with_its_placeholders_filled(tmp_path, fixtures_dir):
