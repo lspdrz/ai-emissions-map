@@ -310,17 +310,18 @@ def test_org_without_routes_is_a_warning():
 
 
 
-def test_pinned_must_be_a_boolean():
+def test_default_must_be_a_boolean():
     d = _fixture()
-    d["routes"]["acme-m-70b"]["pinned"] = "yes"
-    assert any(e.startswith("routes/acme-m-70b.yaml: pinned:") for e in validate_sources(d))
+    d["routes"]["acme-m-70b"]["default"] = "yes"
+    assert any(e.startswith("routes/acme-m-70b.yaml: default:") for e in validate_sources(d))
 
 
-def test_org_with_only_pinned_routes_is_a_warning():
-    d = _fixture()
-    d["routes"]["acme-m-70b"]["pinned"] = True
-    assert validate_sources(d) == []
-    assert validation_warnings(d) == ["organizations/acme.yaml: has no default routes and will not be rated"]
+def test_one_default_route_per_model():
+    d = _with_route(_fixture(), "acme-m-70b-eu")
+    d["routes"]["acme-m-70b"]["default"] = True
+    d["routes"]["acme-m-70b-eu"]["default"] = True
+    assert "organizations/acme.yaml: routes acme-m-70b and acme-m-70b-eu are both marked default for model 'm-70b'" \
+        in validate_sources(d)
 
 
 # Fixes from the final review.

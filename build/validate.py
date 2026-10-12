@@ -241,6 +241,23 @@ def _check_models(routes: dict, model_ids: set[str] | None) -> list[str]:
     return errors
 
 
+def _check_defaults(orgs: dict, routes: dict) -> list[str]:
+    """At most one route per organization and model is marked default."""
+    errors = []
+    for org, o in sorted(orgs.items()):
+        seen: dict[str, str] = {}
+        for name in o.get("routes") or []:
+            r = routes.get(name)
+            if not r or not r.get("default"):
+                continue
+            if r["model"] in seen:
+                errors.append(f"organizations/{org}.yaml: routes {seen[r['model']]} and {name} are both marked "
+                              f"default for model {r['model']!r}")
+            else:
+                seen[r["model"]] = name
+    return errors
+
+
 def _check_upstream_cycles(routes: dict) -> list[str]:
     errors: list[str] = []
     state: dict[str, str] = {}
@@ -288,6 +305,7 @@ def validate_sources(data: dict, *, model_ids: set[str] | None = None, grid_zone
     errors += _check_evidence(facilities, routes)
     errors += _check_models(routes, model_ids)
     errors += _check_upstream_cycles(routes)
+    errors += _check_defaults(valid["organizations"], routes)
     return errors
 
 
@@ -295,9 +313,6 @@ def validation_warnings(data: dict, release_date: date | None = None) -> list[st
     """Problems that do not stop a release. Call on data that validate_sources passed."""
     warnings = [f"organizations/{name}.yaml: has no routes and will not be rated"
                 for name, o in sorted(data["organizations"].items()) if not o["routes"]]
-    warnings += [f"organizations/{name}.yaml: has no default routes and will not be rated"
-                 for name, o in sorted(data["organizations"].items())
-                 if o["routes"] and all(data["routes"].get(r, {}).get("pinned") for r in o["routes"])]
     if release_date is not None:
         warnings += [f"routes/{name}.yaml: no primary location evidence verified within the window for "
                      f"{release_date.isoformat()}; the route will be treated as unknown"

@@ -54,15 +54,15 @@ measured traffic.
 
 ## Organization rating
 
-An organization's rating is the mean value of its **default** routes (those without
-`pinned: true`), each counting equally, rounded to the nearest letter with ties rounding down
-(2.5 → C). It is always shown with the spread, for example "C (2 routes at B, 1 at E)".
+An organization's rating is the mean value of all its routes, each counting equally, rounded to
+the nearest letter with ties rounding down (2.5 → C). It is always shown with the spread, for
+example "C (2 routes at B, 1 at E)". An organization with no routes is not rated.
 
-Pinned routes, locations a customer must choose such as a pinnable region or a jurisdictional
-endpoint, are rated and shown individually but left out of the average, so that a provider with
-many pinnable regions is rated on where its service runs by default:
-"D (1 route at D; 9 pinned routes not counted)". An organization with no routes, or only pinned
-routes, is not rated.
+A route's level and an organization's rating answer different questions. Each route is rated on
+how precisely its own location is disclosed. The organization is rated on all the ways it lets
+customers use its models, so where a customer can choose among regions or jurisdictions, every
+choice is a route and counts. The route marked `default: true` is the one used unless the
+customer chooses; it is shown as such, and counts like any other.
 
 ## Gaps
 

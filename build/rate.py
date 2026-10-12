@@ -37,30 +37,22 @@ def rate_routes(data: dict, results: dict[str, dict]) -> dict[str, dict]:
     return ratings
 
 
-def _summary(letter: str | None, spread: dict[str, int], pinned: int) -> str:
+def _summary(letter: str | None, spread: dict[str, int]) -> str:
     if letter is None:
-        return "Not rated (no default routes)" if pinned else "Not rated (no routes)"
+        return "Not rated (no routes)"
     parts = [f"{n} route{'s' if n != 1 else ''} at {grade}" for grade, n in sorted(spread.items())]
-    if pinned:
-        parts = [", ".join(parts) + f"; {pinned} pinned route{'s' if pinned != 1 else ''} not counted"]
     return f"{letter} ({', '.join(parts)})"
 
 
 def rate_orgs(data: dict, route_ratings: dict[str, dict]) -> dict[str, dict]:
-    """Org slug -> {"letter", "mean", "spread": {letter: count}, "routes", "pinned_routes", "summary"}.
-
-    The rating averages the routes the organization serves by default. Pinned routes (locations a customer must
-    choose) are rated individually and listed, but not averaged, so many pinnable regions cannot outweigh the default.
-    """
+    """Org slug -> {"letter", "mean", "spread": {letter: count}, "routes", "summary"}, from the org's roster."""
     orgs: dict[str, dict] = {}
     for name in sorted(data["organizations"]):
-        roster = sorted(r for r in data["organizations"][name]["routes"] if r in route_ratings)
-        pinned = [r for r in roster if data["routes"][r].get("pinned")]
-        routes = [r for r in roster if r not in pinned]
+        routes = sorted(r for r in data["organizations"][name]["routes"] if r in route_ratings)
         scores = [route_ratings[r]["score"] for r in routes]
         rounded = average_level_score(scores)
         letter = score_to_letter(rounded) if rounded is not None else None
         spread = dict(Counter(route_ratings[r]["letter"] for r in routes))
         orgs[name] = {"letter": letter, "mean": sum(scores) / len(scores) if scores else None, "spread": spread,
-                      "routes": routes, "pinned_routes": pinned, "summary": _summary(letter, spread, len(pinned))}
+                      "routes": routes, "summary": _summary(letter, spread)}
     return orgs

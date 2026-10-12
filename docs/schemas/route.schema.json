@@ -28,9 +28,9 @@
         "$ref": "#/$defs/evidence"
       }
     },
-    "pinned": {
+    "default": {
       "type": "boolean",
-      "description": "A location the customer must choose (a pinnable region or jurisdiction), not where the service runs by default. Rated and shown, but left out of the organization's average."
+      "description": "Where the service runs unless the customer chooses otherwise. Marks one route per organization and model when the customer can choose among several locations; a label only, every route counts in the organization's rating."
     },
     "location": {
       "type": "object",
