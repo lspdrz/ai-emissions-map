@@ -1,0 +1,99 @@
+{
+  "schema": "aem-data/1",
+  "meta": {
+    "release_date": "2026-10-08",
+    "inputs_sha": "0000000000000000000000000000000000000000000000000000000000000000",
+    "methodology_version": "0.1.0",
+    "ecologits_version": "0.11.2",
+    "pue": [
+      1.1,
+      1.6
+    ],
+    "band_upper": [
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "draft": true,
+    "grid": {
+      "year": 2025
+    },
+    "counts": {
+      "organizations": 1,
+      "routes": 1,
+      "models": 1,
+      "grids": 1
+    },
+    "intensity_spread": null,
+    "featured_model": "m"
+  },
+  "organizations": [
+    {
+      "slug": "acme",
+      "display_name": "Acme",
+      "type": "inference_host",
+      "country": "CH",
+      "homepage": "https://acme.example",
+      "description": null,
+      "rating": {
+        "letter": "C",
+        "mean": 2.0,
+        "spread": {
+          "C": 1
+        },
+        "summary": "C (1 route at C)"
+      },
+      "routes": [
+        "acme-m"
+      ],
+      "evidence": []
+    }
+  ],
+  "models": [
+    {
+      "slug": "m",
+      "display_name": "M",
+      "architecture": "dense",
+      "active_b": 70,
+      "total_b": 70
+    }
+  ],
+  "routes": [
+    {
+      "slug": "acme-m",
+      "org": "acme",
+      "model": "m",
+      "label": "Switzerland",
+      "default": false,
+      "letter": "B",
+      "gap": "The grid is disclosed, not the facility.",
+      "score": {
+        "low": 0.075,
+        "high": 0.084
+      },
+      "embodied": {
+        "low": 0.057,
+        "high": 0.057
+      },
+      "band": [
+        2,
+        2
+      ],
+      "served_as": null,
+      "score_lifecycle": {
+        "low": 0.08,
+        "high": 0.09
+      },
+      "energy": {
+        "low": 0.5,
+        "high": 0.6
+      },
+      "intensity": {
+        "low": 30.0,
+        "high": 30.0
+      },
+      "flags": {}
+    }
+  ]
+}

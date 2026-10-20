@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "band_upper": [
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "counts": {
+      "grids": 0,
+      "models": 0,
+      "organizations": 0,
+      "routes": 0
+    },
+    "draft": true,
+    "ecologits_version": "0.11.2",
+    "featured_model": null,
+    "grid": {
+      "year": 2025
+    },
+    "inputs_sha": "dafc695fc6799b7508b07b0a4415658b954b42a53b1b5f059ceebed779f19fc0",
+    "intensity_spread": null,
+    "methodology_version": "0.1.0",
+    "pue": [
+      1.1,
+      1.6
+    ],
+    "release_date": "2026-10-20"
+  },
+  "models": [],
+  "organizations": [],
+  "routes": [],
+  "schema": "aem-data/1"
+}

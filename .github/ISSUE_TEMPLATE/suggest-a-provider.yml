@@ -1,0 +1,22 @@
+name: Suggest a provider or route
+description: An organization that serves AI models, or a model it serves, that the map should cover
+title: "[suggestion] <organization>"
+labels: ["suggestion"]
+body:
+  - type: input
+    id: organization
+    attributes:
+      label: Organization
+      placeholder: e.g. Example AI
+    validations:
+      required: true
+  - type: textarea
+    id: models
+    attributes:
+      label: Models it serves
+      description: The models you would like covered, as the organization names them.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Where it says where it serves them
+      description: The organization's own pages, if you know them (documentation, region lists, trust center).

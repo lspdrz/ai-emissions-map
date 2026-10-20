@@ -1,0 +1,75 @@
+[project]
+name = "ai-emissions-map"
+version = "0.1.0"
+description = "Carbon scores for AI serving routes and location-disclosure ratings for providers"
+requires-python = ">=3.12"
+dependencies = [
+    "pyyaml>=6.0",
+    "pydantic>=2.10",
+    "ecologits==0.11.2",
+]
+
+[dependency-groups]
+dev = [
+    "import-linter>=2.15",
+    "pyright>=1.1.414",
+    "pytest>=8",
+    "ruff>=0.17.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+# Imports in build/ (checked in CI):
+#   constants/   imports nothing from build/
+#   schemas/     imports nothing from build/ but other schemas/
+#   utils/       imports only other utils/
+#   everything else may import both, never the other way round.
+# `uv run lint-imports` checks the two contracts below; `uv run ruff check` bans relative imports and
+# imports inside functions (which hide cycles), with no exceptions.
+[tool.importlinter]
+root_package = "build"
+
+[[tool.importlinter.contracts]]
+name = "constants/ imports nothing from build/"
+type = "forbidden"
+source_modules = ["build.constants"]
+forbidden_modules = ["build.*"]
+
+[[tool.importlinter.contracts]]
+name = "schemas/ imports nothing from build/ but other schemas/"
+type = "forbidden"
+source_modules = ["build.schemas"]
+forbidden_modules = ["build.*"]
+
+[[tool.importlinter.contracts]]
+name = "utils/ imports only other utils/"
+type = "forbidden"
+source_modules = ["build.utils"]
+forbidden_modules = ["build.*"]
+
+[[tool.importlinter.contracts]]
+name = "the scoring modules never import the commands"
+type = "forbidden"
+source_modules = ["build.carbon_score", "build.disclosure_rating"]
+forbidden_modules = ["build.load_sources", "build.validate", "build.score", "build.generate_site_data",
+                     "build.release", "build.check_carbon_scores",
+                     "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
+
+[tool.pyright]
+include = ["build", "tests"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.ruff]
+# The width ruff format (and the VS Code Ruff extension on save) wraps to.
+line-length = 120
+
+[tool.ruff.lint]
+select = ["TID252", "PLC0415"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"

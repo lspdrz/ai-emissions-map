@@ -1,0 +1,16 @@
+# Which skill is the front door for which workflow. tests/test_docs.py checks this against skills/
+# and docs/workflows/: every skill directory appears here once, and every workflow has exactly one
+# primary skill.
+primary:
+  - skill: add-organization
+    workflow: docs/workflows/add-organization.md
+  - skill: add-grid
+    workflow: docs/workflows/add-grid.md
+  - skill: add-model
+    workflow: docs/workflows/add-model.md
+  - skill: add-route
+    workflow: docs/workflows/add-route.md
+  - skill: refresh-organization
+    workflow: docs/workflows/refresh-organization.md
+  - skill: refresh-grids
+    workflow: docs/workflows/refresh-grids.md

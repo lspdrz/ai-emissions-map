@@ -1,0 +1,38 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      # Import rules for build/ (pyproject.toml): no relative or in-function imports, and the
+      # constants/ and utils/ contracts.
+      - name: Check imports
+        run: |
+          uv run ruff check
+          uv run lint-imports
+      # One formatting for build/ and tests/ (ruff format, 120 columns: pyproject.toml).
+      - name: Check formatting
+        run: uv run ruff format --check
+      - name: Check types
+        run: uv run pyright
+      # Every stored score and rating is what `python -m build score` computes now.
+      - name: Check carbon scores
+        run: uv run python -m build check-carbon-scores
+      - name: Check disclosure ratings
+        run: uv run python -m build check-disclosure-ratings
+      # web/data/data.json is current with sources/ and build/, and keeps to its contract.
+      - name: Check the site data
+        run: uv run python -m build check-site-data
+      - name: Run tests
+        run: uv run pytest -q

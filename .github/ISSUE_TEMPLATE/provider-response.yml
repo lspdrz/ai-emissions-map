@@ -1,0 +1,38 @@
+name: Respond as a provider
+description: Corrections or new location disclosures from an organization on the map
+title: "[provider response] <organization>"
+labels: ["provider-response"]
+body:
+  - type: input
+    id: organization
+    attributes:
+      label: Organization
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Your role and how to reach you
+      description: We confirm responses with the organization before acting on them.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of response
+      options:
+        - Correction, with evidence
+        - New location disclosure
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links to the organization's own publications, or a serving-locations file.

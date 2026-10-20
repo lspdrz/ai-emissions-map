@@ -1,0 +1,26 @@
+name: Report an error
+description: A wrong location, score or rating, or a source link that no longer works
+title: "[error] <organization or route>"
+labels: ["data-error"]
+body:
+  - type: input
+    id: record
+    attributes:
+      label: Which record?
+      description: Organization, route or grid, or the sources/ file path.
+      placeholder: e.g. sources/routes/example-ai-example-70b.yaml
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links that show the correct information.
+    validations:
+      required: true
