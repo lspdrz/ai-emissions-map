@@ -1,0 +1,25 @@
+name: ch
+display_name: Switzerland
+zone: CH
+country: CH
+values:
+  "2025":
+    consumption:
+      direct: 49.0
+      lifecycle: 90.0
+      gas: co2e
+      source: VSE (Verband Schweizerischer Elektrizitätsunternehmen)
+      evidence:
+      - url: https://www.strom.ch/system/files/media/documents/20260115-fd-co2-gehalt-des-strommix-schweiz.pdf
+        shows: 'CO2-Gehalt des Strommix Schweiz bis 2050, slide 2: "Im Jahr 2025 stieg der THG-EF auf 90 gCO2,eq/kWh."; its chart "Treibhausgas-Emissionsfaktoren (EGF) (Verbrauchsstrom-Mix CH, inkl. Stromverteilung)" labels the 2025* bar "48" (EU, Scope 1 + 2), "30" (EU, Scope 3), "11" (CH, Scope 3) and "1" (CH, Scope 1 + 2)'
+        accessed: "2026-10-20"
+        kind: primary
+      - url: https://www.swissgrid.ch/dam/jcr%3A96d467f1-2dc9-4977-bf99-9dc8722c6149/swissgrid-annual-report-2025-en.pdf
+        shows: 'Sustainability Report 2025, p. 118: "According to the Association of Swiss Electricity Companies (VSE), the emission factor (Scope 2 and Scope 3) of the consumer electricity mix in Switzerland rose to 90 tCO2e/GWh in the 2025 financial year"'
+        accessed: "2026-10-20"
+        kind: corroborating
+comments: >-
+  VSE's factor is location-based for the Swiss consumer mix, tracing hourly imports from the neighboring countries. The
+  direct value is the sum of the Scope 1 + 2 parts its chart labels for 2025: 48 from imports and 1 from Swiss
+  generation. The total, 90, adds Scope 3 and is the life-cycle figure. VSE marks 2025 as partly provisional.
+  Swissgrid's location-based Scope 2 for its 2025 transmission losses (42,362 tCO2e for 865 GWh) implies the same 49.

@@ -7,19 +7,19 @@
       1.0
     ],
     "counts": {
-      "grids": 0,
-      "models": 0,
-      "organizations": 0,
-      "routes": 0
+      "grids": 1,
+      "models": 1,
+      "organizations": 1,
+      "routes": 1
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": null,
+    "featured_model": "apertus-v1-5-70b",
     "grid": {
       "year": 2025
     },
-    "inputs_sha": "03203fc8b02291708e268dcb6579e65972961fc08ba2a8aad07d121a20f3adcd",
-    "intensity_spread": null,
+    "inputs_sha": "9e5787a214e4e6a7fd29de34c2db0659d5f5b3496dff507a44f504633e6ff765",
+    "intensity_spread": 1,
     "methodology_version": "0.1.0",
     "pue": [
       1.1,
@@ -27,8 +27,84 @@
     ],
     "release_date": "2026-10-20"
   },
-  "models": [],
-  "organizations": [],
-  "routes": [],
+  "models": [
+    {
+      "active_b": 70,
+      "architecture": "dense",
+      "display_name": "Apertus 1.5 70B",
+      "slug": "apertus-v1-5-70b",
+      "total_b": 70
+    }
+  ],
+  "organizations": [
+    {
+      "country": "CH",
+      "description": "Infomaniak states that its AI services run in its own data centers in Switzerland. Its AI Services pages do not say which facility serves which model.",
+      "display_name": "Infomaniak",
+      "evidence": [
+        {
+          "accessed": "2026-10-20",
+          "quotes": [
+            "Our AI and GPU services are powered from the heart of Europe in our data centers located in Switzerland, with no dependence on foreign players."
+          ],
+          "routes": [
+            "infomaniak-apertus-v1-5-70b"
+          ],
+          "url": "https://www.infomaniak.com/en/hosting/ai-services"
+        }
+      ],
+      "homepage": "https://www.infomaniak.com",
+      "rating": {
+        "letter": "B",
+        "mean": 2.0,
+        "spread": {
+          "B": 1
+        },
+        "summary": "B (1 route at B)"
+      },
+      "routes": [
+        "infomaniak-apertus-v1-5-70b"
+      ],
+      "slug": "infomaniak",
+      "type": "inference_host"
+    }
+  ],
+  "routes": [
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.056597,
+        "low": 0.056597
+      },
+      "energy": {
+        "high": 0.876705,
+        "low": 0.602735
+      },
+      "flags": {},
+      "gap": "The grid is disclosed, not the facility.",
+      "intensity": {
+        "high": 49.0,
+        "low": 49.0
+      },
+      "label": "Switzerland",
+      "letter": "B",
+      "model": "apertus-v1-5-70b",
+      "org": "infomaniak",
+      "score": {
+        "high": 0.099556,
+        "low": 0.086131
+      },
+      "score_lifecycle": {
+        "high": 0.1355,
+        "low": 0.110843
+      },
+      "served_as": "swiss-ai/Apertus-v1.5-70B",
+      "slug": "infomaniak-apertus-v1-5-70b"
+    }
+  ],
   "schema": "aem-data/1"
 }
