@@ -1,38 +1,64 @@
 # AI Emissions Map
 
-Carbon scores for AI serving routes (EcoLogits energy × grid carbon intensity read from published sources, plus
-EcoLogits embodied emissions) and location-disclosure ratings for the organizations that run them.
-The layout follows [os-ai-map](https://github.com/currentai-org/os-ai-map): curated YAML in `sources/`,
-imported data in `sources/snapshots/`, record types in `build/schemas/`, code in `build/`.
+The AI Emissions Map estimates the emissions of AI **serving routes** (an organization serving a model) and rates how precisely each organization discloses where its routes run.
+
+- **Carbon score**: the Software Carbon Intensity (SCI, ISO/IEC 21031) of generating 1,000 output tokens,
+  `(E × I) + M`. Energy (E) and embodied hardware emissions (M) are estimated with EcoLogits from the model's
+  parameter counts; grid intensity (I) is the annual consumption-based carbon intensity, with direct emission
+  factors, of each grid the route may draw from.
+- **Location disclosure rating**: A to D per route, generated from its cited location (A names the facility, B one
+  grid, C several possible grids, D undisclosed). An organization's rating is the mean of its routes'.
+
+Every input is curated as YAML in `sources/`, each claim with its evidence; the Python pipeline in `build/` computes
+the scores and ratings and writes `web/data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.
 
 ## Documentation
 
 Start at [`docs/README.md`](docs/README.md), which routes each task to its workflow. The method is
 in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md). Agents start at [`CLAUDE.md`](CLAUDE.md).
 
-## Commands
+## Local development
 
-    uv sync
-    uv run pytest                          # all tests
-    uv run ruff check && uv run lint-imports   # import rules for build/ (see pyproject.toml)
-    uv run ruff format                         # one formatting, 120 columns (checked in CI)
-    uv run pyright                             # type checks for build/ and tests/
-    uv run python -m build score             # check sources/, write the disclosure_rating: and carbon_score: fields
-    uv run python -m build release           # validate and write web/data/data.json; commit both commands' output
+### Requirements
 
-## Imported data (`sources/snapshots/`)
+- [uv](https://docs.astral.sh/uv/)
+- [Node.js](https://nodejs.org/) 24
 
-Each snapshot has a `.provenance.json` beside it: where it came from, when, and under what licence.
+### Setup
 
-- `cloud_regions.csv` (committed): cloud region -> grid zone, a pinned copy of the Green Software
-  Foundation's real-time-cloud table, refreshed by hand as `sources/snapshots/README.md` describes.
+```bash
+git clone https://github.com/lspdrz/ai-emissions-map.git
+cd ai-emissions-map
 
-Grid intensities are not imported: each grid a route uses has a curated file in `sources/grids/`, its values
-read from published pages with evidence; see `docs/workflows/add-grid.md`.
+# The data pipeline
+uv sync                              # install the Python dependencies
+uv run python -m build score         # check sources/, write each route's and organization's scores and ratings
+uv run python -m build release       # validate and write web/data/data.json
+uv run pytest                        # run the tests
 
-## Evidence
+# The website
+cd web
+npm install
+npm run dev                          # http://localhost:3000
+```
 
-Each evidence entry is the page's `url`, the passage it shows quoted in `shows` (in double quotes), the date it
-was read (`accessed`) and its `kind`; see `docs/reference/evidence-and-freshness.md`.
-Organizations can publish where they serve each model as a serving-locations file
-(`docs/serving-locations/`, suggested at `/.well-known/ai-serving-locations.json`).
+## Adding sources
+
+New organizations, routes, grids and models are added by pull request.
+
+1. **Fork the repository** and set it up as above.
+2. **Follow the workflow for your change.** [`docs/README.md`](docs/README.md) lists one per task: adding an
+   organization, a route, a grid or a model. Each says which files to write and which sources count.
+3. **Cite every claim.** Read each page yourself and quote the passage that supports the claim in `shows`, with
+   the date you read it ([`docs/reference/evidence-and-freshness.md`](docs/reference/evidence-and-freshness.md)).
+4. **Regenerate the results:** run `uv run python -m build score`, then `uv run python -m build release`. Never
+   edit the generated `disclosure_rating` and `carbon_score` fields or `web/data/data.json` by hand.
+5. **Check:** `uv run pytest` passes.
+6. **Commit everything**: your files, the fields that the `score` command wrote and `web/data/data.json`.
+7. **Open a pull request against `main`.** Describe what you added and the evidence for each source.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).
+
+[^layout]: This project, especially the data-sourcing and format, was inspired by Current AI's [os-ai-map](https://github.com/currentai-org/os-ai-map).
