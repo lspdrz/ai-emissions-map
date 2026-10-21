@@ -1,5 +1,5 @@
 {
-  "schema": "aem-data/2",
+  "schema": "aem-data/3",
   "meta": {
     "release_date": "2026-10-08",
     "inputs_sha": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -16,14 +16,18 @@
       1.0
     ],
     "draft": true,
+    "intensity_spread": null,
+    "featured_model": "m",
+    "grid": {
+      "source": "Ember",
+      "year": 2025
+    },
     "counts": {
       "organizations": 1,
       "routes": 1,
       "models": 1,
       "grids": 1
-    },
-    "intensity_spread": null,
-    "featured_model": "m"
+    }
   },
   "organizations": [
     {

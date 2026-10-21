@@ -229,11 +229,17 @@ def test_validate_sources_checks_zones():
     assert validate_sources(corpus) == ["grids/ch-2.yaml: zone 'CH' is also claimed by grids/ch.yaml"]
 
 
-def test_validate_sources_checks_every_grid_has_an_ecologits_mix():
-    corpus = make_corpus(grids=[make_grid(name="ch", country="ZZ", zone="CH")])  # ZZ is no ISO 3166 country
-    assert validate_sources(corpus) == [
-        "grids/ch.yaml: EcoLogits has no electricity mix for 'ZZ'; see docs/workflows/add-grid.md"
+def test_validate_sources_checks_grids_against_the_ember_table():
+    corpus = make_corpus(grids=[make_grid(name="ch", country="CH", zone="CH")])
+    assert validate_sources(corpus, grid_intensities={"DE": {2025: 330.0}}) == [
+        "grids/ch.yaml: Ember has no intensity for 'CH' in 2025 or earlier; see docs/workflows/add-grid.md"
     ]
+
+
+def test_validate_sources_without_the_ember_table_does_not_check_intensities():
+    # The release validates without the table: it reads stored scores, not the values they came from.
+    corpus = make_corpus(grids=[make_grid(name="ch", country="CH", zone="CH")])
+    assert validate_sources(corpus) == []
 
 
 def test_validate_sources_checks_candidates():
@@ -309,23 +315,29 @@ def test_grids_without_a_zone_claim_none():
     assert check_zones(grids) == []
 
 
-def test_a_grid_whose_country_has_an_ecologits_mix_passes(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
-    assert check_grid_intensities({"ch": make_grid(name="ch", country="CH")}) == []
+def test_a_grid_with_an_ember_value_for_the_scoring_year_or_earlier_passes():
+    grids = {"ch": make_grid(name="ch", country="CH")}
+    assert check_grid_intensities(grids, {"CH": {2024: 34.6}}, scoring_year=2025) == []
 
 
-def test_a_grid_whose_country_has_no_ecologits_mix_is_refused(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
-    assert check_grid_intensities({"xk": make_grid(name="xk", country="XK", zone="XK")}) == [
-        "grids/xk.yaml: EcoLogits has no electricity mix for 'XK'; see docs/workflows/add-grid.md"
+def test_a_us_grid_is_checked_against_its_states_value():
+    grids = {"us-mida-pjm": make_grid(name="us-mida-pjm", country="US", zone="US-MIDA-PJM", subdivision="VA")}
+    assert check_grid_intensities(grids, {"US": {2025: 384.0}}, scoring_year=2025) == [
+        "grids/us-mida-pjm.yaml: Ember has no intensity for 'US-VA' in 2025 or earlier; see docs/workflows/add-grid.md"
     ]
 
 
-def test_an_onsite_grid_is_refused(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
+def test_a_grid_whose_geography_has_no_ember_value_is_refused():
+    grids = {"xk": make_grid(name="xk", country="XK", zone="XK")}
+    assert check_grid_intensities(grids, {"CH": {2025: 39.3}}, scoring_year=2025) == [
+        "grids/xk.yaml: Ember has no intensity for 'XK' in 2025 or earlier; see docs/workflows/add-grid.md"
+    ]
+
+
+def test_an_onsite_grid_is_refused():
     onsite = make_grid(name="acme-1-onsite", country="CH", zone=None, supply="onsite")
-    assert check_grid_intensities({"acme-1-onsite": onsite}) == [
-        "grids/acme-1-onsite.yaml: an on-site grid has no EcoLogits country mix; see docs/workflows/add-grid.md"
+    assert check_grid_intensities({"acme-1-onsite": onsite}, {"CH": {2025: 39.3}}, scoring_year=2025) == [
+        "grids/acme-1-onsite.yaml: an on-site grid has no Ember value; see docs/workflows/add-grid.md"
     ]
 
 
@@ -412,17 +424,21 @@ def test_one_default_route_per_model_is_allowed():
 
 
 def test_stored_fields_that_are_present_pass():
+    grid: dict = {**make_grid(name="ch"), "intensity": {}}
     org: dict = {**make_organization(name="acme"), "disclosure_rating": {}}
     route: dict = {**make_route(name="acme-m-70b"), "disclosure_rating": {}, "carbon_score": {}}
-    assert check_stored_scores({"organizations": {"acme": org}, "routes": {"acme-m-70b": route}}) == []
+    data = {"grids": {"ch": grid}, "organizations": {"acme": org}, "routes": {"acme-m-70b": route}}
+    assert check_stored_scores(data) == []
 
 
 def test_missing_stored_fields_are_named():
     data = {
+        "grids": {"ch": make_grid(name="ch")},
         "organizations": {"acme": make_organization(name="acme")},
         "routes": {"acme-m-70b": make_route(name="acme-m-70b")},
     }
     assert check_stored_scores(data) == [
+        "grids/ch.yaml: is missing the intensity field; run `python -m build score`",
         "organizations/acme.yaml: is missing the disclosure_rating field; run `python -m build score`",
         "routes/acme-m-70b.yaml: is missing the disclosure_rating field; run `python -m build score`",
         "routes/acme-m-70b.yaml: is missing the carbon_score field; run `python -m build score`",

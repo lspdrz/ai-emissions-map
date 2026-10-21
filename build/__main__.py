@@ -11,6 +11,9 @@ check-carbon-scores, check-disclosure-ratings
 check-site-data
         the CI gate on web/data/data.json: fails if it is out of date with what it was built from, or leaves
         its contract.
+import-ember
+        refreshes sources/snapshots/grid_intensity.csv from Ember's three yearly downloads (see
+        sources/snapshots/README.md). Run score and release after it, and commit everything they write.
 """
 
 from __future__ import annotations
@@ -23,6 +26,7 @@ from build.constants.config import ROOT
 from build.check_carbon_scores import check_carbon_scores
 from build.check_disclosure_ratings import check_disclosure_ratings
 from build.check_site_data import SiteDataCheck, check_site_data
+from build.import_ember import Import, import_ember
 from build.release import Release, release
 from build.score import ScoreRun, score
 
@@ -47,6 +51,10 @@ def _check_site_data(args: argparse.Namespace) -> SiteDataCheck:
     return check_site_data(args.root)
 
 
+def _import_ember(args: argparse.Namespace) -> Import:
+    return import_ember(args.root, args.global_csv, args.us_csv, args.china_csv, date.today())
+
+
 def main(argv: list[str] | None = None) -> int:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
@@ -54,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(
         dest="command",
         required=True,
-        metavar="{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data}",
+        metavar="{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,import-ember}",
     )
     for name, run, done, about in (
         ("score", _score, "nothing changed", "check sources/, write the disclosure_rating: and carbon_score: fields"),
@@ -77,8 +85,19 @@ def main(argv: list[str] | None = None) -> int:
             "0 error(s)",
             "CI gate: web/data/data.json is current with what it was built from and keeps to its contract",
         ),
+        (
+            "import-ember",
+            _import_ember,
+            "nothing changed",
+            "refresh sources/snapshots/grid_intensity.csv from Ember's yearly downloads",
+        ),
     ):
-        commands.add_parser(name, parents=[common], help=about, description=about).set_defaults(run=run, done=done)
+        command = commands.add_parser(name, parents=[common], help=about, description=about)
+        command.set_defaults(run=run, done=done)
+        if name == "import-ember":
+            command.add_argument("--global-csv", type=Path, required=True, help="Ember's global yearly release")
+            command.add_argument("--us-csv", type=Path, required=True, help="Ember's US-state yearly release")
+            command.add_argument("--china-csv", type=Path, required=True, help="Ember's China-province yearly release")
     args = parser.parse_args(argv)
     run = args.run(args)
     errors, written = run.errors, run.written

@@ -6,7 +6,7 @@ from build.schemas.score import RouteScore
 from build.score import GENERATED_COMMENT, org_text, route_grids, route_text, score, score_organizations
 from build.utils.range import Range
 from tests.builders.corpus import make_corpus
-from tests.builders.files import write_corpus, write_source
+from tests.builders.files import write_corpus, write_grid_intensities, write_source
 from tests.builders.grid import make_grid
 from tests.builders.location import make_location
 from tests.builders.model import make_model
@@ -139,6 +139,7 @@ def test_written_fields_read_back_equal():
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
+            "intensity_years": [2025],
             "score_g": {"low": 0.07, "high": 0.258},
             "band": [2, 3],
         },
@@ -168,10 +169,11 @@ def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
             models=[make_model(name="m-70b")],
         ),
     )
+    write_grid_intensities(tmp_path, {"CH": {2025: 30.0}})
     run = score(tmp_path)
     assert (run.errors, _rel(tmp_path, run.written)) == (
         [],
-        ["sources/organizations/acme.yaml", "sources/routes/acme-m-70b.yaml"],
+        ["sources/grids/ch.yaml", "sources/organizations/acme.yaml", "sources/routes/acme-m-70b.yaml"],
     )
 
 
@@ -188,6 +190,7 @@ def test_a_second_run_writes_nothing(tmp_path, monkeypatch):
             models=[make_model(name="m-70b")],
         ),
     )
+    write_grid_intensities(tmp_path, {"CH": {2025: 30.0}})
     score(tmp_path)
     rerun = score(tmp_path)
     assert (rerun.errors, rerun.written) == ([], [])
@@ -248,10 +251,52 @@ def test_check_mode_lists_what_score_would_write_and_writes_nothing(tmp_path, mo
             models=[make_model(name="m-70b")],
         ),
     )
+    write_grid_intensities(tmp_path, {"CH": {2025: 30.0}})
     before = {p: p.read_text() for p in (tmp_path / "sources").rglob("*.yaml")}
     run = score(tmp_path, write=False)
     assert (run.errors, _rel(tmp_path, run.written)) == (
         [],
-        ["sources/organizations/acme.yaml", "sources/routes/acme-m-70b.yaml"],
+        ["sources/grids/ch.yaml", "sources/organizations/acme.yaml", "sources/routes/acme-m-70b.yaml"],
     )
     assert {p: p.read_text() for p in (tmp_path / "sources").rglob("*.yaml")} == before
+
+
+def test_score_reports_grids_without_an_ember_value(tmp_path):
+    # No grid-intensity table at all: every grid is left without a value, and score says so.
+    write_corpus(
+        tmp_path,
+        make_corpus(
+            organizations=[make_organization(name="acme")],
+            grids=[make_grid(name="ch", country="CH", zone="CH")],
+            routes=[
+                make_route(name="acme-m-70b", org="acme", model="m-70b", location=make_location(candidates=["grid:ch"]))
+            ],
+            models=[make_model(name="m-70b")],
+        ),
+    )
+    run = score(tmp_path)
+    assert (run.errors, run.written) == (
+        ["grids/ch.yaml: Ember has no intensity for 'CH' in 2025 or earlier; see docs/workflows/add-grid.md"],
+        [],
+    )
+
+
+def test_score_writes_each_grids_intensity_below_the_comment(tmp_path, monkeypatch):
+    monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    write_corpus(
+        tmp_path,
+        make_corpus(
+            organizations=[make_organization(name="acme")],
+            grids=[make_grid(name="ch", country="CH", zone="CH")],
+            routes=[
+                make_route(name="acme-m-70b", org="acme", model="m-70b", location=make_location(candidates=["grid:ch"]))
+            ],
+            models=[make_model(name="m-70b")],
+        ),
+    )
+    write_grid_intensities(tmp_path, {"CH": {2024: 34.6, 2025: 39.3}})
+    score(tmp_path)
+    text = (tmp_path / "sources" / "grids" / "ch.yaml").read_text()
+    assert text.endswith(
+        GENERATED_COMMENT + "\nintensity:\n  g_per_kwh: 39.3\n  year: 2025\n  geography: CH\n  source: Ember\n"
+    )

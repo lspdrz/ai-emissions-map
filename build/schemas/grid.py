@@ -1,7 +1,8 @@
 """A grid: where a route's electricity comes from. sources/grids/<slug>.yaml.
 
-A grid file records location only (docs/workflows/add-grid.md): its zone, its country and its supply. Its carbon
-intensity is not curated: every score uses EcoLogits' electricity mix for the grid's country (build/carbon_score.py).
+A grid file records location only (docs/workflows/add-grid.md): its zone, its country (and subdivision, such as a US
+state or Chinese province) and its supply. Its carbon intensity is not curated: `python -m build score` writes Ember's yearly value for the grid's subdivision
+where it names one, else its country, at the end of the file as its `intensity:` field (build/grid_emissions.py).
 """
 
 from typing import Annotated, Literal, NotRequired, TypedDict
@@ -9,6 +10,16 @@ from typing import Annotated, Literal, NotRequired, TypedDict
 from pydantic import AfterValidator, Field, with_config
 
 from build.schemas.common import RECORD, NonEmptyStr, Slug
+
+
+class GridIntensity(TypedDict):
+    """A grid's intensity, as `build.grid_emissions.grid_intensity` resolves it from Ember's table and a grid's
+    `intensity:` field stores it."""
+
+    g_per_kwh: float  # I: Ember's life-cycle intensity of generation, gCO2e/kWh
+    year: int  # the year of the value: GRID_YEAR, or the geography's latest earlier year
+    geography: str  # the Ember geography it is for: a country (CH) or a subdivision (US-VA, CN-GD)
+    source: Literal["Ember"]
 
 
 @with_config(RECORD)
@@ -29,8 +40,18 @@ class Grid(TypedDict):
         str,
         Field(
             pattern=r"^[A-Z]{2}$",
-            description="ISO 3166-1 alpha-2: the country whose EcoLogits electricity mix gives the grid's intensity",
+            description="ISO 3166-1 alpha-2: the country whose Ember value gives the grid's intensity",
         ),
+    ]
+    subdivision: NotRequired[
+        Annotated[
+            str,
+            Field(
+                pattern=r"^[A-Z0-9]{1,3}$",
+                description="The ISO 3166-2 subdivision within the country (VA for US-VA, GD for CN-GD) whose Ember "
+                "value gives the grid's intensity; validation checks Ember has one",
+            ),
+        ]
     ]
     subdivided: NotRequired[
         Annotated[
@@ -48,6 +69,12 @@ class Grid(TypedDict):
         ]
     ]
     comments: NotRequired[str]
+    intensity: NotRequired[
+        Annotated[
+            GridIntensity,
+            Field(description="Written by `python -m build score` from Ember's table; part of curation"),
+        ]
+    ]
 
 
 def _consistent(grid: Grid) -> Grid:

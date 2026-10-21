@@ -3,7 +3,7 @@ from importlib.metadata import version
 
 import pytest
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
 from build.generate_site_data import (
     SCHEMA,
     build_data,
@@ -35,6 +35,7 @@ def test_data_within_the_contract_has_no_problems():
     [
         ({"unknown_field": {}}, "top level: field 'unknown_field' is not in the contract"),
         ({"meta": {"unknown_field": {}}}, "meta: field 'unknown_field' is not in the contract"),
+        ({"meta": {"grid": {"unknown_field": {}}}}, "meta.grid: field 'unknown_field' is not in the contract"),
         ({"meta": {"counts": {"unknown_field": 1}}}, "meta.counts: field 'unknown_field' is not in the contract"),
         ({"organizations": [{"unknown_field": {}}]}, "organizations[]: field 'unknown_field' is not in the contract"),
         (
@@ -72,6 +73,7 @@ def test_a_routes_entry_carries_its_stored_fields():
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "intensity_years": [2025],
             "score_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
@@ -106,6 +108,7 @@ def test_a_default_routes_entry_is_marked_default():
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "intensity_years": [2025],
             "score_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
@@ -127,6 +130,7 @@ def test_a_routes_entry_carries_the_name_it_is_served_as():
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "intensity_years": [2025],
             "score_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
@@ -305,7 +309,7 @@ def test_meta_states_the_release_date_and_the_configured_method():
     meta = build_data(make_corpus(), date(2026, 10, 8))["meta"]
     assert {
         key: meta[key]
-        for key in ("release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "draft")
+        for key in ("release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "draft", "grid")
     } == {
         "release_date": "2026-10-08",
         "methodology_version": METHODOLOGY_VERSION,
@@ -313,6 +317,7 @@ def test_meta_states_the_release_date_and_the_configured_method():
         "pue": list(PUE),
         "band_upper": list(CARBON_BAND_UPPER),
         "draft": DRAFT,
+        "grid": {"source": "Ember", "year": GRID_YEAR},
     }
 
 
@@ -336,6 +341,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -351,6 +357,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 330.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.258},
                     "band": [2, 3],
                 },
@@ -395,6 +402,7 @@ def test_entries_are_sorted_by_slug():
                     "energy_wh": {"low": 0.08, "high": 0.12},
                     "embodied_g": {"low": 0.007, "high": 0.007},
                     "intensity_g_per_kwh": None,
+                    "intensity_years": [],
                     "score_g": None,
                     "band": None,
                 },
@@ -410,6 +418,7 @@ def test_entries_are_sorted_by_slug():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
+                    "intensity_years": [],
                     "score_g": None,
                     "band": None,
                 },
@@ -445,6 +454,7 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -460,6 +470,7 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 330.0, "high": 330.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.215, "high": 0.258},
                     "band": [3, 3],
                 },
@@ -490,6 +501,7 @@ def test_there_is_no_intensity_spread_when_no_route_is_scored():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
+                    "intensity_years": [],
                     "score_g": None,
                     "band": None,
                 },
@@ -520,6 +532,7 @@ def test_the_featured_model_is_the_one_most_routes_serve():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
+                    "intensity_years": [],
                     "score_g": None,
                     "band": None,
                 },
@@ -551,6 +564,7 @@ def test_on_a_tie_the_featured_model_is_the_first_by_name():
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
+                    "intensity_years": [],
                     "score_g": None,
                     "band": None,
                 },

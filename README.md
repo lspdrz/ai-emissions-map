@@ -4,8 +4,8 @@ The AI Emissions Map estimates the emissions of AI **serving routes** (an organi
 
 - **Carbon score**: the Software Carbon Intensity (SCI, ISO/IEC 21031) of generating 1,000 output tokens,
   `(E × I) + M`. Energy (E) and embodied hardware emissions (M) are estimated with EcoLogits from the model's
-  parameter counts; grid intensity (I) is EcoLogits' life-cycle electricity mix (from Our World in Data) for the
-  country of each grid the route may draw from.
+  parameter counts; grid intensity (I) is [Ember](https://ember-energy.org/)'s life-cycle intensity of generation
+  for the country (or US state or Chinese province) of each grid the route may draw from.
 - **Location disclosure rating**: A to D per route, generated from its cited location (A names the facility, B one
   grid, C several possible grids, D undisclosed). An organization's rating is the mean of its routes'.
 

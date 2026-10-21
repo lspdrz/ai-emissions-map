@@ -38,3 +38,24 @@ def test_values_are_no_longer_part_of_a_grid():
     with pytest.raises(ValidationError) as error:
         _GRID.validate_python(changed(make_grid(), "values", to={"2025": {}}))
     assert [problem["msg"] for problem in error.value.errors()] == ["Extra inputs are not permitted"]
+
+
+def test_a_grid_may_name_its_subdivision():
+    us = make_grid(name="us-mida-pjm", country="US", zone="US-MIDA-PJM", subdivision="VA")
+    cn = make_grid(name="cn", country="CN", zone="CN", subdivision="GD")
+    assert (_GRID.validate_python(us)["subdivision"], _GRID.validate_python(cn)["subdivision"]) == ("VA", "GD")
+
+
+def test_a_subdivision_is_its_iso_3166_2_code_without_the_country():
+    with pytest.raises(ValidationError):
+        _GRID.validate_python(changed(make_grid(), "subdivision", to="US-VA"))
+
+
+def test_a_grid_may_carry_the_intensity_score_wrote():
+    grid = make_grid(intensity={"g_per_kwh": 39.3, "year": 2025, "geography": "CH", "source": "Ember"})
+    assert _GRID.validate_python(grid)["intensity"]["g_per_kwh"] == 39.3
+
+
+def test_a_stored_intensity_must_come_from_ember():
+    with pytest.raises(ValidationError):
+        make_grid(intensity={"g_per_kwh": 39.3, "year": 2025, "geography": "CH", "source": "VSE"})

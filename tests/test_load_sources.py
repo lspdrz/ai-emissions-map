@@ -1,4 +1,4 @@
-from build.load_sources import load_cloud_regions, load_sources
+from build.load_sources import load_cloud_regions, load_grid_intensities, load_sources
 from tests.builders.files import write_source
 
 # Every test writes the files it reads into tmp_path: reading them from disk is what this module does.
@@ -130,3 +130,14 @@ def test_a_repeated_row_counts_once(tmp_path):
     path = tmp_path / "cloud_regions.csv"
     path.write_text("vendor,region,zone\ncloudx,eu-de,DE\ncloudx,eu-de,DE\n")
     assert load_cloud_regions(path) == {("cloudx", "eu-de"): ["DE"]}
+
+
+# load_grid_intensities: Ember's table, each geography to its intensity per year.
+
+
+def test_grid_intensities_are_read_per_geography_and_year(tmp_path):
+    path = tmp_path / "grid_intensity.csv"
+    path.write_text(
+        "geography,name,year,intensity\nCH,Switzerland,2024,34.648\nCH,Switzerland,2025,39.278\nUS-VA,Virginia,2025,356.592\n"
+    )
+    assert load_grid_intensities(path) == {"CH": {2024: 34.648, 2025: 39.278}, "US-VA": {2025: 356.592}}

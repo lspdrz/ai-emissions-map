@@ -11,7 +11,8 @@ A thin wrapper. The procedure lives in the workflow; this file does not restate 
 **Read `docs/workflows/add-grid.md` and follow it.** Rules: `docs/reference/identity.md`.
 
 ## Agent orchestration
-- A grid file is location only: zone, country, whether it is subdivided, its supply.
+- A grid file is location only: zone, country, subdivision (US state or Chinese province), whether it is
+  subdivided, its supply.
 - Several zones can be added in parallel; one writer writes the files.
 
 ## Scripts to run
@@ -21,4 +22,4 @@ uv run python -m build release   # writes web/data/data.json; commit everything 
 ```
 
 ## Stop and escalate
-EcoLogits has no mix for the country; an on-site grid; a zone that does not match the facility.
+Ember has no value for the country or subdivision; an on-site grid; a zone that does not match the facility.

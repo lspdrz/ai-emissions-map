@@ -14,10 +14,10 @@ from datetime import date
 from importlib.metadata import version
 from typing import Any
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
 
 
-SCHEMA = "aem-data/2"
+SCHEMA = "aem-data/3"
 
 # A passage quoted in an evidence entry's `shows`: double quotes around at least 8 characters.
 _QUOTED = re.compile(r'"([^"]{8,})"')
@@ -35,10 +35,12 @@ ALLOWED_KEYS = {
         "pue",
         "band_upper",
         "draft",
+        "grid",
         "counts",
         "intensity_spread",
         "featured_model",
     },
+    "meta.grid": {"source", "year"},
     "meta.counts": {"organizations", "routes", "models", "grids"},
     "organizations[]": {
         "slug",
@@ -85,6 +87,7 @@ def check_contract(data: dict) -> list[str]:
     check(data, "")
     meta = data.get("meta", {})
     check(meta, "meta")
+    check(meta.get("grid"), "meta.grid")
     check(meta.get("counts"), "meta.counts")
     for org in data.get("organizations", []):
         check(org, "organizations[]")
@@ -201,6 +204,7 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
             "pue": list(PUE),
             "band_upper": list(CARBON_BAND_UPPER),
             "draft": DRAFT,
+            "grid": {"source": "Ember", "year": GRID_YEAR},
             "counts": {
                 "organizations": len(org_entries),
                 "routes": len(route_entries),

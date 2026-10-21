@@ -10,7 +10,7 @@ def test_the_root_is_the_repository():
 
 
 def test_the_methodology_version():
-    assert config.METHODOLOGY_VERSION == "0.2.0"
+    assert config.METHODOLOGY_VERSION == "0.3.0"
 
 
 def test_the_carbon_band_edges():
@@ -27,6 +27,10 @@ def test_the_pue_range():
 
 def test_the_functional_unit_is_1000_output_tokens():
     assert config.OUTPUT_TOKENS == 1000
+
+
+def test_the_grid_year():
+    assert config.GRID_YEAR == 2025
 
 
 def test_the_site_is_a_draft():

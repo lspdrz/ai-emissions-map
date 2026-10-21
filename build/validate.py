@@ -9,7 +9,8 @@ from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
 
-from build.carbon_score import grid_intensity
+from build.grid_emissions import GridIntensities, grid_intensity
+from build.constants.config import GRID_YEAR
 from build.load_sources import SOURCE_DIRS
 from build.schemas.grid import CheckedGrid
 from build.schemas.model import Model
@@ -96,7 +97,7 @@ def check_models(routes: dict, models: dict) -> list[str]:
     ]
 
 
-# Grids: one file per zone, each valued by EcoLogits' mix for its country, each used by a route.
+# Grids: one file per zone, each with an Ember value for its subdivision or country, each used by a route.
 
 
 def check_zones(grids: dict) -> list[str]:
@@ -114,13 +115,14 @@ def check_zones(grids: dict) -> list[str]:
     return errors
 
 
-def check_grid_intensities(grids: dict) -> list[str]:
-    """Every grid has the intensity a score uses (build.carbon_score.grid_intensity): EcoLogits' electricity mix for
-    its country. An on-site grid, or a country EcoLogits has no mix for, cannot be scored."""
+def check_grid_intensities(grids: dict, intensities: GridIntensities, scoring_year: int) -> list[str]:
+    """Every grid has the intensity a score uses (build.grid_emissions.grid_intensity): Ember's value for its subdivision
+    or country, for `scoring_year` (GRID_YEAR when validating) or an earlier year. An on-site grid, or a geography Ember
+    has no value for, cannot be scored."""
     errors: list[str] = []
     for _, grid in sorted(grids.items()):
         try:
-            grid_intensity(grid)
+            grid_intensity(grid, intensities, scoring_year)
         except ValueError as error:
             errors.append(f"{error}; see docs/workflows/add-grid.md")
     return errors
@@ -198,11 +200,13 @@ def validate_sources(
     data: Mapping[str, Any],
     *,
     cloud_regions: Mapping[tuple[str, str], list[str]] | None = None,
+    grid_intensities: GridIntensities | None = None,
 ) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
     The optional cloud_regions ((vendor, region) -> zone codes, which grid files claim) switches on the check against
-    outside data: with it, an unused grid file is an error.
+    outside data: with it, an unused grid file is an error. The optional grid_intensities (Ember's table) switches on
+    the check that every grid has a value a score can use.
     """
     errors = [
         f"{path}: only <slug>.yaml files belong in sources/{path.split('/')[0]}/"
@@ -219,7 +223,8 @@ def validate_sources(
     errors += check_orgs(data.get("organizations") or {}, routes)
     errors += check_models(routes, data.get("models") or {})
     errors += check_zones(grids)
-    errors += check_grid_intensities(grids)
+    if grid_intensities is not None:
+        errors += check_grid_intensities(grids, grid_intensities, GRID_YEAR)
     candidate_errors, used = check_candidates(routes, data.get("grids") or {}, cloud_regions)
     errors += candidate_errors
     errors += check_defaults(routes)
@@ -230,15 +235,24 @@ def validate_sources(
 
 
 def check_stored_scores(data: Mapping[str, Any]) -> list[str]:
-    """Every organization has its disclosure_rating: and every route its disclosure_rating: and carbon_score:, the
-    fields `python -m build score` writes. Call on data validate_sources passed: their shape is checked there."""
-    return [
-        f"organizations/{name}.yaml: is missing the disclosure_rating field; {_RUN_SCORE}"
-        for name, org in sorted(data["organizations"].items())
-        if "disclosure_rating" not in org
-    ] + [
-        f"routes/{name}.yaml: is missing the {key} field; {_RUN_SCORE}"
-        for name, route in sorted(data["routes"].items())
-        for key in ("disclosure_rating", "carbon_score")
-        if key not in route
-    ]
+    """Every grid has its intensity:, every organization its disclosure_rating: and every route its disclosure_rating:
+    and carbon_score:, the fields `python -m build score` writes. Call on data validate_sources passed: their shape is
+    checked there."""
+    return (
+        [
+            f"grids/{name}.yaml: is missing the intensity field; {_RUN_SCORE}"
+            for name, grid in sorted(data["grids"].items())
+            if "intensity" not in grid
+        ]
+        + [
+            f"organizations/{name}.yaml: is missing the disclosure_rating field; {_RUN_SCORE}"
+            for name, org in sorted(data["organizations"].items())
+            if "disclosure_rating" not in org
+        ]
+        + [
+            f"routes/{name}.yaml: is missing the {key} field; {_RUN_SCORE}"
+            for name, route in sorted(data["routes"].items())
+            for key in ("disclosure_rating", "carbon_score")
+            if key not in route
+        ]
+    )

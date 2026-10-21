@@ -14,7 +14,8 @@ export function OverviewView({ data }: { data: MapData }) {
         </p>
         <p className="text-sm text-neutral-500">
           Release {meta.release_date}
-          {meta.draft && " (draft)"} · methodology {meta.methodology_version} ·
+          {meta.draft && " (draft)"} · methodology {meta.methodology_version} · grid data {meta.grid.source}{" "}
+          {meta.grid.year} ·
           EcoLogits {meta.ecologits_version}
         </p>
       </header>
@@ -38,7 +39,7 @@ export function OverviewView({ data }: { data: MapData }) {
               Routes <span className="text-base font-normal text-neutral-500">({routes.length})</span>
             </summary>
             <p className="mt-1 mb-4 text-sm text-neutral-600">
-              Each score is a life-cycle estimate from EcoLogits, in grams of CO₂e per 1,000 output tokens:
+              Each score is a life-cycle estimate from EcoLogits and Ember, in grams of CO₂e per 1,000 output tokens:
               operational (E × I) plus embodied (M), lowest first. Disclosure is rated A to D.
             </p>
             <RoutesTable routes={routes} models={models} organizations={organizations} />
@@ -48,8 +49,10 @@ export function OverviewView({ data }: { data: MapData }) {
 
       <footer className="mt-16 border-t border-neutral-200 pt-4 text-xs text-neutral-500">
         Energy (E) and embodied emissions (M) are estimated with EcoLogits {meta.ecologits_version}, with data-center
-        overhead (PUE) {meta.pue[0]}–{meta.pue[1]} for every route. Grid intensity (I) is EcoLogits&apos; life-cycle
-        electricity mix for each grid&apos;s country, from Our World in Data.
+        overhead (PUE) {meta.pue[0]}–{meta.pue[1]} for every route. Grid intensity (I) is {meta.grid.source}&apos;s
+        life-cycle intensity of generation for each grid&apos;s country, US state or Chinese province, for{" "}
+        {meta.grid.year} or its latest
+        earlier year (CC-BY-4.0).
       </footer>
     </main>
   );

@@ -13,7 +13,8 @@ describe("OverviewView", () => {
     const html = renderToStaticMarkup(<OverviewView data={fixture()} />);
     expect(html).toContain("methodology 0.1.0");
     expect(html).toContain("EcoLogits 0.11.2");
-    expect(html).toContain("life-cycle electricity mix for each grid");
+    expect(html).toContain("grid data Ember 2025");
+    expect(html).toContain("intensity of generation for each grid");
   });
 
   it("puts organizations first, collapsed, and routes below, open", () => {

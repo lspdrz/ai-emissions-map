@@ -7,7 +7,7 @@ import build.release as release_module
 from build.release import inputs_sha, release
 from tests.builders.corpus import make_corpus
 from tests.builders.files import write_corpus, write_source
-from tests.builders.grid import make_grid
+from tests.builders.grid import make_grid, make_grid_intensity
 from tests.builders.location import make_location
 from tests.builders.model import make_model
 from tests.builders.organization import make_organization
@@ -25,7 +25,7 @@ def test_a_release_writes_the_data_file(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -38,6 +38,7 @@ def test_a_release_writes_the_data_file(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -57,7 +58,7 @@ def test_a_release_copies_each_routes_stored_fields(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -70,6 +71,7 @@ def test_a_release_copies_each_routes_stored_fields(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -91,7 +93,7 @@ def test_with_no_previous_data_file_the_release_date_is_the_run_date(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -104,6 +106,7 @@ def test_with_no_previous_data_file_the_release_date_is_the_run_date(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -124,7 +127,7 @@ def test_a_release_records_the_hash_of_its_inputs(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -137,6 +140,7 @@ def test_a_release_records_the_hash_of_its_inputs(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -158,7 +162,7 @@ def test_a_route_without_stored_fields_says_to_run_score(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(name="acme-m-70b", org="acme", model="m-70b", location=make_location(candidates=["grid:ch"]))
         ],
@@ -183,7 +187,7 @@ def test_invalid_sources_write_nothing(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -196,6 +200,7 @@ def test_invalid_sources_write_nothing(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -221,7 +226,7 @@ def test_a_rerun_on_unchanged_inputs_writes_nothing(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -234,6 +239,7 @@ def test_a_rerun_on_unchanged_inputs_writes_nothing(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -254,7 +260,7 @@ def test_a_change_the_site_does_not_show_keeps_the_release_date(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -267,6 +273,7 @@ def test_a_change_the_site_does_not_show_keeps_the_release_date(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -292,7 +299,7 @@ def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -305,6 +312,7 @@ def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -331,7 +339,7 @@ def test_a_change_the_site_shows_moves_the_release_date(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -344,6 +352,7 @@ def test_a_change_the_site_shows_moves_the_release_date(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -370,7 +379,7 @@ def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -383,6 +392,7 @@ def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
@@ -410,7 +420,7 @@ def test_it_refuses_to_write_outside_the_contract(tmp_path, monkeypatch):
                 disclosure_rating={"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"},
             )
         ],
-        grids=[make_grid(name="ch", country="CH", zone="CH")],
+        grids=[make_grid(name="ch", country="CH", zone="CH", intensity=make_grid_intensity())],
         routes=[
             make_route(
                 name="acme-m-70b",
@@ -423,6 +433,7 @@ def test_it_refuses_to_write_outside_the_contract(tmp_path, monkeypatch):
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "intensity_years": [2025],
                     "score_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
