@@ -7,20 +7,20 @@
       1.0
     ],
     "counts": {
-      "grids": 1,
-      "models": 1,
-      "organizations": 1,
-      "routes": 1
+      "grids": 2,
+      "models": 2,
+      "organizations": 2,
+      "routes": 3
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": "apertus-v1-5-70b",
+    "featured_model": "claude-opus-5-5",
     "grid": {
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "2136ab725d6e744945ca234d2c546f2c76ace502bf4b424744fc1f42a6d63e4b",
-    "intensity_spread": 1,
+    "inputs_sha": "bfad7b12a8081702403ac34ae814ee35ae453207dba4cc3ec0b95973c23044c4",
+    "intensity_spread": 10,
     "methodology_version": "0.3.0",
     "pue": [
       1.1,
@@ -35,9 +35,55 @@
       "display_name": "Apertus 1.5 70B",
       "slug": "apertus-v1-5-70b",
       "total_b": 70
+    },
+    {
+      "active_b": {
+        "max": 200,
+        "min": 70
+      },
+      "architecture": "moe",
+      "display_name": "Claude Opus 5.5",
+      "slug": "claude-opus-5-5",
+      "total_b": 670
     }
   ],
   "organizations": [
+    {
+      "country": "US",
+      "description": "Anthropic states that its API runs inference in any available geography by default, or only in US-based infrastructure when the customer chooses. Its documentation does not name the regions or facilities either uses.",
+      "display_name": "Anthropic",
+      "evidence": [
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "Default. Inference may run in any available geography for optimal performance and availability.",
+            "Inference runs only in US-based infrastructure.",
+            "The inference_geo parameter is supported on Claude 4.6 and later models."
+          ],
+          "routes": [
+            "anthropic-claude-opus-5-5",
+            "anthropic-claude-opus-5-5-us"
+          ],
+          "url": "https://platform.claude.com/docs/en/manage-claude/data-residency"
+        }
+      ],
+      "homepage": "https://www.anthropic.com",
+      "rating": {
+        "letter": "D",
+        "mean": 0.5,
+        "spread": {
+          "C": 1,
+          "D": 1
+        },
+        "summary": "D (1 route at C, 1 route at D)"
+      },
+      "routes": [
+        "anthropic-claude-opus-5-5",
+        "anthropic-claude-opus-5-5-us"
+      ],
+      "slug": "anthropic",
+      "type": "model_lab"
+    },
     {
       "country": "CH",
       "description": "Infomaniak states that its AI services run in its own data centers in Switzerland. Its AI Services pages do not say which facility serves which model.",
@@ -71,6 +117,57 @@
     }
   ],
   "routes": [
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.912183,
+        "low": 0.452776
+      },
+      "energy": {
+        "high": 13.743866,
+        "low": 4.821879
+      },
+      "gap": "Location not disclosed by the provider.",
+      "intensity": null,
+      "label": "Any available geography",
+      "letter": "D",
+      "model": "claude-opus-5-5",
+      "org": "anthropic",
+      "score": null,
+      "served_as": null,
+      "slug": "anthropic-claude-opus-5-5"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.912183,
+        "low": 0.452776
+      },
+      "energy": {
+        "high": 13.743866,
+        "low": 4.821879
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "claude-opus-5-5",
+      "org": "anthropic",
+      "score": {
+        "high": 6.195366,
+        "low": 2.30632
+      },
+      "served_as": null,
+      "slug": "anthropic-claude-opus-5-5-us"
+    },
     {
       "band": [
         2,
