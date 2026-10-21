@@ -1,0 +1,14 @@
+name: us-nw-pace
+display_name: PacifiCorp East
+zone: US-NW-PACE
+country: US
+subdivision: UT
+comments: >-
+  PacifiCorp East spans several states; the subdivision is Utah, where Google Cloud's us-west3 is.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 619.811
+  year: 2025
+  geography: US-UT
+  source: Ember

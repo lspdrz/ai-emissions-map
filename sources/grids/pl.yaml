@@ -1,0 +1,11 @@
+name: pl
+display_name: Poland
+zone: PL
+country: PL
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 590.814
+  year: 2025
+  geography: PL
+  source: Ember

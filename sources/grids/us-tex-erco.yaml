@@ -1,0 +1,12 @@
+name: us-tex-erco
+display_name: Electric Reliability Council of Texas
+zone: US-TEX-ERCO
+country: US
+subdivision: TX
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 379.354
+  year: 2025
+  geography: US-TX
+  source: Ember

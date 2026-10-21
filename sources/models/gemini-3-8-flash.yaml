@@ -1,0 +1,13 @@
+name: gemini-3-8-flash
+display_name: Gemini 3.8 Flash
+architecture: moe
+active_b: { min: 75, max: 200 }
+total_b: 750
+evidence:
+- url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
+  shows: 'EcoLogits catalogue, "gemini-3.8-flash": architecture "moe", parameters "total": 750, "active": {"min": 75, "max": 200}; warnings "model-arch-not-released", "model-arch-multimodal"'
+  accessed: "2026-10-21"
+  kind: corroborating
+comments: >-
+  EcoLogits marks Gemini 3.8 Flash's architecture as not released by Google: these counts are its estimate. Google's
+  model page (ai.google.dev/gemini-api/docs/models/gemini-3.8-flash) gives no parameter counts.

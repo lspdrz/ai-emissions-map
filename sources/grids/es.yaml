@@ -1,0 +1,11 @@
+name: es
+display_name: Spain
+zone: ES
+country: ES
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 153.459
+  year: 2025
+  geography: ES
+  source: Ember

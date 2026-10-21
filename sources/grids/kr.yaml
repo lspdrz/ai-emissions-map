@@ -1,0 +1,11 @@
+name: kr
+display_name: South Korea
+zone: KR
+country: KR
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 417.659
+  year: 2025
+  geography: KR
+  source: Ember

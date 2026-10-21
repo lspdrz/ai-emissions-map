@@ -1,0 +1,11 @@
+name: au-nsw
+display_name: New South Wales
+zone: AU-NSW
+country: AU
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 517.956
+  year: 2025
+  geography: AU
+  source: Ember

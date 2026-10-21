@@ -1,0 +1,11 @@
+name: br-cs
+display_name: Central-South Brazil
+zone: BR-CS
+country: BR
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 109.218
+  year: 2025
+  geography: BR
+  source: Ember

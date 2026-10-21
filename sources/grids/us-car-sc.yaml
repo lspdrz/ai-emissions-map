@@ -1,0 +1,12 @@
+name: us-car-sc
+display_name: South Carolina Public Service Authority
+zone: US-CAR-SC
+country: US
+subdivision: SC
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 288.292
+  year: 2025
+  geography: US-SC
+  source: Ember
