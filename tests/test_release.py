@@ -39,9 +39,7 @@ def test_a_release_writes_the_data_file(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -73,9 +71,7 @@ def test_a_release_copies_each_routes_stored_fields(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -109,9 +105,7 @@ def test_with_no_previous_data_file_the_release_date_is_the_run_date(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -144,9 +138,7 @@ def test_a_release_records_the_hash_of_its_inputs(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -205,9 +197,7 @@ def test_invalid_sources_write_nothing(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -245,9 +235,7 @@ def test_a_rerun_on_unchanged_inputs_writes_nothing(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -280,9 +268,7 @@ def test_a_change_the_site_does_not_show_keeps_the_release_date(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -320,9 +306,7 @@ def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -361,9 +345,7 @@ def test_a_change_the_site_shows_moves_the_release_date(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -402,9 +384,7 @@ def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],
@@ -444,9 +424,7 @@ def test_it_refuses_to_write_outside_the_contract(tmp_path, monkeypatch):
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             )
         ],

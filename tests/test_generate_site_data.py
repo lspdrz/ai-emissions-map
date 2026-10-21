@@ -3,7 +3,7 @@ from importlib.metadata import version
 
 import pytest
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, METHODOLOGY_VERSION, PUE
 from build.generate_site_data import (
     SCHEMA,
     build_data,
@@ -35,7 +35,6 @@ def test_data_within_the_contract_has_no_problems():
     [
         ({"unknown_field": {}}, "top level: field 'unknown_field' is not in the contract"),
         ({"meta": {"unknown_field": {}}}, "meta: field 'unknown_field' is not in the contract"),
-        ({"meta": {"grid": {"unknown_field": {}}}}, "meta.grid: field 'unknown_field' is not in the contract"),
         ({"meta": {"counts": {"unknown_field": 1}}}, "meta.counts: field 'unknown_field' is not in the contract"),
         ({"organizations": [{"unknown_field": {}}]}, "organizations[]: field 'unknown_field' is not in the contract"),
         (
@@ -55,7 +54,7 @@ def test_a_field_outside_the_contract_is_named_with_its_level(data, problem):
 
 
 def test_a_level_that_is_not_an_object_has_no_fields_to_check():
-    assert check_contract({"meta": {"grid": None}}) == []
+    assert check_contract({"meta": {"counts": None}}) == []
 
 
 # A route's entry: its stored ratings and how it is labelled.
@@ -74,9 +73,7 @@ def test_a_routes_entry_carries_its_stored_fields():
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
             "score_g": {"low": 0.065, "high": 0.078},
-            "score_lifecycle_g": {"low": 0.0725, "high": 0.087},
             "band": [2, 2],
-            "flags": {"year": ["ch"]},
         },
     )
     assert route_entry("acme-m-70b", route) == {
@@ -88,13 +85,11 @@ def test_a_routes_entry_carries_its_stored_fields():
         "letter": "B",
         "gap": "The grid is disclosed, not the facility.",
         "score": {"low": 0.065, "high": 0.078},
-        "score_lifecycle": {"low": 0.0725, "high": 0.087},
         "energy": {"low": 0.5, "high": 0.6},
         "intensity": {"low": 30.0, "high": 30.0},
         "embodied": {"low": 0.05, "high": 0.06},
         "band": [2, 2],
         "served_as": None,
-        "flags": {"year": ["ch"]},
     }
 
 
@@ -112,9 +107,7 @@ def test_a_default_routes_entry_is_marked_default():
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
             "score_g": {"low": 0.065, "high": 0.078},
-            "score_lifecycle_g": None,
             "band": [2, 2],
-            "flags": {},
         },
     )
     assert route_entry("acme-m-70b", route)["default"] is True
@@ -135,9 +128,7 @@ def test_a_routes_entry_carries_the_name_it_is_served_as():
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
             "score_g": {"low": 0.065, "high": 0.078},
-            "score_lifecycle_g": None,
             "band": [2, 2],
-            "flags": {},
         },
     )
     assert route_entry("acme-m-70b", route)["served_as"] == "acme/M-70B-Instruct"
@@ -314,7 +305,7 @@ def test_meta_states_the_release_date_and_the_configured_method():
     meta = build_data(make_corpus(), date(2026, 10, 8))["meta"]
     assert {
         key: meta[key]
-        for key in ("release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "draft", "grid")
+        for key in ("release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "draft")
     } == {
         "release_date": "2026-10-08",
         "methodology_version": METHODOLOGY_VERSION,
@@ -322,7 +313,6 @@ def test_meta_states_the_release_date_and_the_configured_method():
         "pue": list(PUE),
         "band_upper": list(CARBON_BAND_UPPER),
         "draft": DRAFT,
-        "grid": {"year": GRID_YEAR},
     }
 
 
@@ -347,9 +337,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             ),
             make_route(
@@ -364,9 +352,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 330.0},
                     "score_g": {"low": 0.065, "high": 0.258},
-                    "score_lifecycle_g": None,
                     "band": [2, 3],
-                    "flags": {},
                 },
             ),
         ],
@@ -410,9 +396,7 @@ def test_entries_are_sorted_by_slug():
                     "embodied_g": {"low": 0.007, "high": 0.007},
                     "intensity_g_per_kwh": None,
                     "score_g": None,
-                    "score_lifecycle_g": None,
                     "band": None,
-                    "flags": {},
                 },
             ),
             make_route(
@@ -427,9 +411,7 @@ def test_entries_are_sorted_by_slug():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
                     "score_g": None,
-                    "score_lifecycle_g": None,
                     "band": None,
-                    "flags": {},
                 },
             ),
         ],
@@ -464,9 +446,7 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                     "score_g": {"low": 0.065, "high": 0.078},
-                    "score_lifecycle_g": None,
                     "band": [2, 2],
-                    "flags": {},
                 },
             ),
             make_route(
@@ -481,9 +461,7 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": {"low": 330.0, "high": 330.0},
                     "score_g": {"low": 0.215, "high": 0.258},
-                    "score_lifecycle_g": None,
                     "band": [3, 3],
-                    "flags": {},
                 },
             ),
         ],
@@ -513,9 +491,7 @@ def test_there_is_no_intensity_spread_when_no_route_is_scored():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
                     "score_g": None,
-                    "score_lifecycle_g": None,
                     "band": None,
-                    "flags": {},
                 },
             )
         ],
@@ -545,9 +521,7 @@ def test_the_featured_model_is_the_one_most_routes_serve():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
                     "score_g": None,
-                    "score_lifecycle_g": None,
                     "band": None,
-                    "flags": {},
                 },
             )
             for name, model in (("acme-m-8b", "m-8b"), ("acme-m-70b", "m-70b"), ("acme-m-70b-eu", "m-70b"))
@@ -578,9 +552,7 @@ def test_on_a_tie_the_featured_model_is_the_first_by_name():
                     "embodied_g": {"low": 0.05, "high": 0.06},
                     "intensity_g_per_kwh": None,
                     "score_g": None,
-                    "score_lifecycle_g": None,
                     "band": None,
-                    "flags": {},
                 },
             )
             for name, model in (("acme-m-8b", "m-8b"), ("acme-m-70b", "m-70b"))

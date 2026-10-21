@@ -7,7 +7,7 @@ Guidance for coding agents and people working in this repository.
 The AI Emissions Map gives every AI serving route (an organization serving a model, by default or in
 a region the customer chooses) a **carbon score**, and every organization a **location disclosure rating** (A–D). The
 score is the full Software Carbon Intensity per 1,000 output tokens: energy and embodied emissions
-from EcoLogits, grid carbon intensity of the route's location. Locations are the only thing curators
+from EcoLogits, and grid carbon intensity from EcoLogits' electricity mix for the country of the route's location. Locations are the only thing curators
 research; everything else is calculated. The rules are in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)
 and [`docs/reference/`](docs/reference/).
 
@@ -34,7 +34,7 @@ and [`docs/reference/`](docs/reference/).
 
 ```
 sources/organizations/   one file per organization
-sources/grids/           one file per grid a route may draw from: its zone, country and yearly intensity, with evidence
+sources/grids/           one file per grid a route may draw from: its zone and country (location only, no values)
 sources/routes/          one file per route, <org>-<model>.yaml, naming its organization in org:
 sources/models/          one record per model a route serves: the developer's counts, or EcoLogits' estimate, cited
 sources/snapshots/       imported data, each file with a <stem>.provenance.json
@@ -69,8 +69,8 @@ build/
                          check-disclosure-ratings, check-site-data
 ```
 
-- **Core:** `carbon_score` (EcoLogits energy and embodied emissions, each grid's value for `GRID_YEAR` with its
-  flags, the score of each route) and `disclosure_rating` (route ratings, generated from the location;
+- **Core:** `carbon_score` (EcoLogits energy and embodied emissions, EcoLogits' electricity mix for each grid's
+  country, the score of each route) and `disclosure_rating` (route ratings, generated from the location;
   organization ratings).
   Around them: `load_sources` and `validate` (reading and checking `sources/`), `score` (the `score`
   command: resolves each route's grid files, computes and writes each route's `disclosure_rating:` and
@@ -126,7 +126,8 @@ estimate, with the catalogue at the installed version as the evidence.
 2. Find every model record citing the old catalogue (`grep -rl "ecologits/blob/<old version>" sources/models/`).
    For each, read the model's entry in the new catalogue (docs/workflows/add-model.md, step 3), update its counts
    if they moved, and point its evidence at the new version, with its quote and today's date. Then
-   `uv run python -m build score`, whose diff shows every score that moved, and `uv run python -m build release`.
+   `uv run python -m build score`, whose diff shows every score that moved (EcoLogits' electricity mixes move with
+   it too), and `uv run python -m build release`.
    Commit everything.
 3. Run the tests, and say in the PR that scores move with the new version.
 
@@ -142,11 +143,10 @@ estimate, with the catalogue at the installed version as the evidence.
   (`python -m build check-site-data`): run the release after changing anything in
   `sources/` or `build/`, code included, and commit what it writes. On a merge conflict
   in `web/data/data.json`, take either side and run the release again.
-- **Grid values are curated in `sources/grids/`, with evidence**: an agent reads them from published pages.
-  Agents never read Electricity Maps' site. Every score uses each grid's consumption-based value with a direct
-  figure, for `GRID_YEAR` or its latest earlier year; production-based values and life-cycle figures never stand
-  in, and `score` refuses a grid without such a value. A CO2-only value is flagged on its routes, and so is a value
-  more than `MAX_GRID_AGE` (2) years older than `GRID_YEAR`; neither flag changes which value is used.
+- **Grid intensities are not curated**: a grid file in `sources/grids/` holds only its zone, country, supply and
+  whether it is subdivided. Every score uses EcoLogits' life-cycle electricity mix for the grid's country
+  (`build.carbon_score.grid_intensity`), so zones in one country share a value. `score` refuses a grid whose
+  country EcoLogits has no mix for, and an on-site grid. Agents never read Electricity Maps' site.
 - **A route's rating is generated, never written**: from its candidates, their grids, its
   `facilities` and its evidence. There is no `confidence` field.
 - **The site's data file is committed, and holds only what the site displays:** per-route results,

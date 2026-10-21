@@ -10,7 +10,7 @@ from typing import Literal
 # The repository root: sources/, docs/ and web/ are found from here.
 ROOT = Path(__file__).resolve().parents[2]
 
-METHODOLOGY_VERSION = "0.1.0"
+METHODOLOGY_VERSION = "0.2.0"
 
 # Absolute carbon bands, gCO2e per 1k output tokens: band n when below CARBON_BAND_UPPER[n-1], else 5.
 CARBON_BAND_UPPER: tuple[float, ...] = (0.03, 0.1, 0.3, 1.0)
@@ -33,14 +33,6 @@ PUE: tuple[float, float] = (1.1, 1.6)
 
 # Functional unit: every route's score is express per this many output tokens.
 OUTPUT_TOKENS = 1000
-
-# The year of grid intensity every score uses: each grid's consumption-based direct value for it, or for its latest
-# earlier year (docs/workflows/refresh-grids.md moves it forward).
-GRID_YEAR = 2025
-
-# A grid value more than this many years older than GRID_YEAR is flagged on the routes that use it. It does not change
-# which value is used.
-MAX_GRID_AGE = 2
 
 # The site is noindex until the first public release (providers have not had their notice).
 DRAFT = True

@@ -12,5 +12,3 @@ primary:
     workflow: docs/workflows/add-route.md
   - skill: refresh-organization
     workflow: docs/workflows/refresh-organization.md
-  - skill: refresh-grids
-    workflow: docs/workflows/refresh-grids.md

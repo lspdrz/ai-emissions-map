@@ -22,7 +22,7 @@ Find your task in [`docs/README.md`](docs/README.md) and follow its workflow. In
 |---|---|
 | `sources/organizations/<slug>.yaml` | An organization |
 | `sources/routes/<org>-<model>.yaml` | Where the organization serves one model, with evidence |
-| `sources/grids/<slug>.yaml` | A grid routes draw from: its zone and yearly carbon intensity, with evidence |
+| `sources/grids/<slug>.yaml` | A grid routes draw from: its zone and country (its intensity is EcoLogits' country mix) |
 | `sources/models/<slug>.yaml` | A model: its parameter counts, copied from EcoLogits (with its id) or curated with evidence |
 
 Every location claim needs the organization's own publications as evidence, read and

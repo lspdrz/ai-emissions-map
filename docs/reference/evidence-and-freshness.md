@@ -9,9 +9,7 @@ claim is corrected.
 - **Primary:** the organization's own publications (hosting pages, documentation, region lists,
   trust centers, subprocessor lists, data-processing agreements, announcements, its
   [serving-locations file](../serving-locations/README.md)), or a facility operator's own documents about
-  that facility. For a grid's carbon intensity, the page the number was read from is primary: the
-  publisher of the value (a grid operator, an agency, an open dataset, Electricity Maps' map), whoever
-  computed it.
+  that facility.
 - **Corroborating:** press, analysts and third-party datasets. They are recorded for context and
   are never sufficient on their own. A location known only from the press is undisclosed
   (no candidates, rated D).
