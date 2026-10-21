@@ -1,0 +1,11 @@
+name: is
+display_name: Iceland
+zone: IS
+country: IS
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 27.756
+  year: 2025
+  geography: IS
+  source: Ember

@@ -1,0 +1,18 @@
+name: deepseek-v4-1-flash
+display_name: DeepSeek-V4.1-Flash
+architecture: moe
+active_b: 16
+total_b: 552
+evidence:
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
+  shows: 'Model card: "a multimodal Mixture-of-Experts (MoE) model with 552B backbone parameters"; "This allows the model to activate only 8B parameters per token during prefill and 16B during decode"'
+  accessed: "2026-10-21"
+  kind: primary
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
+  shows: 'Model card: "The model uses 1 shared expert and 384 routed experts per MoE layer, activating 6 routed experts per token."'
+  accessed: "2026-10-21"
+  kind: primary
+comments: >-
+  Active is the 16B per token during decode, since the score is per output token (8B during prefill). Total is the
+  552B backbone; the card also describes "Engram conditional memory (196B parameters, sparsely accessed via token-based
+  lookup)", not counted here. The same counts as deepseek-v4-1-flash-1017, its minor update.

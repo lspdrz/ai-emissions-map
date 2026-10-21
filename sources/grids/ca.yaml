@@ -1,0 +1,14 @@
+name: ca
+display_name: Canada
+country: CA
+subdivided: true
+comments: >-
+  Canada as a whole, for a route whose provider names the country but no province or facility. Canada's electricity
+  runs on provincial grids, so naming the country does not determine the grid. Its intensity is Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 191.587
+  year: 2025
+  geography: CA
+  source: Ember
