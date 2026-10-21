@@ -54,6 +54,7 @@ tests/                   pytest, laid out like build/; each test builds its data
 ```
 build/
   constants/config.py    the method's fixed numbers and the repository root
+  constants/snapshots.py where the snapshots and their downloads live
   schemas/               the shape and rules of each record (Pydantic TypedDicts)
   utils/                 range, bands
   grid_emissions.py      python -m build grid-emissions: a grid file + Ember's table -> its intensity: field
@@ -91,7 +92,7 @@ build/
   scoring modules never import the others.
   Curation (research, evidence, model records, cloud regions) is done by following
   `docs/workflows/`, not by code.
-- **`constants/`:** `config` (the methodology constants). A constant used by one module stays in
+- **`constants/`:** `config` (the methodology constants), `snapshots` (the snapshots' paths). A constant used by one module stays in
   that module.
 - **`utils/`:** pure helpers, no I/O. `range` (the `Range` value class), `bands` (carbon bands).
 - **`schemas/`:** the shape of every record in `sources/`, one file per record (`route`,

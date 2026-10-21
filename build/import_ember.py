@@ -20,9 +20,9 @@ from typing import NamedTuple
 
 import pycountry
 
-from build.constants.config import GRID_YEAR, SNAPSHOT_SOURCE_DIR
+from build.constants.config import GRID_YEAR
+from build.constants.snapshots import GRID_INTENSITY_FILE, SNAPSHOT_SOURCE_DIR
 from build.grid_emissions import grid_emissions
-from build.load_sources import GRID_INTENSITY_FILE
 
 GLOBAL_URL = "https://files.ember-energy.org/public-downloads/generation/outputs/release_generation_yearly_global.csv"
 _SUBNATIONAL = "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/"

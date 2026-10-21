@@ -16,7 +16,8 @@ import yaml
 from pydantic import TypeAdapter
 
 from build.constants.config import GRID_YEAR
-from build.load_sources import GRID_INTENSITY_FILE, load_grid_intensities, load_sources
+from build.constants.snapshots import GRID_INTENSITY_FILE
+from build.load_sources import load_grid_intensities, load_sources
 from build.schemas.grid import CheckedGrid, Grid, GridIntensity
 from build.validate import check_identity
 

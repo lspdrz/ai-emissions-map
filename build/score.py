@@ -13,8 +13,9 @@ from typing import Any, NamedTuple, cast
 import yaml
 
 from build.carbon_score import carbon_score
+from build.constants.snapshots import CLOUD_REGIONS_FILE
 from build.disclosure_rating import disclosure_rating, organization_rating
-from build.load_sources import CLOUD_REGIONS_FILE, load_cloud_regions, load_sources
+from build.load_sources import load_cloud_regions, load_sources
 from build.schemas.disclosure_rating import Letter
 from build.schemas.grid import Grid
 from build.schemas.route import Route
