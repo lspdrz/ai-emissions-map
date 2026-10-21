@@ -1,0 +1,15 @@
+name: cn
+display_name: China
+country: CN
+subdivided: true
+comments: >-
+  China as a whole, for a route whose provider names the country but no province or facility. China's electricity
+  runs on several regional grids, so naming the country does not determine the grid. Its intensity is Ember's national
+  value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 528.278
+  year: 2025
+  geography: CN
+  source: Ember
