@@ -9,8 +9,8 @@
     "counts": {
       "grids": 42,
       "models": 6,
-      "organizations": 5,
-      "routes": 11
+      "organizations": 6,
+      "routes": 13
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,14 +19,14 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "e77f5b6d36f726ffd9caa693f2f7274a1e11b3f66d2ecc1368778009bdd2de5d",
+    "inputs_sha": "bcf98b151e14d18671964950c21d314e6ae4cbbb2169d694ece0812fa3609786",
     "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
       1.1,
       1.6
     ],
-    "release_date": "2026-10-21"
+    "release_date": "2026-10-22"
   },
   "models": [
     {
@@ -326,6 +326,51 @@
         "nebius-deepseek-v4-1-flash"
       ],
       "slug": "nebius",
+      "type": "inference_host"
+    },
+    {
+      "country": "US",
+      "description": "Together AI says its serverless endpoints run on its own infrastructure with no choice of region, and that it hosts DeepSeek models in its North America data centers. It does not list those data centers.",
+      "display_name": "Together AI",
+      "evidence": [
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "For example, DeepSeek models are hosted in Together's secure North America data centers. DeepSeek itself receives no user requests or API traffic from this deployment.",
+            "Models published by third-party authors (DeepSeek, Qwen, Mistral, etc.) and hosted on Together run on Together's own infrastructure."
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash",
+            "together-ai-deepseek-v4-1-flash-1017"
+          ],
+          "url": "https://docs.together.ai/docs/privacy-and-security.md"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Together AI routes serverless requests across its own infrastructure, and the serving region is not selectable."
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash",
+            "together-ai-deepseek-v4-1-flash-1017"
+          ],
+          "url": "https://docs.together.ai/docs/serverless/overview.md"
+        }
+      ],
+      "homepage": "https://www.together.ai",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 2
+        },
+        "summary": "C (2 routes at C)"
+      },
+      "routes": [
+        "together-ai-deepseek-v4-1-flash",
+        "together-ai-deepseek-v4-1-flash-1017"
+      ],
+      "slug": "together-ai",
       "type": "inference_host"
     }
   ],
@@ -650,6 +695,66 @@
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "nebius-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.218011,
+        "low": 2.899883
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 384.403,
+        "low": 191.587
+      },
+      "label": "North America (United States and Canada)",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash",
+      "org": "together-ai",
+      "score": {
+        "high": 1.883361,
+        "low": 0.817525
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
+      "slug": "together-ai-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.218011,
+        "low": 2.899883
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 384.403,
+        "low": 191.587
+      },
+      "label": "North America (United States and Canada)",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash-1017",
+      "org": "together-ai",
+      "score": {
+        "high": 1.883361,
+        "low": 0.817525
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "slug": "together-ai-deepseek-v4-1-flash-1017"
     }
   ],
   "schema": "aem-data/3"
