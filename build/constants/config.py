@@ -10,6 +10,9 @@ from typing import Literal
 # The repository root: sources/, docs/ and web/ are found from here.
 ROOT = Path(__file__).resolve().parents[2]
 
+# Where the snapshots' importers keep the files they read, as downloaded (Ember's in ember_files/); from the root.
+SNAPSHOT_SOURCE_DIR = Path("sources") / "snapshots" / "files"
+
 METHODOLOGY_VERSION = "0.3.0"
 
 # Absolute carbon bands, gCO2e per 1k output tokens: band n when below CARBON_BAND_UPPER[n-1], else 5.

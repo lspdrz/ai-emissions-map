@@ -96,7 +96,7 @@ def _downloads(tmp_path):
 def test_import_writes_the_table_and_its_provenance(tmp_path):
     run = import_ember(tmp_path, *_downloads(tmp_path), date(2026, 10, 21))
     snapshots = tmp_path / "sources" / "snapshots"
-    assert run.errors == [] and len(run.written) == 2
+    assert run.errors == [] and len(run.written) == 5
     assert (
         snapshots / "grid_intensity.csv"
     ).read_text() == "geography,name,year,intensity\nCH,Switzerland,2025,39.278\n"
@@ -108,6 +108,26 @@ def test_import_writes_the_table_and_its_provenance(tmp_path):
         1,
     )
     assert [len(f["sha256"]) for f in provenance["files"]] == [64, 64, 64]
+
+
+def test_import_keeps_a_copy_of_each_download_under_embers_file_name(tmp_path):
+    global_csv, us_csv, china_csv = _downloads(tmp_path)
+    import_ember(tmp_path, global_csv, us_csv, china_csv, date(2026, 10, 21))
+    files = tmp_path / "sources" / "snapshots" / "files" / "ember_files"
+    assert (files / "release_generation_yearly_global.csv").read_bytes() == global_csv.read_bytes()
+    assert (files / "release_us_subnational_generation_yearly.csv").read_bytes() == us_csv.read_bytes()
+    assert (files / "release_chn_subnational_generation_yearly.csv").read_bytes() == china_csv.read_bytes()
+    provenance = json.loads((tmp_path / "sources" / "snapshots" / "grid_intensity.provenance.json").read_text())
+    assert provenance["files"][0]["copy"] == "sources/snapshots/files/ember_files/release_generation_yearly_global.csv"
+
+
+def test_a_new_download_replaces_the_kept_copy(tmp_path):
+    global_csv, us_csv, china_csv = _downloads(tmp_path)
+    import_ember(tmp_path, global_csv, us_csv, china_csv, date(2026, 10, 21))
+    _write(global_csv, GLOBAL_HEADER, ["Switzerland,CHE,2025,Country or economy,Total generation,40.0"])
+    run = import_ember(tmp_path, global_csv, us_csv, china_csv, date(2026, 11, 4))
+    kept = tmp_path / "sources" / "snapshots" / "files" / "ember_files" / "release_generation_yearly_global.csv"
+    assert kept in run.written and kept.read_bytes() == global_csv.read_bytes()
 
 
 def test_a_second_import_of_the_same_files_writes_nothing(tmp_path):

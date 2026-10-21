@@ -2,8 +2,9 @@
 
 Reads Ember's three yearly releases, downloaded by hand from the URLs below (sources/snapshots/README.md), keeps the
 emissions intensity of total generation of each country, US state and Chinese province for GRID_YEAR (or its latest
-earlier year), and writes the table every score's grid intensity comes from, with a .provenance.json beside it. Ember's
-data is CC-BY-4.0.
+earlier year), and writes the table every score's grid intensity comes from, with a .provenance.json beside it. It keeps
+a copy of each download in sources/snapshots/files/ember_files/, under Ember's file name, replacing the previous one; git holds the
+earlier ones. Ember's data is CC-BY-4.0.
 
     uv run python -m build import-ember --global-csv <global.csv> --us-csv <us.csv> --china-csv <china.csv>
 """
@@ -19,7 +20,7 @@ from typing import NamedTuple
 
 import pycountry
 
-from build.constants.config import GRID_YEAR
+from build.constants.config import GRID_YEAR, SNAPSHOT_SOURCE_DIR
 from build.grid_emissions import grid_emissions
 from build.load_sources import GRID_INTENSITY_FILE
 
@@ -32,6 +33,8 @@ SUBNATIONAL = {"US": ("State code", "State"), "CN": ("Province code", "Province"
 TOTAL = "Total generation"  # Ember's row for all sources of a geography and year
 INTENSITY = "Emissions intensity (gCO2e/kWh)"
 COLUMNS = ("geography", "name", "year", "intensity")
+# Where the downloads are kept, under the file names in their URLs.
+DOWNLOADS_DIR = SNAPSHOT_SOURCE_DIR / "ember_files"
 
 
 class Import(NamedTuple):
@@ -93,37 +96,39 @@ def _sha256(path: Path) -> str:
 
 
 def import_ember(root: Path, global_csv: Path, us_csv: Path, china_csv: Path, today: date) -> Import:
-    """Write sources/snapshots/grid_intensity.csv and its .provenance.json from Ember's three downloads, then rewrite
-    every grid's intensity: from it (python -m build grid-emissions --write); list the files whose content changed."""
+    """Write sources/snapshots/grid_intensity.csv and its .provenance.json from Ember's three downloads, and a copy of
+    each download in sources/snapshots/files/ember_files/, then rewrite every grid's intensity: from the table (python -m build
+    grid-emissions --write); list the files whose content changed."""
     for path in (global_csv, us_csv, china_csv):
         if not path.is_file():
             return Import([f"{path}: no such file; download it from the URL in sources/snapshots/README.md"], [])
     rows, skipped = intensity_rows(global_csv, {"US": us_csv, "CN": china_csv}, GRID_YEAR)
     table = root / GRID_INTENSITY_FILE
+    downloads = {GLOBAL_URL: global_csv, US_URL: us_csv, CHINA_URL: china_csv}
+    copies = {url: DOWNLOADS_DIR / url.rsplit("/", 1)[1] for url in downloads}
     lines = [",".join(COLUMNS)] + [",".join(_csv_field(row[c]) for c in COLUMNS) for row in rows]
     provenance = {
         "source": "Ember, yearly electricity data: emissions intensity of total generation (gCO2e/kWh)",
         "licence": "CC-BY-4.0; attribute Ember (ember-energy.org)",
         "basis": "life-cycle (IPCC AR5 emission factors per fuel), of generation: imports are not traced",
         "files": [
-            {"url": GLOBAL_URL, "sha256": _sha256(global_csv)},
-            {"url": US_URL, "sha256": _sha256(us_csv)},
-            {"url": CHINA_URL, "sha256": _sha256(china_csv)},
+            {"url": url, "copy": copies[url].as_posix(), "sha256": _sha256(path)} for url, path in downloads.items()
         ],
         "retrieved": today.isoformat(),
         "year": GRID_YEAR,
         "rows": len(rows),
         "skipped": skipped,
     }
-    outputs = {
-        table: "\n".join(lines) + "\n",
-        table.with_suffix(".provenance.json"): json.dumps(provenance, indent=2, ensure_ascii=False) + "\n",
-    }
+    outputs = {root / copies[url]: path.read_bytes() for url, path in downloads.items()}
+    outputs[table] = ("\n".join(lines) + "\n").encode()
+    outputs[table.with_suffix(".provenance.json")] = (
+        json.dumps(provenance, indent=2, ensure_ascii=False) + "\n"
+    ).encode()
     written = []
-    for path, text in outputs.items():
-        if not path.exists() or path.read_text(encoding="utf-8") != text:
+    for path, content in outputs.items():
+        if not path.exists() or path.read_bytes() != content:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8")
+            path.write_bytes(content)
             written.append(path)
     grids = grid_emissions(root, write=True)
     return Import(grids.errors, written + grids.written)

@@ -6,6 +6,9 @@ it came from, when, and under what licence.
 - `cloud_regions.csv`: which grid zone(s) each cloud region draws power from. Committed.
 - `grid_intensity.csv`: Ember's yearly intensity of electricity generation (gCO2e/kWh) for each country, US state
   and Chinese province: the grid intensity (I) of every score. Committed. Ember's data is CC-BY-4.0: credit Ember wherever it is shown.
+- `files/`: the files the importers read, as downloaded, kept so each table can be traced to the data behind it.
+  `files/ember_files/` holds Ember's three downloads as `import-ember` last read them, under the file names in their
+  URLs. Each import replaces them; git holds the earlier ones. Committed.
 
 ## Refreshing the cloud-region table
 
@@ -45,11 +48,13 @@ only, on another basis. To refresh it:
    - US states: https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_us_subnational_generation_yearly.csv
    - China provinces: https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_chn_subnational_generation_yearly.csv
 2. **Import them:** `uv run python -m build import-ember --global-csv <global.csv> --us-csv <us.csv> --china-csv
-   <china.csv>`. It writes `grid_intensity.csv` and `grid_intensity.provenance.json` (the three URLs with each
-   download's `sha256`, the licence, `retrieved` (today), the `year` (`GRID_YEAR`), the row count, and `skipped`: one
-   `{area, code, reason}` per area left out: a country without an ISO 3166-1 alpha-2 code, a release's national total,
-   which is not an ISO 3166-2 subdivision, or an area with no value for `GRID_YEAR` or earlier). It then rewrites every grid's `intensity:` from the new table, as
-   `python -m build grid-emissions --write` does.
+   <china.csv>`. It copies the three downloads into `files/ember_files/`, replacing the previous ones, and writes
+   `grid_intensity.csv` and `grid_intensity.provenance.json` (the three URLs, each with its copy in
+   `files/ember_files/` and its `sha256`, the licence, `retrieved` (today), the `year` (`GRID_YEAR`), the row count,
+   and `skipped`: one `{area, code, reason}` per area left out: a country without an ISO 3166-1 alpha-2 code, a
+   release's national total, which is not an ISO 3166-2 subdivision, or an area with no value for `GRID_YEAR` or
+   earlier). It then rewrites every grid's `intensity:` from the new table, as `python -m build grid-emissions --write`
+   does.
 3. **Check and review.** Run `uv run python -m build score`, then `uv run python -m build release`, and read the diff:
    Ember revises recent years, so scores can move. Say in the pull request that they move with the new data.
 
