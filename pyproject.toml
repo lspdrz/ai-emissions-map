@@ -53,7 +53,7 @@ forbidden_modules = ["build.*"]
 [[tool.importlinter.contracts]]
 name = "the scoring modules never import the commands"
 type = "forbidden"
-source_modules = ["build.carbon_score", "build.disclosure_rating", "build.grid_emissions"]
+source_modules = ["build.carbon_score", "build.disclosure_rating"]
 forbidden_modules = ["build.load_sources", "build.validate", "build.score", "build.generate_site_data",
                      "build.release", "build.check_carbon_scores",
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]

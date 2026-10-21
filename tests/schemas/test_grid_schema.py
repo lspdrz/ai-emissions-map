@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
@@ -12,7 +14,7 @@ _GRID = TypeAdapter(CheckedGrid)
 
 
 def test_a_public_grid_is_its_zone_and_country():
-    grid = make_grid(name="ch", country="CH", zone="CH")
+    grid = make_grid(name="ch", country="CH", zone="CH", intensity=None)
     assert _GRID.validate_python(grid) == {"name": "ch", "display_name": "CH", "country": "CH", "zone": "CH"}
 
 
@@ -58,4 +60,4 @@ def test_a_grid_may_carry_the_intensity_score_wrote():
 
 def test_a_stored_intensity_must_come_from_ember():
     with pytest.raises(ValidationError):
-        make_grid(intensity={"g_per_kwh": 39.3, "year": 2025, "geography": "CH", "source": "VSE"})
+        make_grid(intensity=cast(Any, {"g_per_kwh": 39.3, "year": 2025, "geography": "CH", "source": "VSE"}))

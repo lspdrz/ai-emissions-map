@@ -10,7 +10,7 @@ from tests.builders.model import make_model
 
 
 # A route's carbon score: (E x I) + M per 1,000 output tokens, with its parts. E and M are set by replacing
-# ecologits_estimate; I is each grid's resolved intensity, as score passes it (tests/test_grid_emissions.py resolves it).
+# ecologits_estimate; I is each grid's resolved intensity, as score passes it from the grid files (tests/test_grid_emissions.py).
 
 
 def test_a_route_on_one_grid_is_scored(monkeypatch):
@@ -21,7 +21,6 @@ def test_a_route_on_one_grid_is_scored(monkeypatch):
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6}
     assert r["embodied_g"] == {"low": 0.05, "high": 0.06}
     assert r["intensity_g_per_kwh"] == {"low": 30.0, "high": 30.0}
-    assert r["intensity_years"] == [2025]
     # score = E x I + M: 0.5..0.6 Wh x 30 g/kWh / 1000 + 0.05..0.06 g
     assert r["score_g"] == {"low": 0.065, "high": 0.078}
     assert r["band"] == [2, 2]
@@ -38,17 +37,11 @@ def test_several_grids_give_a_range(monkeypatch):
     assert r["band"] == [2, 3]
 
 
-def test_the_years_of_every_grids_value_are_recorded(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (Range.point(1.0), Range.point(0.0)))
-    ch, xk = make_grid_intensity(39.3, year=2025), make_grid_intensity(900.0, year=2023, geography="XK")
-    assert carbon_score(make_model(), {"ch": ch, "xk": xk})["intensity_years"] == [2023, 2025]
-
-
 def test_no_grids_no_score_but_energy_reported(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
     monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (energy, embodied))
     r = carbon_score(make_model(), {})
-    assert r["grids"] == [] and r["intensity_years"] == []
+    assert r["grids"] == []
     assert r["score_g"] is None and r["band"] is None and r["intensity_g_per_kwh"] is None
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6} and r["embodied_g"] == {"low": 0.05, "high": 0.06}
 

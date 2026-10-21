@@ -31,8 +31,9 @@ context but never establishes a location. The rules are in [`docs/reference/`](d
 
 ## What not to commit
 
-- Hand edits to the `intensity:`, `disclosure_rating:` and `carbon_score:` fields, or anything below the comment that marks them
-  as generated: change the facts above them and run `python -m build score`.
+- Hand edits to the `intensity:`, `disclosure_rating:` and `carbon_score:` fields, or anything below the comments that mark them
+  as generated: change the facts above them and run `python -m build grid-emissions` (for a grid) or
+  `python -m build score`.
 
 ## Organizations on the map
 

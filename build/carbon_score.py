@@ -72,7 +72,6 @@ def carbon_score(model: Model, grids: Mapping[str, GridIntensity]) -> CarbonScor
             energy_wh=_interval(energy),
             embodied_g=_interval(embodied),
             intensity_g_per_kwh=None,
-            intensity_years=[],
             score_g=None,
             band=None,
         )
@@ -85,7 +84,6 @@ def carbon_score(model: Model, grids: Mapping[str, GridIntensity]) -> CarbonScor
         energy_wh=_interval(energy),
         embodied_g=_interval(embodied),
         intensity_g_per_kwh=_interval(intensity),
-        intensity_years=sorted({grids[g]["year"] for g in names}),
         score_g=_interval(score),
         band=list(band_span(score, CARBON_BAND_UPPER)),
     )

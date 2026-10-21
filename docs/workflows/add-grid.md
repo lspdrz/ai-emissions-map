@@ -31,7 +31,7 @@ province) where it names one, else for its country, from
    region the route uses, as the part of its ISO 3166-2 code after the country (`VA` for Virginia, US-VA; `GD` for
    Guangdong, CN-GD). Grids can cross state and province lines; name the one where the facility is, and say in
    `comments` when the grid spans others. Without a subdivision, the grid uses the national value. Ember publishes no
-   other subdivisions on the same basis, so leave it out elsewhere (`score` refuses one it has no value for).
+   other subdivisions on the same basis, so leave it out elsewhere (step 6 refuses one it has no value for).
 5. **Write the file:**
    ```yaml
    name: fr
@@ -48,25 +48,30 @@ province) where it names one, else for its country, from
    subdivision: VA
    comments: PJM spans thirteen states; the facility is in Virginia.
    ```
+6. **Write its intensity:** `uv run python -m build grid-emissions <slug>` (for example `us-mida-pjm`). It looks up
+   Ember's value for the grid's subdivision, or else its country, for the release's year or the latest earlier one,
+   and writes it at the end of the file below a comment saying it is written by the command: the value, its year and
+   the geography it is for (`CH`, `US-VA`, `CN-GD`). Never edit the `intensity:` field by hand. The command refuses a
+   grid whose country or subdivision has no Ember value, and an on-site grid (which no country or subdivision average
+   can value).
 
 ## Validation
 ```bash
 uv run python -m build score
 uv run python -m build release
 ```
-`score` writes the grid's `intensity:` at the end of the file, below a comment saying it is generated (Ember's value,
-its year and the geography it is for: `CH`, `US-VA`, `CN-GD`), and rewrites the score of every route on the grid;
-`release` rewrites `web/data/data.json`. Both must end without `ERROR:` lines; commit everything they write. Never edit
-the `intensity:` field by hand. `score` refuses a grid whose country or subdivision has no Ember value, an on-site grid
-(which no country or subdivision average can value), and a grid no route uses, so add the grid together with the
-route that needs it.
+`score` reads the grid's `intensity:` (it refuses a grid without one, naming the command to run) and rewrites the score
+of every route on the grid; `release` rewrites `web/data/data.json`. Both must end without `ERROR:` lines; commit
+everything they write. `score` also refuses a grid no route uses, so add the grid together with the route that needs
+it. CI runs `uv run python -m build check-grid-emissions`, which fails if a stored `intensity:` is not what step 6
+would write now.
 
 ## Expected PR contents
-The grid file with the `intensity:` `score` wrote, usually with the route that needs it, the `disclosure_rating:` and
+The grid file with the `intensity:` step 6 wrote, usually with the route that needs it, the `disclosure_rating:` and
 `carbon_score:` fields that moved and `web/data/data.json`.
 
 ## Stop and escalate when
-- Ember has no value for the country or state (`score` says so).
+- Ember has no value for the country or subdivision (`grid-emissions` says so).
 - The grid is on-site: the method cannot score it yet.
 - The zone's boundary does not match where the facility is, or a site draws on two zones.
 

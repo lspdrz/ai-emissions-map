@@ -7,6 +7,7 @@ import pytest
 
 from build.__main__ import main
 from build.check_site_data import SiteDataCheck
+from build.grid_emissions import GridRun
 from build.import_ember import Import
 from build.release import Release
 from build.score import ScoreRun
@@ -129,3 +130,20 @@ def test_import_ember_needs_all_three_downloads(capsys):
     with pytest.raises(SystemExit):
         main(["import-ember", "--global-csv", "/g.csv", "--us-csv", "/u.csv"])
     assert "--china-csv" in capsys.readouterr().err
+
+
+def test_grid_emissions_runs_on_the_named_grids_or_on_all(monkeypatch):
+    fake = Mock(return_value=GridRun([], []))
+    monkeypatch.setattr("build.__main__.write_grid_emissions", fake)
+    assert main(["grid-emissions", "--root", "/repo", "ch", "de"]) == 0
+    assert main(["grid-emissions", "--root", "/repo"]) == 0
+    assert fake.call_args_list[0].args == (Path("/repo"), ["ch", "de"])
+    assert fake.call_args_list[1].args == (Path("/repo"), None)
+
+
+def test_check_grid_emissions_runs_its_gate_on_the_root(monkeypatch, capsys):
+    fake = Mock(return_value=GridRun([], []))
+    monkeypatch.setattr("build.__main__.check_grid_emissions", fake)
+    assert main(["check-grid-emissions", "--root", "/repo"]) == 0
+    fake.assert_called_once_with(Path("/repo"))
+    assert capsys.readouterr().out == "0 error(s)\n"

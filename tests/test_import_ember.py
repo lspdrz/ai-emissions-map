@@ -106,3 +106,12 @@ def test_a_missing_download_is_reported_and_nothing_is_written(tmp_path):
         "no such file; download it from the URL in sources/snapshots/README.md"
     )
     assert not (tmp_path / "sources").exists()
+
+
+def test_an_import_rewrites_every_grids_intensity_from_the_new_table(tmp_path):
+    (tmp_path / "sources" / "grids").mkdir(parents=True)
+    grid = tmp_path / "sources" / "grids" / "ch.yaml"
+    grid.write_text("name: ch\ndisplay_name: Switzerland\ncountry: CH\n")
+    run = import_ember(tmp_path, *_downloads(tmp_path), date(2026, 10, 21))
+    assert run.errors == [] and "ch.yaml" in [p.name for p in run.written]
+    assert "  g_per_kwh: 39.278\n  year: 2025\n  geography: CH\n  source: Ember\n" in grid.read_text()
