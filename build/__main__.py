@@ -19,6 +19,10 @@ import-ember
         refreshes sources/snapshots/grid_intensity.csv from Ember's three yearly downloads (see
         sources/snapshots/README.md) and rewrites every grid's intensity:. Run score and release after it, and commit
         everything they write.
+import-cloud-regions
+        refreshes sources/snapshots/cloud_regions.csv from the Green Software Foundation's cloud-region metadata at a
+        pinned commit (see sources/snapshots/README.md). Run score and release after it, and commit everything they
+        write.
 """
 
 from __future__ import annotations
@@ -32,6 +36,7 @@ from build.check_carbon_scores import check_carbon_scores
 from build.check_disclosure_ratings import check_disclosure_ratings
 from build.check_site_data import SiteDataCheck, check_site_data
 from build.grid_emissions import GridRun, grid_emissions
+from build.import_cloud_regions import import_cloud_regions
 from build.import_ember import Import, import_ember
 from build.release import Release, release
 from build.score import ScoreRun, score
@@ -65,6 +70,10 @@ def _import_ember(args: argparse.Namespace) -> Import:
     return import_ember(args.root, args.global_csv, args.us_csv, args.china_csv, date.today())
 
 
+def _import_cloud_regions(args: argparse.Namespace) -> Import:
+    return import_cloud_regions(args.root, args.csv, args.commit, date.today())
+
+
 def main(argv: list[str] | None = None) -> int:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
@@ -73,7 +82,8 @@ def main(argv: list[str] | None = None) -> int:
         dest="command",
         required=True,
         metavar=(
-            "{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,grid-emissions,import-ember}"
+            "{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,grid-emissions,import-ember,"
+            "import-cloud-regions}"
         ),
     )
     for name, run, done, about in (
@@ -109,6 +119,12 @@ def main(argv: list[str] | None = None) -> int:
             "nothing changed",
             "refresh sources/snapshots/grid_intensity.csv from Ember's yearly downloads",
         ),
+        (
+            "import-cloud-regions",
+            _import_cloud_regions,
+            "nothing changed",
+            "refresh sources/snapshots/cloud_regions.csv from the Green Software Foundation's cloud-region metadata",
+        ),
     ):
         command = commands.add_parser(name, parents=[common], help=about, description=about)
         command.set_defaults(run=run, done=done)
@@ -121,6 +137,9 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--global-csv", type=Path, required=True, help="Ember's global yearly release")
             command.add_argument("--us-csv", type=Path, required=True, help="Ember's US-state yearly release")
             command.add_argument("--china-csv", type=Path, required=True, help="Ember's China-province yearly release")
+        if name == "import-cloud-regions":
+            command.add_argument("--csv", type=Path, required=True, help="Cloud_Region_Metadata.csv, as downloaded")
+            command.add_argument("--commit", required=True, help="the commit of real-time-cloud it was downloaded at")
     args = parser.parse_args(argv)
     run = args.run(args)
     errors, written = run.errors, run.written

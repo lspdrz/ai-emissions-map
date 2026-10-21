@@ -3,8 +3,9 @@
   "repository": "https://github.com/Green-Software-Foundation/real-time-cloud",
   "commit": "8f99b3bc01ecb342905b80a485573fda9494a052",
   "url": "https://raw.githubusercontent.com/Green-Software-Foundation/real-time-cloud/8f99b3bc01ecb342905b80a485573fda9494a052/Cloud_Region_Metadata.csv",
+  "copy": "sources/snapshots/files/gsf_files/Cloud_Region_Metadata.csv",
   "licence": "see the source repository's License.md",
-  "retrieved": "2026-10-11",
+  "retrieved": "2026-10-21",
   "sha256": "8aac9c58f018af723042d84aa6239905bf959103104becec4c16b22aaaf1c58c",
   "skipped": [
     {

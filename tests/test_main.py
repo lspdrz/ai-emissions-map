@@ -132,6 +132,20 @@ def test_import_ember_needs_all_three_downloads(capsys):
     assert "--china-csv" in capsys.readouterr().err
 
 
+def test_import_cloud_regions_runs_on_the_root_with_its_download_commit_and_todays_date(monkeypatch):
+    fake_import = Mock(return_value=Import([], []))
+    monkeypatch.setattr("build.__main__.import_cloud_regions", fake_import)
+    monkeypatch.setattr("build.__main__.date", SimpleNamespace(today=lambda: date(2026, 10, 21)))
+    assert main(["import-cloud-regions", "--root", "/repo", "--csv", "/m.csv", "--commit", "8f99b3bc"]) == 0
+    fake_import.assert_called_once_with(Path("/repo"), Path("/m.csv"), "8f99b3bc", date(2026, 10, 21))
+
+
+def test_import_cloud_regions_needs_the_commit(capsys):
+    with pytest.raises(SystemExit):
+        main(["import-cloud-regions", "--csv", "/m.csv"])
+    assert "--commit" in capsys.readouterr().err
+
+
 def test_grid_emissions_checks_by_default_and_writes_with_write(monkeypatch):
     fake = Mock(return_value=GridRun([], []))
     monkeypatch.setattr("build.__main__.grid_emissions", fake)
