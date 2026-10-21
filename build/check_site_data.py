@@ -11,17 +11,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import NamedTuple
 
 from build.generate_site_data import check_contract
 from build.release import DATA_FILE, inputs_sha
+from build.types import SiteDataCheck
 
 RUN = "run `python -m build release`"
-
-
-class SiteDataCheck(NamedTuple):
-    errors: list[str]
-    written: list[Path]  # always empty: the gate writes nothing
 
 
 def check_site_data(root: Path) -> SiteDataCheck:

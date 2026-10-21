@@ -6,11 +6,8 @@ from unittest.mock import Mock
 import pytest
 
 from build.__main__ import main
-from build.check_site_data import SiteDataCheck
-from build.grid_emissions import GridRun
-from build.release import Release
 from build.score import ScoreRun
-from build.types import Import
+from build.types import GridRun, Import, Release, SiteDataCheck
 
 # Each test replaces the command functions with fakes: what __main__ does is choose one, print its result and set the
 # exit code.

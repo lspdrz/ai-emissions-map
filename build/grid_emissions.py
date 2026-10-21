@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import NamedTuple
 
 import yaml
 from pydantic import TypeAdapter
@@ -19,6 +18,7 @@ from build.constants.config import GRID_YEAR
 from build.constants.snapshots import GRID_INTENSITY_FILE
 from build.load_sources import load_grid_intensities, load_sources
 from build.schemas.grid import CheckedGrid, Grid, GridIntensity
+from build.types import GridRun
 from build.validate import check_identity
 
 # The Ember snapshot, as load_grid_intensities reads it: geography -> year -> intensity in gCO2e/kWh. A geography is a
@@ -30,11 +30,6 @@ GRID_EMISSIONS_COMMENT = (
     "# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line"
     " is rewritten by it; do not edit it by hand."
 )
-
-
-class GridRun(NamedTuple):
-    errors: list[str]
-    written: list[Path]
 
 
 # Looking up one grid.

@@ -34,13 +34,13 @@ from pathlib import Path
 from build.constants.config import ROOT
 from build.check_carbon_scores import check_carbon_scores
 from build.check_disclosure_ratings import check_disclosure_ratings
-from build.check_site_data import SiteDataCheck, check_site_data
-from build.grid_emissions import GridRun, grid_emissions
+from build.check_site_data import check_site_data
+from build.grid_emissions import grid_emissions
 from build.import_cloud_regions import import_cloud_regions
 from build.import_ember import import_ember
-from build.release import Release, release
+from build.release import release
 from build.score import ScoreRun, score
-from build.types import Import
+from build.types import GridRun, Import, Release, SiteDataCheck
 
 
 def _score(args: argparse.Namespace) -> ScoreRun:
