@@ -7,10 +7,10 @@
       1.0
     ],
     "counts": {
-      "grids": 38,
-      "models": 4,
-      "organizations": 3,
-      "routes": 9
+      "grids": 39,
+      "models": 5,
+      "organizations": 4,
+      "routes": 10
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,7 +19,7 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "a66988d3b6c417703d596ee7c7b16314a2b6928d723586e3dfd68dcde32b9ac6",
+    "inputs_sha": "bb840b075c761019b612951ab397b6a3fb2235c3518af1ae9a153c6492b33217",
     "intensity_spread": 18,
     "methodology_version": "0.3.0",
     "pue": [
@@ -45,6 +45,13 @@
       "display_name": "Claude Opus 5.5",
       "slug": "claude-opus-5-5",
       "total_b": 670
+    },
+    {
+      "active_b": 16,
+      "architecture": "moe",
+      "display_name": "DeepSeek-V4.1-Flash-1017",
+      "slug": "deepseek-v4-1-flash-1017",
+      "total_b": 552
     },
     {
       "active_b": {
@@ -102,6 +109,50 @@
         "anthropic-claude-opus-5-5-us"
       ],
       "slug": "anthropic",
+      "type": "model_lab"
+    },
+    {
+      "country": "CN",
+      "description": "DeepSeek states that it processes and stores users' data, prompts included, in the People's Republic of China. It does not say in which province or facility its API runs.",
+      "display_name": "DeepSeek",
+      "evidence": [
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "We will collect and process the personal information you provide as the data subject in accordance with the "
+          ],
+          "routes": [
+            "deepseek-deepseek-v4-1-flash-1017"
+          ],
+          "url": "https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html"
+        },
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "Where We Store Your Personal Data",
+            "To provide you with our services, we directly collect, process and store your Personal Data in People's Republic of China.",
+            "User Input",
+            "we may collect your text input, voice input, prompt, uploaded files, photos, feedback, chat history, or other content that you provide to our model and Services (“Prompts” or “Inputs”). We generate responses (“Outputs”) based on your Inputs."
+          ],
+          "routes": [
+            "deepseek-deepseek-v4-1-flash-1017"
+          ],
+          "url": "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html"
+        }
+      ],
+      "homepage": "https://www.deepseek.com",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 1
+        },
+        "summary": "C (1 route at C)"
+      },
+      "routes": [
+        "deepseek-deepseek-v4-1-flash-1017"
+      ],
+      "slug": "deepseek",
       "type": "model_lab"
     },
     {
@@ -250,6 +301,36 @@
       },
       "served_as": null,
       "slug": "anthropic-claude-opus-5-5-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.218011,
+        "low": 2.899883
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 528.278,
+        "low": 528.278
+      },
+      "label": "China",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash-1017",
+      "org": "deepseek",
+      "score": {
+        "high": 2.490228,
+        "low": 1.793889
+      },
+      "served_as": "deepseek-flash",
+      "slug": "deepseek-deepseek-v4-1-flash-1017"
     },
     {
       "band": [
