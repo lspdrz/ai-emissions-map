@@ -1,0 +1,22 @@
+name: apertus-v1-5-70b
+display_name: Apertus 1.5 70B
+architecture: dense
+active_b: 70
+total_b: 70
+evidence:
+- url: https://huggingface.co/swiss-ai/Apertus-v1.5-70B
+  shows: 'Model card: "Apertus 1.5 is a family of 8B and 70B parameter language models"; "Apertus 1.5 thus uses the same architecture as the original release, a decoder-only transformer with the xIELU activation function"'
+  accessed: "2026-10-20"
+  kind: primary
+- url: https://arxiv.org/abs/2610.15542
+  shows: 'Apertus 1.5 technical report, abstract: "the language-model head remains restricted to text, and the architecture is unchanged"'
+  accessed: "2026-10-20"
+  kind: primary
+- url: https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/config.json
+  shows: 'config.json of the original 70B release: "architectures": ["ApertusForCausalLM"], "num_hidden_layers": 80, "intermediate_size": 43008, with no expert fields: a dense model'
+  accessed: "2026-10-20"
+  kind: primary
+comments: >-
+  Swiss AI states 70B. Hugging Face counts 72.0B parameters in the v1.5 safetensors: 71.7B BF16 in the language model
+  (70.6B in the 1.0 release) and 0.3B F32 in the vision and audio tokenizers added in 1.5. EcoLogits' catalogue
+  (0.11.2) has no Apertus entry.
