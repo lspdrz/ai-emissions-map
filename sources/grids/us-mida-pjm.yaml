@@ -1,0 +1,15 @@
+name: us-mida-pjm
+display_name: PJM Interconnection
+zone: US-MIDA-PJM
+country: US
+subdivision: VA
+comments: >-
+  PJM spans thirteen states and the District of Columbia; the subdivision is Virginia, where Google Cloud's us-east4
+  is. us-east5 (Columbus, Ohio) also resolves to this zone and takes Virginia's value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 356.592
+  year: 2025
+  geography: US-VA
+  source: Ember

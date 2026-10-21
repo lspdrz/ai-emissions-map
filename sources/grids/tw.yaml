@@ -1,0 +1,11 @@
+name: tw
+display_name: Taiwan
+zone: TW
+country: TW
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 633.584
+  year: 2025
+  geography: TW
+  source: Ember

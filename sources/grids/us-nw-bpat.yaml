@@ -1,0 +1,14 @@
+name: us-nw-bpat
+display_name: Bonneville Power Administration
+zone: US-NW-BPAT
+country: US
+subdivision: OR
+comments: >-
+  BPA spans several Northwestern states; the subdivision is Oregon, where Google Cloud's us-west1 is.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 199.612
+  year: 2025
+  geography: US-OR
+  source: Ember

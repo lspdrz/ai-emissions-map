@@ -1,0 +1,14 @@
+name: us-midw-miso
+display_name: Midcontinent Independent System Operator
+zone: US-MIDW-MISO
+country: US
+subdivision: IA
+comments: >-
+  MISO spans fifteen states; the subdivision is Iowa, where Google Cloud's us-central1 is.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 312.815
+  year: 2025
+  geography: US-IA
+  source: Ember

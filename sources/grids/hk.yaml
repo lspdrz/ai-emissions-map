@@ -1,0 +1,11 @@
+name: hk
+display_name: Hong Kong
+zone: HK
+country: HK
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 675.561
+  year: 2024
+  geography: HK
+  source: Ember

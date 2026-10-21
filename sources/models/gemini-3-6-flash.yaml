@@ -1,0 +1,17 @@
+name: gemini-3-6-flash
+display_name: Gemini 3.6 Flash
+architecture: moe
+active_b: { min: 75, max: 200 }
+total_b: 750
+evidence:
+- url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
+  shows: 'EcoLogits catalogue, "gemini-3.6-flash": architecture "moe", parameters "total": 750, "active": {"min": 75, "max": 200}; warnings "model-arch-not-released", "model-arch-multimodal"'
+  accessed: "2026-10-21"
+  kind: corroborating
+- url: https://deepmind.google/models/model-cards/gemini-3-6-flash/
+  shows: 'Model card: "Gemini 3.6 Flash is based on Gemini 3.5 Flash. For more information about the model architecture for Gemini 3.6 Flash, see the Gemini 3.5 Flash model card."'
+  accessed: "2026-10-21"
+  kind: primary
+comments: >-
+  EcoLogits marks Gemini 3.6 Flash's architecture as not released by Google: these counts are its estimate. Google's
+  model card defers to the Gemini 3.5 Flash card, which defers to the Gemini 3 Flash card; none gives parameter counts.

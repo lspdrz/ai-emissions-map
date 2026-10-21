@@ -1,0 +1,11 @@
+name: fi
+display_name: Finland
+zone: FI
+country: FI
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 57.182
+  year: 2025
+  geography: FI
+  source: Ember

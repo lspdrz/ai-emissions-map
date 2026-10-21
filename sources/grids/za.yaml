@@ -1,0 +1,11 @@
+name: za
+display_name: South Africa
+zone: ZA
+country: ZA
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 699.199
+  year: 2025
+  geography: ZA
+  source: Ember

@@ -1,0 +1,11 @@
+name: il
+display_name: Israel
+zone: IL
+country: IL
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 492.85
+  year: 2025
+  geography: IL
+  source: Ember

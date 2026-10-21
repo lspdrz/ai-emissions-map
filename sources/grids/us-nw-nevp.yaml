@@ -1,0 +1,12 @@
+name: us-nw-nevp
+display_name: Nevada Power Company
+zone: US-NW-NEVP
+country: US
+subdivision: NV
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 325.865
+  year: 2025
+  geography: US-NV
+  source: Ember
