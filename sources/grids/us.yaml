@@ -1,0 +1,15 @@
+name: us
+display_name: United States
+country: US
+subdivided: true
+comments: >-
+  The United States as a whole, for a route that commits only to US-based infrastructure without naming a region.
+  It has no zone of its own: it spans every US zone, so naming it does not determine the grid. Its intensity is
+  Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 384.403
+  year: 2025
+  geography: US
+  source: Ember
