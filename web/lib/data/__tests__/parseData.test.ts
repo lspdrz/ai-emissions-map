@@ -9,7 +9,7 @@ describe("parseData", () => {
     expect(parseData(fixture()).routes[0].slug).toBe("acme-m");
   });
   it("rejects another contract version, naming the expected one", () => {
-    expect(() => parseData({ ...fixture(), schema: "aem-data/0" })).toThrow(/aem-data\/2/);
+    expect(() => parseData({ ...fixture(), schema: "aem-data/0" })).toThrow(/aem-data\/3/);
   });
   it("rejects a route whose organization is missing", () => {
     const raw = fixture();

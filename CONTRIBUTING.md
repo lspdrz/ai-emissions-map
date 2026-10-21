@@ -22,7 +22,7 @@ Find your task in [`docs/README.md`](docs/README.md) and follow its workflow. In
 |---|---|
 | `sources/organizations/<slug>.yaml` | An organization |
 | `sources/routes/<org>-<model>.yaml` | Where the organization serves one model, with evidence |
-| `sources/grids/<slug>.yaml` | A grid routes draw from: its zone and country (its intensity is EcoLogits' country mix) |
+| `sources/grids/<slug>.yaml` | A grid routes draw from: its zone, country and subdivision (US state or Chinese province); its intensity is Ember's value for them |
 | `sources/models/<slug>.yaml` | A model: its parameter counts, copied from EcoLogits (with its id) or curated with evidence |
 
 Every location claim needs the organization's own publications as evidence, read and
@@ -31,8 +31,9 @@ context but never establishes a location. The rules are in [`docs/reference/`](d
 
 ## What not to commit
 
-- Hand edits to the `disclosure_rating:` and `carbon_score:` fields, or anything below the comment that marks them
-  as generated: change the facts above them and run `python -m build score`.
+- Hand edits to the `intensity:`, `disclosure_rating:` and `carbon_score:` fields, or anything below the comments that mark them
+  as generated: change the facts above them and run `python -m build grid-emissions --write` (for a grid) or
+  `python -m build score`.
 
 ## Organizations on the map
 

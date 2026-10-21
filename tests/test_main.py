@@ -7,6 +7,8 @@ import pytest
 
 from build.__main__ import main
 from build.check_site_data import SiteDataCheck
+from build.grid_emissions import GridRun
+from build.import_ember import Import
 from build.release import Release
 from build.score import ScoreRun
 
@@ -111,3 +113,31 @@ def test_each_command_has_its_own_help(capsys, command, about):
     out = capsys.readouterr().out
     assert out.splitlines()[0] == f"usage: python -m build {command} [-h]"
     assert about in " ".join(out.split())  # argparse may wrap the description
+
+
+def test_import_ember_runs_on_the_root_with_its_three_downloads_and_todays_date(monkeypatch):
+    fake_import = Mock(return_value=Import([], []))
+    monkeypatch.setattr("build.__main__.import_ember", fake_import)
+    monkeypatch.setattr("build.__main__.date", SimpleNamespace(today=lambda: date(2026, 10, 21)))
+    argv = ["import-ember", "--root", "/repo", "--global-csv", "/g.csv", "--us-csv", "/u.csv", "--china-csv", "/c.csv"]
+    assert main(argv) == 0
+    fake_import.assert_called_once_with(
+        Path("/repo"), Path("/g.csv"), Path("/u.csv"), Path("/c.csv"), date(2026, 10, 21)
+    )
+
+
+def test_import_ember_needs_all_three_downloads(capsys):
+    with pytest.raises(SystemExit):
+        main(["import-ember", "--global-csv", "/g.csv", "--us-csv", "/u.csv"])
+    assert "--china-csv" in capsys.readouterr().err
+
+
+def test_grid_emissions_checks_by_default_and_writes_with_write(monkeypatch):
+    fake = Mock(return_value=GridRun([], []))
+    monkeypatch.setattr("build.__main__.grid_emissions", fake)
+    assert main(["grid-emissions", "--root", "/repo"]) == 0
+    assert main(["grid-emissions", "--root", "/repo", "--write", "ch", "de"]) == 0
+    assert fake.call_args_list[0].args == (Path("/repo"), None) and fake.call_args_list[0].kwargs == {"write": False}
+    assert fake.call_args_list[1].args == (Path("/repo"), ["ch", "de"]) and fake.call_args_list[1].kwargs == {
+        "write": True
+    }

@@ -1,6 +1,7 @@
 """The scores: computing every route's `disclosure_rating:` and `carbon_score:` and every organization's
 `disclosure_rating:`, and writing them at the end of their files as ordinary fields. `python -m build score` runs it;
-see score() below.
+see score() below. Each grid's intensity is read from its file, where `python -m build grid-emissions --write` wrote it at
+curation time (build/grid_emissions.py): score never loads Ember's table.
 """
 
 from __future__ import annotations
@@ -94,13 +95,18 @@ def score_routes(
     data: Sources,
     cloud_regions: Mapping[tuple[str, str], list[str]],
 ) -> dict[str, RouteScore]:
-    """The fields score writes for every route: its disclosure letter and its carbon score, as they are stored."""
+    """The fields score writes for every route: its disclosure letter and its carbon score, as they are stored. The
+    carbon score reads each grid's stored intensity: (validation has checked every grid has one)."""
     route_scores: dict[str, RouteScore] = {}
     for name, route in sorted(data["routes"].items()):
         grids = route_grids(route, data["grids"], cloud_regions)
         route_scores[name] = RouteScore(
             disclosure_rating=disclosure_rating(route["location"], grids),
-            carbon_score=carbon_score(data["models"][route["model"]], grids),
+            # Validation has checked every grid has its intensity:, so none is left out here.
+            carbon_score=carbon_score(
+                data["models"][route["model"]],
+                {g: grid["intensity"] for g, grid in grids.items() if "intensity" in grid},
+            ),
         )
     return route_scores
 

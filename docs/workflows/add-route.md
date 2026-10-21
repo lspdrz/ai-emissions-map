@@ -68,7 +68,7 @@ that no longer matches `sources/`. If `score` reports a zone or grid with no gri
 [`add-grid.md`](add-grid.md), then run both again.
 
 ## Expected PR contents
-The route file, any grid or model it needed, the `disclosure_rating:` and `carbon_score:` fields `score` wrote,
+The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_score:` fields `score` wrote,
 the organization's `disclosure_rating:`, and `web/data/data.json`. One short note per route on the evidence that
 settled its candidates.
 

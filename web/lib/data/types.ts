@@ -1,5 +1,5 @@
-/** The shapes of data/data.json (contract aem-data/2), written by `uv run python -m build release`. */
-export const SCHEMA = "aem-data/2";
+/** The shapes of data/data.json (contract aem-data/3), written by `uv run python -m build release`. */
+export const SCHEMA = "aem-data/3";
 
 export type Range = { low: number; high: number };
 export type Params = number | { min: number; max: number };
@@ -23,7 +23,7 @@ export interface Model {
 }
 export interface Meta {
   release_date: string; inputs_sha: string; methodology_version: string; ecologits_version: string; pue: [number, number];
-  band_upper: number[]; draft: boolean;
+  band_upper: number[]; draft: boolean; grid: { source: string; year: number };
   counts: { organizations: number; routes: number; models: number; grids: number };
   intensity_spread: number | null; featured_model: string | null;
 }

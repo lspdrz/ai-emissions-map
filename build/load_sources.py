@@ -1,4 +1,5 @@
-"""Reading sources/ from disk: every record keyed by its filename stem, and the cloud-region table."""
+"""Reading sources/ from disk: every record keyed by its filename stem, the cloud-region table and the grid-intensity
+table."""
 
 from __future__ import annotations
 
@@ -11,6 +12,7 @@ import yaml
 SOURCE_DIRS = ("organizations", "grids", "routes", "models")
 
 CLOUD_REGIONS_FILE = Path("sources") / "snapshots" / "cloud_regions.csv"
+GRID_INTENSITY_FILE = Path("sources") / "snapshots" / "grid_intensity.csv"
 
 
 def load_sources(root: Path) -> dict:
@@ -42,3 +44,13 @@ def load_cloud_regions(path: Path) -> dict[tuple[str, str], list[str]]:
         for row in csv.DictReader(fh):
             regions.setdefault((row["vendor"], row["region"]), []).append(row["zone"])
     return {key: sorted(set(zones)) for key, zones in regions.items()}
+
+
+def load_grid_intensities(path: Path) -> dict[str, dict[int, float]]:
+    """Each geography (a country's ISO 3166-1 alpha-2 code, or a subdivision's ISO 3166-2 code such as US-VA or
+    CN-GD) to its Ember intensity per year, in gCO2e/kWh."""
+    intensities: dict[str, dict[int, float]] = {}
+    with path.open(encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            intensities.setdefault(row["geography"], {})[int(row["year"])] = float(row["intensity"])
+    return intensities

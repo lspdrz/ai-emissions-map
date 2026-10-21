@@ -7,7 +7,7 @@ Guidance for coding agents and people working in this repository.
 The AI Emissions Map gives every AI serving route (an organization serving a model, by default or in
 a region the customer chooses) a **carbon score**, and every organization a **location disclosure rating** (A–D). The
 score is the full Software Carbon Intensity per 1,000 output tokens: energy and embodied emissions
-from EcoLogits, and grid carbon intensity from EcoLogits' electricity mix for the country of the route's location. Locations are the only thing curators
+from EcoLogits, and grid carbon intensity from Ember's yearly data for the country (or US state or Chinese province) of the route's location. Locations are the only thing curators
 research; everything else is calculated. The rules are in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)
 and [`docs/reference/`](docs/reference/).
 
@@ -34,11 +34,12 @@ and [`docs/reference/`](docs/reference/).
 
 ```
 sources/organizations/   one file per organization
-sources/grids/           one file per grid a route may draw from: its zone and country (location only, no values)
+sources/grids/           one file per grid a route may draw from: its zone, country and subdivision (location only)
 sources/routes/          one file per route, <org>-<model>.yaml, naming its organization in org:
 sources/models/          one record per model a route serves: the developer's counts, or EcoLogits' estimate, cited
 sources/snapshots/       imported data, each file with a <stem>.provenance.json
   cloud_regions.csv      cloud region -> grid zone(s), from the Green Software Foundation (committed)
+  grid_intensity.csv     country / US state / Chinese province -> yearly grid intensity, from Ember (import-ember)
 build/                   Python modules; the command is `python -m build` (see --help)
 docs/                    methodology, workflows, reference rules, serving-locations/ (the format to publish)
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
@@ -54,10 +55,12 @@ build/
   constants/config.py    the method's fixed numbers and the repository root
   schemas/               the shape and rules of each record (Pydantic TypedDicts)
   utils/                 range, bands
-  carbon_score.py        a model + a route's grid files -> its carbon score (EcoLogits, each grid's value)
+  grid_emissions.py      python -m build grid-emissions: a grid file + Ember's table -> its intensity: field
+                         (subdivision or country, latest year); checks it (CI), or writes it with --write
+  carbon_score.py        a model + a route's grid intensities -> its carbon score (EcoLogits for E and M)
   disclosure_rating.py   a route's location -> its rating; an organization's route ratings -> its rating
-  load_sources.py        reading sources/ and the cloud-region table from disk
-  validate.py            every check on the records, against each other and the cloud-region table
+  load_sources.py        reading sources/, the cloud-region table and Ember's grid-intensity table from disk
+  validate.py            every check on the records, against each other and the two tables
   score.py               python -m build score: compute the disclosure_rating:/carbon_score: fields, write them
   generate_site_data.py  web/data/data.json: its contract and its content
   release.py             python -m build release: validate sources/, write web/data/data.json with the hash of its
@@ -65,20 +68,24 @@ build/
   check_carbon_scores.py CI gate: every route's stored carbon score is current
   check_disclosure_ratings.py  CI gate: every stored route and organization rating is current
   check_site_data.py     CI gate: web/data/data.json is current with its inputs and keeps to its contract
-  __main__.py            the commands: python -m build score, release, and the three gates check-carbon-scores,
-                         check-disclosure-ratings, check-site-data
+  import_ember.py        python -m build import-ember: Ember's downloads -> grid_intensity.csv, then every grid
+  __main__.py            the commands: python -m build score, release, the three gates check-carbon-scores,
+                         check-disclosure-ratings, check-site-data, grid-emissions (a gate; --write writes), and
+                         import-ember
 ```
 
-- **Core:** `carbon_score` (EcoLogits energy and embodied emissions, EcoLogits' electricity mix for each grid's
-  country, the score of each route) and `disclosure_rating` (route ratings, generated from the location;
-  organization ratings).
+- **Core:** `carbon_score` (EcoLogits energy and embodied emissions with each grid's stored intensity, the score of
+  each route) and `disclosure_rating` (route ratings, generated from the location; organization ratings).
   Around them: `load_sources` and `validate` (reading and checking `sources/`), `score` (the `score`
   command: resolves each route's grid files, computes and writes each route's `disclosure_rating:` and
   `carbon_score:` and each organization's `disclosure_rating:`), `generate_site_data` (the shape of
   `web/data/data.json`), `release` (the `release` command: validates and publishes, with the hash of what it reads,
   computing nothing), `check_carbon_scores` and `check_disclosure_ratings` (what the CI gates compare: every
   stored score and rating against what `score` would write now), `check_site_data` (the CI gate on
-  `web/data/data.json`: its hash and its contract), and `__main__` (the five commands). The
+  `web/data/data.json`: its hash and its contract), `grid_emissions` (the `grid-emissions` command: each grid's
+  intensity from Ember's table, its subdivision such as a US state or Chinese province or else its country, written
+  into the grid file with `--write`, a CI gate without it), `import_ember` (refreshing Ember's table), and
+  `__main__` (the seven commands). The
   scoring modules never import the others.
   Curation (research, evidence, model records, cloud regions) is done by following
   `docs/workflows/`, not by code.
@@ -126,8 +133,7 @@ estimate, with the catalogue at the installed version as the evidence.
 2. Find every model record citing the old catalogue (`grep -rl "ecologits/blob/<old version>" sources/models/`).
    For each, read the model's entry in the new catalogue (docs/workflows/add-model.md, step 3), update its counts
    if they moved, and point its evidence at the new version, with its quote and today's date. Then
-   `uv run python -m build score`, whose diff shows every score that moved (EcoLogits' electricity mixes move with
-   it too), and `uv run python -m build release`.
+   `uv run python -m build score`, whose diff shows every score that moved, and `uv run python -m build release`.
    Commit everything.
 3. Run the tests, and say in the PR that scores move with the new version.
 
@@ -143,10 +149,14 @@ estimate, with the catalogue at the installed version as the evidence.
   (`python -m build check-site-data`): run the release after changing anything in
   `sources/` or `build/`, code included, and commit what it writes. On a merge conflict
   in `web/data/data.json`, take either side and run the release again.
-- **Grid intensities are not curated**: a grid file in `sources/grids/` holds only its zone, country, supply and
-  whether it is subdivided. Every score uses EcoLogits' life-cycle electricity mix for the grid's country
-  (`build.carbon_score.grid_intensity`), so zones in one country share a value. `score` refuses a grid whose
-  country EcoLogits has no mix for, and an on-site grid. Agents never read Electricity Maps' site.
+- **Grid intensities are written at curation time, never researched or typed**: a curator writes a grid file's zone,
+  country, supply, whether it is subdivided and (in the US or China) its `subdivision`, then runs
+  `python -m build grid-emissions --write <slug>`, which writes the `intensity:` field below its own comment: Ember's
+  life-cycle value for the subdivision or else the country, for `GRID_YEAR` or the latest earlier year, from
+  `sources/snapshots/grid_intensity.csv` (`build.grid_emissions`). `score` and `release` only read it; neither loads
+  Ember's table. CI runs `grid-emissions` without `--write`, which fails on a stored value that is missing or differs from the
+  snapshot. Refresh the snapshot with `python -m build import-ember` (`sources/snapshots/README.md`), which rewrites
+  every grid's `intensity:`.
 - **A route's rating is generated, never written**: from its candidates, their grids, its
   `facilities` and its evidence. There is no `confidence` field.
 - **The site's data file is committed, and holds only what the site displays:** per-route results,

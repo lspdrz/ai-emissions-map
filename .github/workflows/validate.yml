@@ -31,6 +31,9 @@ jobs:
         run: uv run python -m build check-carbon-scores
       - name: Check disclosure ratings
         run: uv run python -m build check-disclosure-ratings
+      # Every grid's stored intensity is Ember's value from the committed snapshot (without --write, it only checks).
+      - name: Check grid emissions
+        run: uv run python -m build grid-emissions
       # web/data/data.json is current with sources/ and build/, and keeps to its contract.
       - name: Check the site data
         run: uv run python -m build check-site-data

@@ -229,10 +229,10 @@ def test_validate_sources_checks_zones():
     assert validate_sources(corpus) == ["grids/ch-2.yaml: zone 'CH' is also claimed by grids/ch.yaml"]
 
 
-def test_validate_sources_checks_every_grid_has_an_ecologits_mix():
-    corpus = make_corpus(grids=[make_grid(name="ch", country="ZZ", zone="CH")])  # ZZ is no ISO 3166 country
+def test_validate_sources_checks_every_grid_has_its_intensity():
+    corpus = make_corpus(grids=[make_grid(name="ch", country="CH", zone="CH", intensity=None)])
     assert validate_sources(corpus) == [
-        "grids/ch.yaml: EcoLogits has no electricity mix for 'ZZ'; see docs/workflows/add-grid.md"
+        "grids/ch.yaml: has no intensity; run `python -m build grid-emissions --write ch`"
     ]
 
 
@@ -309,23 +309,18 @@ def test_grids_without_a_zone_claim_none():
     assert check_zones(grids) == []
 
 
-def test_a_grid_whose_country_has_an_ecologits_mix_passes(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
-    assert check_grid_intensities({"ch": make_grid(name="ch", country="CH")}) == []
+def test_a_grid_with_its_intensity_passes():
+    assert check_grid_intensities({"ch": make_grid(name="ch")}) == []
 
 
-def test_a_grid_whose_country_has_no_ecologits_mix_is_refused(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
-    assert check_grid_intensities({"xk": make_grid(name="xk", country="XK", zone="XK")}) == [
-        "grids/xk.yaml: EcoLogits has no electricity mix for 'XK'; see docs/workflows/add-grid.md"
-    ]
-
-
-def test_an_onsite_grid_is_refused(monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
-    onsite = make_grid(name="acme-1-onsite", country="CH", zone=None, supply="onsite")
-    assert check_grid_intensities({"acme-1-onsite": onsite}) == [
-        "grids/acme-1-onsite.yaml: an on-site grid has no EcoLogits country mix; see docs/workflows/add-grid.md"
+def test_each_grid_without_its_intensity_is_named_with_the_command_to_run():
+    grids = {
+        "ch": make_grid(name="ch", intensity=None),
+        "de": make_grid(name="de", country="DE", zone="DE", intensity=None),
+    }
+    assert check_grid_intensities(grids) == [
+        "grids/ch.yaml: has no intensity; run `python -m build grid-emissions --write ch`",
+        "grids/de.yaml: has no intensity; run `python -m build grid-emissions --write de`",
     ]
 
 
@@ -412,9 +407,11 @@ def test_one_default_route_per_model_is_allowed():
 
 
 def test_stored_fields_that_are_present_pass():
+    grid: dict = {**make_grid(name="ch"), "intensity": {}}
     org: dict = {**make_organization(name="acme"), "disclosure_rating": {}}
     route: dict = {**make_route(name="acme-m-70b"), "disclosure_rating": {}, "carbon_score": {}}
-    assert check_stored_scores({"organizations": {"acme": org}, "routes": {"acme-m-70b": route}}) == []
+    data = {"grids": {"ch": grid}, "organizations": {"acme": org}, "routes": {"acme-m-70b": route}}
+    assert check_stored_scores(data) == []
 
 
 def test_missing_stored_fields_are_named():

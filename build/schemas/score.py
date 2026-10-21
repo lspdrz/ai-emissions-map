@@ -1,9 +1,10 @@
-"""The fields `python -m build score` writes, at the end of each file: a route's `disclosure_rating:` and
-`carbon_score:` (build/schemas/disclosure_rating.py, build/schemas/carbon_score.py), an organization's
-`disclosure_rating:`.
+"""The fields `python -m build score` writes, at the end of each file: a grid's `intensity:`
+(build/schemas/grid.py), a route's `disclosure_rating:` and `carbon_score:` (build/schemas/disclosure_rating.py,
+build/schemas/carbon_score.py), an organization's `disclosure_rating:`.
 
 Validated with their record, strictly (a whole number is accepted as a float). The CI gates check every stored value
-against what `python -m build score` computes. `python -m build release` copies them into web/data/data.json."""
+against what `python -m build score` computes. `python -m build release` copies the routes' and organizations' into
+web/data/data.json."""
 
 from typing import TypedDict
 
