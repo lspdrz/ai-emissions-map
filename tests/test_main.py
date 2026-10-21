@@ -132,18 +132,12 @@ def test_import_ember_needs_all_three_downloads(capsys):
     assert "--china-csv" in capsys.readouterr().err
 
 
-def test_grid_emissions_runs_on_the_named_grids_or_on_all(monkeypatch):
+def test_grid_emissions_checks_by_default_and_writes_with_write(monkeypatch):
     fake = Mock(return_value=GridRun([], []))
-    monkeypatch.setattr("build.__main__.write_grid_emissions", fake)
-    assert main(["grid-emissions", "--root", "/repo", "ch", "de"]) == 0
+    monkeypatch.setattr("build.__main__.grid_emissions", fake)
     assert main(["grid-emissions", "--root", "/repo"]) == 0
-    assert fake.call_args_list[0].args == (Path("/repo"), ["ch", "de"])
-    assert fake.call_args_list[1].args == (Path("/repo"), None)
-
-
-def test_check_grid_emissions_runs_its_gate_on_the_root(monkeypatch, capsys):
-    fake = Mock(return_value=GridRun([], []))
-    monkeypatch.setattr("build.__main__.check_grid_emissions", fake)
-    assert main(["check-grid-emissions", "--root", "/repo"]) == 0
-    fake.assert_called_once_with(Path("/repo"))
-    assert capsys.readouterr().out == "0 error(s)\n"
+    assert main(["grid-emissions", "--root", "/repo", "--write", "ch", "de"]) == 0
+    assert fake.call_args_list[0].args == (Path("/repo"), None) and fake.call_args_list[0].kwargs == {"write": False}
+    assert fake.call_args_list[1].args == (Path("/repo"), ["ch", "de"]) and fake.call_args_list[1].kwargs == {
+        "write": True
+    }

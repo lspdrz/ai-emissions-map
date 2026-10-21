@@ -48,7 +48,7 @@ province) where it names one, else for its country, from
    subdivision: VA
    comments: PJM spans thirteen states; the facility is in Virginia.
    ```
-6. **Write its intensity:** `uv run python -m build grid-emissions <slug>` (for example `us-mida-pjm`). It looks up
+6. **Write its intensity:** `uv run python -m build grid-emissions --write <slug>` (for example `us-mida-pjm`). It looks up
    Ember's value for the grid's subdivision, or else its country, for the release's year or the latest earlier one,
    and writes it at the end of the file below a comment saying it is written by the command: the value, its year and
    the geography it is for (`CH`, `US-VA`, `CN-GD`). Never edit the `intensity:` field by hand. The command refuses a
@@ -63,8 +63,8 @@ uv run python -m build release
 `score` reads the grid's `intensity:` (it refuses a grid without one, naming the command to run) and rewrites the score
 of every route on the grid; `release` rewrites `web/data/data.json`. Both must end without `ERROR:` lines; commit
 everything they write. `score` also refuses a grid no route uses, so add the grid together with the route that needs
-it. CI runs `uv run python -m build check-grid-emissions`, which fails if a stored `intensity:` is not what step 6
-would write now.
+it. CI runs `uv run python -m build grid-emissions` without `--write`, which writes nothing and fails if a stored
+`intensity:` is not what step 6 would write now.
 
 ## Expected PR contents
 The grid file with the `intensity:` step 6 wrote, usually with the route that needs it, the `disclosure_rating:` and

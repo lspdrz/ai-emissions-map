@@ -115,9 +115,9 @@ def check_zones(grids: dict) -> list[str]:
 
 def check_grid_intensities(grids: dict) -> list[str]:
     """Every grid has its intensity:, written at curation time by `python -m build grid-emissions`
-    (build/grid_emissions.py; the CI gate check-grid-emissions checks each against Ember's table)."""
+    (build/grid_emissions.py; CI runs grid-emissions without --write to check each against Ember's table)."""
     return [
-        f"grids/{name}.yaml: has no intensity; run `python -m build grid-emissions {name}`"
+        f"grids/{name}.yaml: has no intensity; run `python -m build grid-emissions --write {name}`"
         for name, grid in sorted(grids.items())
         if "intensity" not in grid
     ]

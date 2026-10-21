@@ -1,7 +1,7 @@
 """A grid: where a route's electricity comes from. sources/grids/<slug>.yaml.
 
 A grid file records location only (docs/workflows/add-grid.md): its zone, its country (and subdivision, such as a US
-state or Chinese province) and its supply. Its carbon intensity is not researched: `python -m build grid-emissions` writes Ember's yearly value for the grid's
+state or Chinese province) and its supply. Its carbon intensity is not researched: `python -m build grid-emissions --write` writes Ember's yearly value for the grid's
 subdivision where it names one, else its country, at the end of the file as its `intensity:` field, when the grid is
 added or Ember's snapshot refreshed (build/grid_emissions.py). score reads it from there.
 """
@@ -73,7 +73,9 @@ class Grid(TypedDict):
     intensity: NotRequired[
         Annotated[
             GridIntensity,
-            Field(description="Written by `python -m build grid-emissions` from Ember's table; part of curation"),
+            Field(
+                description="Written by `python -m build grid-emissions --write` from Ember's table; part of curation"
+            ),
         ]
     ]
 

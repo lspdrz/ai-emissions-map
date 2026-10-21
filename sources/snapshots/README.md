@@ -47,7 +47,7 @@ publishes. Ember's Indian states are left out: that release counts CO2 only, on 
    download's `sha256`, the licence, `retrieved` (today), the row count, and `skipped`: one `{area, code, reason}` per
    area left out: a country without an ISO 3166-1 alpha-2 code, or a release's national total, which is not an
    ISO 3166-2 subdivision). It then rewrites every grid's `intensity:` from the new table, as
-   `python -m build grid-emissions` does.
+   `python -m build grid-emissions --write` does.
 3. **Check and review.** Run `uv run python -m build score`, then `uv run python -m build release`, and read the diff:
    Ember revises recent years, so scores can move. Say in the pull request that they move with the new data.
 

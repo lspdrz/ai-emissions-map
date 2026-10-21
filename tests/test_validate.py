@@ -231,7 +231,9 @@ def test_validate_sources_checks_zones():
 
 def test_validate_sources_checks_every_grid_has_its_intensity():
     corpus = make_corpus(grids=[make_grid(name="ch", country="CH", zone="CH", intensity=None)])
-    assert validate_sources(corpus) == ["grids/ch.yaml: has no intensity; run `python -m build grid-emissions ch`"]
+    assert validate_sources(corpus) == [
+        "grids/ch.yaml: has no intensity; run `python -m build grid-emissions --write ch`"
+    ]
 
 
 def test_validate_sources_checks_candidates():
@@ -317,8 +319,8 @@ def test_each_grid_without_its_intensity_is_named_with_the_command_to_run():
         "de": make_grid(name="de", country="DE", zone="DE", intensity=None),
     }
     assert check_grid_intensities(grids) == [
-        "grids/ch.yaml: has no intensity; run `python -m build grid-emissions ch`",
-        "grids/de.yaml: has no intensity; run `python -m build grid-emissions de`",
+        "grids/ch.yaml: has no intensity; run `python -m build grid-emissions --write ch`",
+        "grids/de.yaml: has no intensity; run `python -m build grid-emissions --write de`",
     ]
 
 

@@ -17,7 +17,7 @@ A thin wrapper. The procedure lives in the workflow; this file does not restate 
 
 ## Scripts to run
 ```bash
-uv run python -m build grid-emissions <slug>   # writes the grid's intensity: from Ember's snapshot
+uv run python -m build grid-emissions --write <slug>   # writes the grid's intensity: from Ember's snapshot
 uv run python -m build score     # checks, writes the disclosure_rating: and carbon_score: fields
 uv run python -m build release   # writes web/data/data.json; commit everything both write
 ```

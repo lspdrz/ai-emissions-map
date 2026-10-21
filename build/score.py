@@ -1,6 +1,6 @@
 """The scores: computing every route's `disclosure_rating:` and `carbon_score:` and every organization's
 `disclosure_rating:`, and writing them at the end of their files as ordinary fields. `python -m build score` runs it;
-see score() below. Each grid's intensity is read from its file, where `python -m build grid-emissions` wrote it at
+see score() below. Each grid's intensity is read from its file, where `python -m build grid-emissions --write` wrote it at
 curation time (build/grid_emissions.py): score never loads Ember's table.
 """
 

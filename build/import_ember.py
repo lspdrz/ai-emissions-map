@@ -18,7 +18,7 @@ from typing import NamedTuple
 
 import pycountry
 
-from build.grid_emissions import write_grid_emissions
+from build.grid_emissions import grid_emissions
 from build.load_sources import GRID_INTENSITY_FILE
 
 GLOBAL_URL = "https://files.ember-energy.org/public-downloads/generation/outputs/release_generation_yearly_global.csv"
@@ -78,7 +78,7 @@ def _sha256(path: Path) -> str:
 
 def import_ember(root: Path, global_csv: Path, us_csv: Path, china_csv: Path, today: date) -> Import:
     """Write sources/snapshots/grid_intensity.csv and its .provenance.json from Ember's three downloads, then rewrite
-    every grid's intensity: from it (python -m build grid-emissions); list the files whose content changed."""
+    every grid's intensity: from it (python -m build grid-emissions --write); list the files whose content changed."""
     for path in (global_csv, us_csv, china_csv):
         if not path.is_file():
             return Import([f"{path}: no such file; download it from the URL in sources/snapshots/README.md"], [])
@@ -108,7 +108,7 @@ def import_ember(root: Path, global_csv: Path, us_csv: Path, china_csv: Path, to
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text, encoding="utf-8")
             written.append(path)
-    grids = write_grid_emissions(root)
+    grids = grid_emissions(root, write=True)
     return Import(grids.errors, written + grids.written)
 
 

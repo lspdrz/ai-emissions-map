@@ -1,13 +1,9 @@
-"""Each grid's carbon intensity: Ember's yearly value for its subdivision (a US state, a Chinese province) or else its
-country, from the committed snapshot sources/snapshots/grid_intensity.csv. It is written into the grid file at curation
-time, and a CI gate keeps it current.
+"""Grid emissions: each grid's carbon intensity, looked up in Ember's data and written into the grid's file.
 
-    uv run python -m build grid-emissions [<grid> ...]   # write the intensity: of the named grids (default: all)
-    uv run python -m build check-grid-emissions        # CI gate: every stored intensity: is what it would write now
-
-The intensity is written when a grid is added (docs/workflows/add-grid.md) or the snapshot refreshed (`import-ember`
-rewrites every grid), below GRID_EMISSIONS_COMMENT at the end of the grid file. `score` and `release` only read it:
-neither loads Ember's table.
+When a curator adds a grid, `python -m build grid-emissions --write <grid>` looks up its intensity in the Ember
+snapshot (sources/snapshots/grid_intensity.csv) and writes it at the end of the grid file. `score` reads it from there
+and never opens the snapshot. CI runs `python -m build grid-emissions`, without --write, to make sure every stored value
+still matches it.
 """
 
 from __future__ import annotations
@@ -24,38 +20,11 @@ from build.load_sources import GRID_INTENSITY_FILE, load_grid_intensities, load_
 from build.schemas.grid import CheckedGrid, Grid, GridIntensity
 from build.validate import check_identity
 
-# Ember's intensities as sources/snapshots/grid_intensity.csv holds them: each geography (a country's ISO 3166-1 alpha-2
-# code, or a subdivision's ISO 3166-2 code such as US-VA or CN-GD) to its value per year, in gCO2e/kWh
-# (build.load_sources.load_grid_intensities reads it).
-GridIntensities = Mapping[str, Mapping[int, float]]
+# The Ember snapshot, as load_grid_intensities reads it: geography -> year -> intensity in gCO2e/kWh. A geography is a
+# country code (CH) or a subdivision code (US-VA, CN-GD).
+EmberTable = Mapping[str, Mapping[int, float]]
 
-
-def grid_geography(grid: Grid) -> str:
-    """The geography whose Ember value a grid uses: its subdivision where it names one (US-VA, CN-GD), else its
-    country."""
-    return f"{grid['country']}-{grid['subdivision']}" if "subdivision" in grid else grid["country"]
-
-
-def grid_intensity(grid: Grid, intensities: GridIntensities, scoring_year: int) -> GridIntensity:
-    """A grid's intensity, as its intensity: field stores it: Ember's value for its geography for `scoring_year`
-    (GRID_YEAR when scoring), or for its latest earlier year. A later year is never used.
-
-    ValueError for an on-site grid (a facility's own generation, which no country or subdivision value describes) or a
-    geography with no value for scoring_year or earlier; validation refuses both before any score."""
-    if grid.get("supply") == "onsite":
-        raise ValueError(f"grids/{grid['name']}.yaml: an on-site grid has no Ember value")
-    geography = grid_geography(grid)
-    by_year = intensities.get(geography, {})
-    years = [year for year in by_year if year <= scoring_year]
-    if not years:
-        raise ValueError(
-            f"grids/{grid['name']}.yaml: Ember has no intensity for {geography!r} in {scoring_year} or earlier"
-        )
-    year = max(years)
-    return GridIntensity(g_per_kwh=by_year[year], year=year, geography=geography, source="Ember")
-
-
-# The line above the intensity: field, at the end of each grid file.
+# The comment above the intensity: field at the end of a grid file. The command rewrites everything below it.
 GRID_EMISSIONS_COMMENT = (
     "# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line"
     " is rewritten by it; do not edit it by hand."
@@ -67,80 +36,93 @@ class GridRun(NamedTuple):
     written: list[Path]
 
 
-def grid_text(file_text: str, intensity: GridIntensity) -> str:
-    """A grid file's text ending with GRID_EMISSIONS_COMMENT and its intensity:. Everything below the comment is
-    replaced; everything above it is kept byte for byte (the file is never loaded and dumped)."""
-    kept = file_text.partition(GRID_EMISSIONS_COMMENT)[0].rstrip()
-    field = yaml.safe_dump({"intensity": dict(intensity)}, sort_keys=False, allow_unicode=True)
-    return kept + "\n\n" + GRID_EMISSIONS_COMMENT + "\n" + field
+# Looking up one grid.
 
 
-def _grids_and_table(root: Path) -> tuple[list[str], dict[str, Grid], GridIntensities]:
-    """The grid files that pass their schema, and Ember's table; the grids' schema errors."""
-    data = load_sources(root)
-    errors, grids = check_identity("grids", data.get("grids") or {}, TypeAdapter(CheckedGrid))
-    table = root / GRID_INTENSITY_FILE
-    if not table.exists():
+def grid_geography(grid: Grid) -> str:
+    """Where to look a grid up: its subdivision if it names one (US-VA), otherwise its country (CH)."""
+    if "subdivision" in grid:
+        return f"{grid['country']}-{grid['subdivision']}"
+    return grid["country"]
+
+
+def grid_intensity(grid: Grid, ember: EmberTable, year: int) -> GridIntensity:
+    """The grid's intensity for `year`, or for the latest earlier year Ember has; never a later one.
+
+    Raises ValueError when there is none, or when the grid is on-site (a facility's own generation, which no country
+    or state average describes)."""
+    if grid.get("supply") == "onsite":
+        raise ValueError(f"grids/{grid['name']}.yaml: an on-site grid has no Ember value")
+    geography = grid_geography(grid)
+    years = [y for y in ember.get(geography, {}) if y <= year]
+    if not years:
+        raise ValueError(f"grids/{grid['name']}.yaml: Ember has no intensity for {geography!r} in {year} or earlier")
+    latest = max(years)
+    return GridIntensity(g_per_kwh=ember[geography][latest], year=latest, geography=geography, source="Ember")
+
+
+def _look_up(root: Path, names: list[str] | None = None) -> tuple[dict[str, Grid], dict[str, GridIntensity], list[str]]:
+    """Read the grid files and the snapshot, and look up each grid (only `names`, when given), in name order.
+
+    Returns the grids, their intensities and every problem found: a grid file that fails its schema, a name with no
+    file, a missing snapshot, a grid Ember has no value for."""
+    errors, grids = check_identity("grids", load_sources(root).get("grids") or {}, TypeAdapter(CheckedGrid))
+    errors += [f"grids/{name}.yaml: no such grid file" for name in sorted(set(names or []) - set(grids))]
+    snapshot = root / GRID_INTENSITY_FILE
+    if not snapshot.exists():
         errors.append(f"{GRID_INTENSITY_FILE.as_posix()}: missing; run `python -m build import-ember`")
-    return errors, grids, load_grid_intensities(table) if table.exists() else {}
+    if errors:
+        return grids, {}, errors
 
-
-def resolve(grids: Mapping[str, Grid], table: GridIntensities) -> tuple[list[str], dict[str, GridIntensity]]:
-    """Each grid's intensity from Ember's table, by name; one error per grid that has none (on-site, or a geography
-    Ember has no value for)."""
-    errors: list[str] = []
-    resolved: dict[str, GridIntensity] = {}
-    for name, grid in sorted(grids.items()):
+    ember = load_grid_intensities(snapshot)
+    values: dict[str, GridIntensity] = {}
+    for name in sorted(names or grids):
         try:
-            resolved[name] = grid_intensity(grid, table, GRID_YEAR)
+            values[name] = grid_intensity(grids[name], ember, GRID_YEAR)
         except ValueError as error:
             errors.append(f"{error}; see docs/workflows/add-grid.md")
-    return errors, resolved
+    return grids, values, errors
 
 
-def write_grid_emissions(root: Path, names: list[str] | None = None) -> GridRun:
-    """python -m build grid-emissions: write the intensity: of each named grid (every grid when none is named) whose
-    stored value would change. Writes nothing if there are errors."""
-    errors, grids, table = _grids_and_table(root)
-    unknown = sorted(set(names or []) - set(grids))
-    errors += [f"grids/{name}.yaml: no such grid file" for name in unknown]
-    if errors:
-        return GridRun(errors, [])
-    wanted = {name: grids[name] for name in (names or grids)}
-    errors, resolved = resolve(wanted, table)
+def _with_intensity(text: str, value: GridIntensity) -> str:
+    """A grid file's text with its intensity: field written below GRID_EMISSIONS_COMMENT, replacing any earlier one.
+    Everything above the comment is kept exactly as the curator wrote it (the file is never loaded and re-dumped)."""
+    curated = text.partition(GRID_EMISSIONS_COMMENT)[0].rstrip()
+    field = yaml.safe_dump({"intensity": dict(value)}, sort_keys=False, allow_unicode=True)
+    return f"{curated}\n\n{GRID_EMISSIONS_COMMENT}\n{field}"
+
+
+def _difference(name: str, stored: GridIntensity | None, value: GridIntensity) -> str:
+    """What is wrong with a grid file whose intensity: is not what grid-emissions would write, and how to fix it."""
+    fix = f"run `python -m build grid-emissions --write {name}`"
+    if stored is None:
+        return f"grids/{name}.yaml: is missing the intensity field; {fix}"
+    changed = [key for key in value if stored.get(key) != value[key]]
+    if changed:
+        return f"grids/{name}.yaml: its intensity is out of date ({', '.join(changed)}); {fix}"
+    return f"grids/{name}.yaml: its intensity: block was edited by hand; {fix}"
+
+
+def grid_emissions(root: Path, names: list[str] | None = None, *, write: bool = False) -> GridRun:
+    """python -m build grid-emissions [--write] [<grid> ...]: compare each grid's stored intensity with the snapshot
+    (the named grids, or every grid if none is named).
+
+    Without write (what CI runs), every grid that differs is an error and nothing is written. With write (what a
+    curator runs after adding a grid), the differences are written instead. Either way, nothing is written if any grid
+    has a problem."""
+    grids, values, errors = _look_up(root, names)
     if errors:
         return GridRun(errors, [])
     written = []
-    for name in sorted(resolved):
+    for name, value in values.items():
         path = root / "sources" / "grids" / f"{name}.yaml"
-        text = path.read_text(encoding="utf-8")
-        new = grid_text(text, resolved[name])
-        if new != text:
+        old = path.read_text(encoding="utf-8")
+        new = _with_intensity(old, value)
+        if new == old:
+            continue
+        if write:
             path.write_text(new, encoding="utf-8")
             written.append(path)
-    return GridRun([], written)
-
-
-def check_grid_emissions(root: Path) -> GridRun:
-    """python -m build check-grid-emissions: one message per grid whose stored intensity: is missing or differs from
-    what grid-emissions would write now from the committed snapshot, naming what moved. Writes nothing."""
-    errors, grids, table = _grids_and_table(root)
-    if errors:
-        return GridRun(errors, [])
-    errors, resolved = resolve(grids, table)
-    if errors:
-        return GridRun(errors, [])
-    messages = []
-    for name in sorted(resolved):
-        stored = grids[name].get("intensity")
-        if stored is None:
-            messages.append(
-                f"grids/{name}.yaml: is missing the intensity field; run `python -m build grid-emissions {name}`"
-            )
-        elif stored != resolved[name]:
-            moved = [key for key in resolved[name] if stored.get(key) != resolved[name][key]]
-            messages.append(
-                f"grids/{name}.yaml: its intensity is out of date ({', '.join(moved)}); "
-                f"run `python -m build grid-emissions {name}`"
-            )
-    return GridRun(messages, [])
+        else:
+            errors.append(_difference(name, grids[name].get("intensity"), value))
+    return GridRun(errors, written)

@@ -12,10 +12,9 @@ check-site-data
         the CI gate on web/data/data.json: fails if it is out of date with what it was built from, or leaves
         its contract.
 grid-emissions
-        writes each grid's intensity: from Ember's snapshot (the named grids, or all): run it when adding a grid
+        compares each grid's stored intensity: with Ember's snapshot (the named grids, or all) and fails on any that
+        differs: the CI gate on grid files. With --write, writes them instead: run it when adding a grid
         (docs/workflows/add-grid.md), then score and release.
-check-grid-emissions
-        the CI gate on grid files: every stored intensity: is what grid-emissions would write now.
 import-ember
         refreshes sources/snapshots/grid_intensity.csv from Ember's three yearly downloads (see
         sources/snapshots/README.md) and rewrites every grid's intensity:. Run score and release after it, and commit
@@ -32,7 +31,7 @@ from build.constants.config import ROOT
 from build.check_carbon_scores import check_carbon_scores
 from build.check_disclosure_ratings import check_disclosure_ratings
 from build.check_site_data import SiteDataCheck, check_site_data
-from build.grid_emissions import GridRun, check_grid_emissions, write_grid_emissions
+from build.grid_emissions import GridRun, grid_emissions
 from build.import_ember import Import, import_ember
 from build.release import Release, release
 from build.score import ScoreRun, score
@@ -59,11 +58,7 @@ def _check_site_data(args: argparse.Namespace) -> SiteDataCheck:
 
 
 def _grid_emissions(args: argparse.Namespace) -> GridRun:
-    return write_grid_emissions(args.root, args.grids or None)
-
-
-def _check_grid_emissions(args: argparse.Namespace) -> GridRun:
-    return check_grid_emissions(args.root)
+    return grid_emissions(args.root, args.grids or None, write=args.write)
 
 
 def _import_ember(args: argparse.Namespace) -> Import:
@@ -78,8 +73,7 @@ def main(argv: list[str] | None = None) -> int:
         dest="command",
         required=True,
         metavar=(
-            "{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,grid-emissions,"
-            "check-grid-emissions,import-ember}"
+            "{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,grid-emissions,import-ember}"
         ),
     )
     for name, run, done, about in (
@@ -107,13 +101,7 @@ def main(argv: list[str] | None = None) -> int:
             "grid-emissions",
             _grid_emissions,
             "nothing changed",
-            "write each grid's intensity: from Ember's snapshot (the named grids, or all)",
-        ),
-        (
-            "check-grid-emissions",
-            _check_grid_emissions,
-            "0 error(s)",
-            "CI gate: every grid's stored intensity is what grid-emissions would write now",
+            "check each grid's stored intensity against Ember's snapshot; --write writes it",
         ),
         (
             "import-ember",
@@ -126,6 +114,9 @@ def main(argv: list[str] | None = None) -> int:
         command.set_defaults(run=run, done=done)
         if name == "grid-emissions":
             command.add_argument("grids", nargs="*", metavar="grid", help="grid slugs (default: every grid)")
+            command.add_argument(
+                "--write", action="store_true", help="write each grid's intensity instead of checking it"
+            )
         if name == "import-ember":
             command.add_argument("--global-csv", type=Path, required=True, help="Ember's global yearly release")
             command.add_argument("--us-csv", type=Path, required=True, help="Ember's US-state yearly release")
