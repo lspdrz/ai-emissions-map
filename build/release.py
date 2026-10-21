@@ -12,21 +12,16 @@ import json
 from datetime import date
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any, NamedTuple, cast
+from typing import Any, cast
 
 from build.generate_site_data import build_data, check_contract
 from build.load_sources import SOURCE_DIRS, load_sources
-from build.schemas.sources import Sources
+from build.types import Release, Sources
 from build.validate import check_stored_scores, validate_sources
 
 DATA_FILE = Path("web") / "data" / "data.json"
 # What a release changes in data.json without changing what the site shows.
 _STAMPS = ("release_date", "inputs_sha")
-
-
-class Release(NamedTuple):
-    errors: list[str]
-    written: list[Path]
 
 
 def _shown(data: dict[str, Any]) -> dict[str, Any]:

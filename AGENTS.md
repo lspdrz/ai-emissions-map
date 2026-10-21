@@ -38,8 +38,9 @@ sources/grids/           one file per grid a route may draw from: its zone, coun
 sources/routes/          one file per route, <org>-<model>.yaml, naming its organization in org:
 sources/models/          one record per model a route serves: the developer's counts, or EcoLogits' estimate, cited
 sources/snapshots/       imported data, each file with a <stem>.provenance.json
-  cloud_regions.csv      cloud region -> grid zone(s), from the Green Software Foundation (committed)
+  cloud_regions.csv      cloud region -> grid zone(s), from the Green Software Foundation (import-cloud-regions)
   grid_intensity.csv     country / US state / Chinese province -> yearly grid intensity, from Ember (import-ember)
+  files/                 the downloads the two imports read, as downloaded (ember_files/, gsf_files/)
 build/                   Python modules; the command is `python -m build` (see --help)
 docs/                    methodology, workflows, reference rules, serving-locations/ (the format to publish)
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
@@ -53,6 +54,7 @@ tests/                   pytest, laid out like build/; each test builds its data
 ```
 build/
   constants/config.py    the method's fixed numbers and the repository root
+  constants/snapshots.py where the snapshots and their downloads live
   schemas/               the shape and rules of each record (Pydantic TypedDicts)
   utils/                 range, bands
   grid_emissions.py      python -m build grid-emissions: a grid file + Ember's table -> its intensity: field
@@ -69,9 +71,11 @@ build/
   check_disclosure_ratings.py  CI gate: every stored route and organization rating is current
   check_site_data.py     CI gate: web/data/data.json is current with its inputs and keeps to its contract
   import_ember.py        python -m build import-ember: Ember's downloads -> grid_intensity.csv, then every grid
+  import_cloud_regions.py  python -m build import-cloud-regions: the GSF's region metadata -> cloud_regions.csv
+  types.py               Sources (what load_sources returns) and the commands' results: not records; never validated
   __main__.py            the commands: python -m build score, release, the three gates check-carbon-scores,
-                         check-disclosure-ratings, check-site-data, grid-emissions (a gate; --write writes), and
-                         import-ember
+                         check-disclosure-ratings, check-site-data, grid-emissions (a gate; --write writes),
+                         import-ember and import-cloud-regions
 ```
 
 - **Core:** `carbon_score` (EcoLogits energy and embodied emissions with each grid's stored intensity, the score of
@@ -84,20 +88,23 @@ build/
   stored score and rating against what `score` would write now), `check_site_data` (the CI gate on
   `web/data/data.json`: its hash and its contract), `grid_emissions` (the `grid-emissions` command: each grid's
   intensity from Ember's table, its subdivision such as a US state or Chinese province or else its country, written
-  into the grid file with `--write`, a CI gate without it), `import_ember` (refreshing Ember's table), and
-  `__main__` (the seven commands). The
+  into the grid file with `--write`, a CI gate without it), `import_ember` (refreshing Ember's table),
+  `import_cloud_regions` (refreshing the cloud-region table), and `__main__` (the eight commands). The
   scoring modules never import the others.
   Curation (research, evidence, model records, cloud regions) is done by following
   `docs/workflows/`, not by code.
-- **`constants/`:** `config` (the methodology constants). A constant used by one module stays in
-  that module.
+- **`constants/`:** `config` (the methodology constants), `snapshots` (the snapshots' paths). A constant used by one
+  module stays in that module.
 - **`utils/`:** pure helpers, no I/O. `range` (the `Range` value class), `bands` (carbon bands).
 - **`schemas/`:** the shape of every record in `sources/`, one file per record (`route`,
-  `evidence`, `organization`, `grid`, `model`, plus `common`, `carbon_score`, `disclosure_rating`, `score` and `sources`):
+  `evidence`, `organization`, `grid`, `model`, plus `common`, `carbon_score`, `disclosure_rating` and `score`):
   `TypedDict`s that pyright checks and Pydantic validates. Records stay plain dicts.
+- **`types`:** `Sources` (what `load_sources` returns) and the commands' results (`ScoreRun`, `GridRun`, `Release`,
+  `SiteDataCheck`, `Import`): never validated, since they are not records, and built from `schemas/`. A record in
+  `sources/` has its schema in `schemas/`.
 - **Import rules** (`pyproject.toml`, checked in CI by `uv run ruff check` and
-  `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`; `utils/`
-  imports only other `utils/`; every other module may import them, never the
+  `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`, and `types` only `schemas/`;
+  `utils/` imports only other `utils/`; every other module may import them, never the
   other way round. Imports are absolute and at the top of the file, with no exceptions.
 - **Types** are checked in CI by `uv run pyright` (standard mode, `build/` and `tests/`).
 - **Formatting** is `uv run ruff format`, 120 columns (`pyproject.toml`); CI fails on any file it would change. The

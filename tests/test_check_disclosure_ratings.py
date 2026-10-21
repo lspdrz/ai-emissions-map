@@ -3,7 +3,7 @@ from typing import Any, cast
 from unittest.mock import Mock
 
 from build.check_disclosure_ratings import check_disclosure_ratings
-from build.score import ScoreRun
+from build.types import ScoreRun
 
 # Each test replaces score with a fake returning a ScoreRun written by hand: the records as stored (data) and what
 # score computes now (routes, orgs). The gate's job is to compare the two.

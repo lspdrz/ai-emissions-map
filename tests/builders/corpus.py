@@ -5,7 +5,7 @@ from build.schemas.grid import Grid
 from build.schemas.model import Model
 from build.schemas.organization import Organization
 from build.schemas.route import Route
-from build.schemas.sources import Sources
+from build.types import Sources
 
 
 def make_corpus(

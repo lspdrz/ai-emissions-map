@@ -8,11 +8,10 @@ from pathlib import Path
 
 import yaml
 
+from build.constants.snapshots import CLOUD_REGIONS_FILE, GRID_INTENSITY_FILE
+
 # The sources/ folders that hold records, in the order they are read and checked.
 SOURCE_DIRS = ("organizations", "grids", "routes", "models")
-
-CLOUD_REGIONS_FILE = Path("sources") / "snapshots" / "cloud_regions.csv"
-GRID_INTENSITY_FILE = Path("sources") / "snapshots" / "grid_intensity.csv"
 
 
 def load_sources(root: Path) -> dict:

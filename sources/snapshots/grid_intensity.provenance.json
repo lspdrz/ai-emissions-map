@@ -5,14 +5,17 @@
   "files": [
     {
       "url": "https://files.ember-energy.org/public-downloads/generation/outputs/release_generation_yearly_global.csv",
+      "copy": "sources/snapshots/files/ember_files/release_generation_yearly_global.csv",
       "sha256": "91d30fb170dac8a62130f7b39e11ecbb301f902e08400e9561510882eadcd701"
     },
     {
       "url": "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_us_subnational_generation_yearly.csv",
+      "copy": "sources/snapshots/files/ember_files/release_us_subnational_generation_yearly.csv",
       "sha256": "64f963d15f53222b2f016f86072388e72906717b7bfae8404b7b15dffb6b9ada"
     },
     {
       "url": "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_chn_subnational_generation_yearly.csv",
+      "copy": "sources/snapshots/files/ember_files/release_chn_subnational_generation_yearly.csv",
       "sha256": "06c51b3eb6cad8311c2ed42b582050d3c8fb1e3a77e46d22bbc6a64aa6ea2ea4"
     }
   ],
