@@ -1,0 +1,14 @@
+name: us-cent-swpp
+display_name: Southwest Power Pool
+zone: US-CENT-SWPP
+country: US
+subdivision: MO
+comments: >-
+  SPP spans fourteen states; the subdivision is Missouri.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 674.293
+  year: 2025
+  geography: US-MO
+  source: Ember

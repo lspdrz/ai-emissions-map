@@ -7,10 +7,10 @@
       1.0
     ],
     "counts": {
-      "grids": 39,
-      "models": 5,
-      "organizations": 4,
-      "routes": 10
+      "grids": 42,
+      "models": 6,
+      "organizations": 5,
+      "routes": 11
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,8 +19,8 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "bb840b075c761019b612951ab397b6a3fb2235c3518af1ae9a153c6492b33217",
-    "intensity_spread": 18,
+    "inputs_sha": "e77f5b6d36f726ffd9caa693f2f7274a1e11b3f66d2ecc1368778009bdd2de5d",
+    "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
       1.1,
@@ -45,6 +45,13 @@
       "display_name": "Claude Opus 5.5",
       "slug": "claude-opus-5-5",
       "total_b": 670
+    },
+    {
+      "active_b": 16,
+      "architecture": "moe",
+      "display_name": "DeepSeek-V4.1-Flash",
+      "slug": "deepseek-v4-1-flash",
+      "total_b": 552
     },
     {
       "active_b": 16,
@@ -247,6 +254,78 @@
         "infomaniak-apertus-v1-5-70b"
       ],
       "slug": "infomaniak",
+      "type": "inference_host"
+    },
+    {
+      "country": "NL",
+      "description": "Nebius publishes the region each Token Factory model is listed in and where each region is, but says its public endpoints may be moved to any location at any time without notice, and lists third parties in four countries that also process Token Factory requests.",
+      "display_name": "Nebius",
+      "evidence": [
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "Cloud infrastructure supporting Token Factory model processing",
+            "United States",
+            "France, Iceland, Finland, United Kingdom",
+            "; RunPod Inc., ",
+            "; BoostRun, LLC, ",
+            "; Shadeform, Inc., ",
+            "; Axe Compute Inc., "
+          ],
+          "routes": [
+            "nebius-deepseek-v4-1-flash"
+          ],
+          "url": "https://docs.nebius.com/legal/sub-processors_tofa"
+        },
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "the geographical location of the underlying physical infrastructure",
+            "Public regions are available to all Nebius users: eu-north1 : Finland eu-south1 : Madrid, Spain eu-west1 : France eu-west2 : France me-west1 : Israel us-central1 : Kansas City, Missouri, US us-north1 : Woodbury, Minnesota, US uk-south1 : United Kingdom uk-south2 : United Kingdom",
+            "eu-north2 : Iceland"
+          ],
+          "routes": [
+            "nebius-deepseek-v4-1-flash"
+          ],
+          "url": "https://docs.nebius.com/overview/regions"
+        },
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "Public endpoints run on shared infrastructure and are not tied to a single data center.",
+            "the processing location is decided dynamically and can change at any time, without notice.",
+            "we don't guarantee that a public endpoint will keep running in any particular region, or that it will keep running in the same region it's in today."
+          ],
+          "routes": [
+            "nebius-deepseek-v4-1-flash"
+          ],
+          "url": "https://docs.tokenfactory.nebius.com/public-serverless.md"
+        },
+        {
+          "accessed": "2026-10-21",
+          "quotes": [
+            "country_code",
+            "us-north1"
+          ],
+          "routes": [
+            "nebius-deepseek-v4-1-flash"
+          ],
+          "url": "https://tokenfactory.nebius.com/api/public/models_info"
+        }
+      ],
+      "homepage": "https://nebius.com",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 1
+        },
+        "summary": "C (1 route at C)"
+      },
+      "routes": [
+        "nebius-deepseek-v4-1-flash"
+      ],
+      "slug": "nebius",
       "type": "inference_host"
     }
   ],
@@ -541,6 +620,36 @@
       },
       "served_as": "swiss-ai/Apertus-v1.5-70B",
       "slug": "infomaniak-apertus-v1-5-70b"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.218011,
+        "low": 2.899883
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 674.293,
+        "low": 27.756
+      },
+      "label": "Any Nebius or sub-processor location (8 countries)",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash",
+      "org": "nebius",
+      "score": {
+        "high": 3.10612,
+        "low": 0.342434
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
+      "slug": "nebius-deepseek-v4-1-flash"
     }
   ],
   "schema": "aem-data/3"
