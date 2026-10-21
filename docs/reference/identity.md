@@ -21,7 +21,7 @@ longer served, for example), stop and ask the maintainer.
 ## Organizations
 
 `sources/organizations/<slug>.yaml`. The slug names the organization as a provider of AI serving
-(`infomaniak`, `together`), not one of its products. `type` is one of:
+(`example-host`, `example-cloud`), not one of its products. `type` is one of:
 
 | `type` | Meaning |
 |---|---|
@@ -33,14 +33,14 @@ longer served, for example), stop and ask the maintainer.
 ## Routes
 
 A route is one organization serving one model. Its slug is `<org>-<model>`
-(`infomaniak-apertus-70b`), and its `org:` field names the organization that serves it, whose slug
+(`example-host-example-70b`), and its `org:` field names the organization that serves it, whose slug
 begins the route's. A route without `org:`, or naming an organization with no file, is an error.
 An organization's routes are the routes that name it.
 
 The `<model>` part is the slug of the model's record in `sources/models/`
-(`together-codellama-13b-hf` serves the model recorded as `codellama-13b-hf`). If two of an
+(`example-host-example-coder-13b-hf` serves the model recorded as `example-coder-13b-hf`). If two of an
 organization's models would give the same route slug, keep the model's owner as well
-(`together-meta-llama-codellama-13b-hf`).
+(`example-host-example-lab-example-coder-13b-hf`).
 
 - `model` is the model actually served: the slug of its record in `sources/models/`. If
   the provider offers it under another name, `served_as` records that name and
@@ -53,8 +53,8 @@ organization's models would give the same route slug, keep the model's owner as 
   with a qualifier, `<org>-<model>-<qualifier>` (for example `-eu`, `-de`), and the route used
   unless the customer chooses otherwise carries `default: true` and has no qualifier. Where the
   organization serves the model through more than one service, the service's name comes first,
-  `<org>-<model>-<service>[-<qualifier>]` (`google-gemini-3-5-flash-vertex`,
-  `google-gemini-3-5-flash-vertex-eu`). At most one route per
+  `<org>-<model>-<service>[-<qualifier>]` (`example-cloud-example-flash-2-5-studio`,
+  `example-cloud-example-flash-2-5-studio-eu`). At most one route per
   organization and model is the default. The label is for readers: every route counts in the
   organization's rating.
 
@@ -79,7 +79,7 @@ behind every score are visible in the repository, each with evidence for where t
 
 A record's slug is the developer's name for the model (for a model on Hugging Face, its repository name without
 the owner), lowercased, with every character outside `a-z0-9` turned into a hyphen and repeated hyphens
-collapsed (`meta-llama/CodeLlama-13b-hf` → `codellama-13b-hf`, Gemini 3.5 Flash → `gemini-3-5-flash`).
+collapsed (`example-lab/Example-Coder-13B-hf` → `example-coder-13b-hf`, Example Flash 2.5 → `example-flash-2-5`).
 
 ## Dates
 

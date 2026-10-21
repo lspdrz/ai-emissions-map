@@ -31,8 +31,8 @@ You are recording where an organization serves a model. The organization must al
    candidate. Nobody writes the route's rating: `score` generates it from the candidates, their grids, the
    facilities and the evidence.
 5. **Write the route**, named `<org>-<model>` with the model part made into a slug per
-   [`../reference/identity.md`](../reference/identity.md#routes) (`together` serving
-   `meta-llama/CodeLlama-13b-hf` is `together-codellama-13b-hf`):
+   [`../reference/identity.md`](../reference/identity.md#routes) (`example-host` serving
+   `example-lab/Example-Coder-13B-hf` is `example-host-example-coder-13b-hf`):
    ```yaml
    name: example-ai-example-70b
    org: example-ai

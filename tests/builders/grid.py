@@ -12,9 +12,9 @@ def make_intensity(direct: float | None = 30.0, lifecycle: float | None = 45.0, 
     """One basis of one year: consumption-based values in CO2e, on a primary source. None leaves a value out."""
     value: dict[str, Any] = {
         "gas": "co2e",
-        "source": "Electricity Maps",
+        "source": "Example Grid Operator",
         "evidence": [
-            make_evidence(url="https://app.electricitymaps.com/zone/CH", shows='Yearly view: "30 gCO2eq/kWh"')
+            make_evidence(url="https://grid-operator.example/annual-review", shows='Annual review: "30 gCO2e/kWh"')
         ],
     }
     if direct is not None:

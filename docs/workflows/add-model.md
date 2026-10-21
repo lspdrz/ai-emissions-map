@@ -54,18 +54,18 @@ developer, or, where the developer has not released the architecture, from EcoLo
    version as `corroborating`, quoting the entry and its warnings, and say in `comments` that the counts are its
    estimate:
    ```yaml
-   name: gemini-3-5-flash
-   display_name: Gemini 3.5 Flash
+   name: example-flash-2-5
+   display_name: Example Flash 2.5
    architecture: moe
-   active_b: { min: 90, max: 240 }
-   total_b: 900
+   active_b: { min: 40, max: 120 }
+   total_b: 400
    evidence:
    - url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
-     shows: 'EcoLogits catalogue, "gemini-3.5-flash": architecture "moe", parameters "total": 900, "active": {"min": 90, "max": 240}; warnings "model-arch-not-released"'
+     shows: 'EcoLogits catalogue, "example-flash-2.5": architecture "moe", parameters "total": 400, "active": {"min": 40, "max": 120}; warnings "model-arch-not-released"'
      accessed: "2026-10-19"
      kind: corroborating
    comments: >-
-     EcoLogits marks Gemini 3.5 Flash's architecture as not released by Google: these counts are its estimate.
+     EcoLogits marks Example Flash 2.5's architecture as not released by Example Lab: these counts are its estimate.
    ```
    If the entry has no such warning, EcoLogits copied the counts from a developer source: find it among the
    entry's `sources` and go back to step 2. If EcoLogits lacks the model, stop (see "Stop and escalate when").

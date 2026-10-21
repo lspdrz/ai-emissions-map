@@ -49,10 +49,10 @@ when a facility draws on its own generation rather than the public grid (an on-s
        consumption:
          direct: 20.0
          gas: co2e
-         source: RTE
+         source: Example Grid Operator
          evidence:
-         - url: https://analysesetdonnees.rte-france.com/en/annual-review-2025/ghg-emissions
-           shows: 'Bilan électrique 2025: "the carbon intensity of French consumption, taking electricity trading with other countries into account, was 20.0 gCO2e/kWh"'
+         - url: https://grid-operator.example/annual-review-2025/emissions
+           shows: 'Annual review 2025: "the carbon intensity of consumption, taking electricity trading with other countries into account, was 20.0 gCO2e/kWh"'
            accessed: "2026-10-16"
            kind: primary
    ```

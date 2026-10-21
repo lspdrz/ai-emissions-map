@@ -25,8 +25,8 @@ DISCLOSURE_POINTS: dict[Literal["A", "B", "C", "D"], int] = {"A": 3, "B": 2, "C"
 # (~1.1) to the industry average (~1.56, Uptime Institute), so scores are not biased optimistic
 # and only the grid differs between providers.
 #
-# TODO(v2, MAJOR, #10): use each facility's published PUE where one exists (e.g. Infomaniak 1.085,
-# Google ~1.09), falling back to this range otherwise. PUE is a property of the building, like the
+# TODO(v2, MAJOR, #10): use each facility's published PUE where one exists (e.g. a facility that publishes
+# 1.09), falling back to this range otherwise. PUE is a property of the building, like the
 # grid zone, and varies from ~1.08 to 2.0+ in practice; a fixed range ignores real efficiency
 # differences between operators.
 PUE: tuple[float, float] = (1.1, 1.6)

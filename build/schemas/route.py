@@ -30,7 +30,7 @@ class Location(TypedDict):
         Annotated[
             list[NonEmptyStr],
             Field(
-                min_length=1, description="The buildings the evidence names, in words (e.g. 'Infomaniak D4, Geneva')"
+                min_length=1, description="The buildings the evidence names, in words (e.g. 'Example Geneva 1, Geneva')"
             ),
         ]
     ]
