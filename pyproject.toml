@@ -45,6 +45,12 @@ source_modules = ["build.schemas"]
 forbidden_modules = ["build.*"]
 
 [[tool.importlinter.contracts]]
+name = "types imports nothing from build/"
+type = "forbidden"
+source_modules = ["build.types"]
+forbidden_modules = ["build.*"]
+
+[[tool.importlinter.contracts]]
 name = "utils/ imports only other utils/"
 type = "forbidden"
 source_modules = ["build.utils"]

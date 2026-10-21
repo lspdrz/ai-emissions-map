@@ -16,13 +16,13 @@ import hashlib
 import json
 from datetime import date
 from pathlib import Path
-from typing import NamedTuple
 
 import pycountry
 
 from build.constants.config import GRID_YEAR
 from build.constants.snapshots import GRID_INTENSITY_FILE, SNAPSHOT_SOURCE_DIR
 from build.grid_emissions import grid_emissions
+from build.types import Import
 
 GLOBAL_URL = "https://files.ember-energy.org/public-downloads/generation/outputs/release_generation_yearly_global.csv"
 _SUBNATIONAL = "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/"
@@ -35,11 +35,6 @@ INTENSITY = "Emissions intensity (gCO2e/kWh)"
 COLUMNS = ("geography", "name", "year", "intensity")
 # Where the downloads are kept, under the file names in their URLs.
 DOWNLOADS_DIR = SNAPSHOT_SOURCE_DIR / "ember_files"
-
-
-class Import(NamedTuple):
-    errors: list[str]
-    written: list[Path]
 
 
 def _read(path: Path) -> list[dict[str, str]]:

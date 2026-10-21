@@ -37,9 +37,10 @@ from build.check_disclosure_ratings import check_disclosure_ratings
 from build.check_site_data import SiteDataCheck, check_site_data
 from build.grid_emissions import GridRun, grid_emissions
 from build.import_cloud_regions import import_cloud_regions
-from build.import_ember import Import, import_ember
+from build.import_ember import import_ember
 from build.release import Release, release
 from build.score import ScoreRun, score
+from build.types import Import
 
 
 def _score(args: argparse.Namespace) -> ScoreRun:

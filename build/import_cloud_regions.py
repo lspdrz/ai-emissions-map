@@ -20,7 +20,7 @@ from datetime import date
 from pathlib import Path
 
 from build.constants.snapshots import CLOUD_REGIONS_FILE, SNAPSHOT_SOURCE_DIR
-from build.import_ember import Import
+from build.types import Import
 
 REPOSITORY = "https://github.com/Green-Software-Foundation/real-time-cloud"
 FILE_NAME = "Cloud_Region_Metadata.csv"
