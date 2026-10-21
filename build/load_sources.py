@@ -48,7 +48,7 @@ def load_cloud_regions(path: Path) -> dict[tuple[str, str], list[str]]:
 
 def load_grid_intensities(path: Path) -> dict[str, dict[int, float]]:
     """Each geography (a country's ISO 3166-1 alpha-2 code, or a subdivision's ISO 3166-2 code such as US-VA or
-    CN-GD) to its Ember intensity per year, in gCO2e/kWh."""
+    CN-GD) to its Ember intensity by year, in gCO2e/kWh: one year each, as import-ember keeps it."""
     intensities: dict[str, dict[int, float]] = {}
     with path.open(encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh):

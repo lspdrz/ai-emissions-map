@@ -14,7 +14,7 @@ def _write(path, header, rows):
     return path
 
 
-def test_rows_keep_the_total_generation_intensity_of_countries_and_subdivisions(tmp_path):
+def test_rows_keep_the_total_generation_intensity_of_countries_and_subdivisions_for_the_year(tmp_path):
     global_csv = _write(
         tmp_path / "global.csv",
         GLOBAL_HEADER,
@@ -34,9 +34,8 @@ def test_rows_keep_the_total_generation_intensity_of_countries_and_subdivisions(
         ],
     )
     china_csv = _write(tmp_path / "china.csv", CHINA_HEADER, ["China,CHN,Sichuan,SC,2025,Total generation,178.0"])
-    rows, skipped = intensity_rows(global_csv, {"US": us_csv, "CN": china_csv})
+    rows, skipped = intensity_rows(global_csv, {"US": us_csv, "CN": china_csv}, 2025)
     assert rows == [
-        {"geography": "CH", "name": "Switzerland", "year": "2024", "intensity": "34.648"},
         {"geography": "CH", "name": "Switzerland", "year": "2025", "intensity": "39.278"},
         {"geography": "CN-SC", "name": "Sichuan", "year": "2025", "intensity": "178.0"},
         {"geography": "US-VA", "name": "Virginia", "year": "2025", "intensity": "356.592"},
@@ -44,11 +43,28 @@ def test_rows_keep_the_total_generation_intensity_of_countries_and_subdivisions(
     assert skipped == []
 
 
+def test_a_geography_without_the_year_keeps_its_latest_earlier_year_never_a_later_one(tmp_path):
+    global_csv = _write(
+        tmp_path / "global.csv",
+        GLOBAL_HEADER,
+        [
+            "Switzerland,CHE,2022,Country or economy,Total generation,30.0",
+            "Switzerland,CHE,2023,Country or economy,Total generation,32.0",
+            "Switzerland,CHE,2026,Country or economy,Total generation,41.0",
+            "France,FRA,2026,Country or economy,Total generation,40.0",  # only a later year
+        ],
+    )
+    assert intensity_rows(global_csv, {}, 2025) == (
+        [{"geography": "CH", "name": "Switzerland", "year": "2023", "intensity": "32.0"}],
+        [{"area": "France", "code": "FR", "reason": "no year 2025 or earlier"}],
+    )
+
+
 def test_a_country_without_an_alpha_2_code_is_skipped_with_its_reason(tmp_path):
     global_csv = _write(
         tmp_path / "global.csv", GLOBAL_HEADER, ["Kosovo,XKX,2025,Country or economy,Total generation,900.0"]
     )
-    assert intensity_rows(global_csv, {}) == (
+    assert intensity_rows(global_csv, {}, 2025) == (
         [],
         [{"area": "Kosovo", "code": "XKX", "reason": "no ISO 3166-1 alpha-2 code"}],
     )
@@ -59,7 +75,7 @@ def test_a_subnational_releases_national_total_is_skipped_not_kept_as_a_subdivis
     global_csv = _write(tmp_path / "global.csv", GLOBAL_HEADER, [])
     us_csv = _write(tmp_path / "us.csv", US_HEADER, ["United States,USA,US (total),US,2025,Total generation,384.4"])
     china_csv = _write(tmp_path / "china.csv", CHINA_HEADER, ["China,CHN,China (total),CN,2025,Total generation,560.0"])
-    assert intensity_rows(global_csv, {"US": us_csv, "CN": china_csv}) == (
+    assert intensity_rows(global_csv, {"US": us_csv, "CN": china_csv}, 2025) == (
         [],
         [
             {"area": "China (total)", "code": "CN-CN", "reason": "not an ISO 3166-2 subdivision"},
@@ -85,9 +101,10 @@ def test_import_writes_the_table_and_its_provenance(tmp_path):
         snapshots / "grid_intensity.csv"
     ).read_text() == "geography,name,year,intensity\nCH,Switzerland,2025,39.278\n"
     provenance = json.loads((snapshots / "grid_intensity.provenance.json").read_text())
-    assert (provenance["licence"], provenance["retrieved"], provenance["rows"]) == (
+    assert (provenance["licence"], provenance["retrieved"], provenance["year"], provenance["rows"]) == (
         "CC-BY-4.0; attribute Ember (ember-energy.org)",
         "2026-10-21",
+        2025,
         1,
     )
     assert [len(f["sha256"]) for f in provenance["files"]] == [64, 64, 64]
