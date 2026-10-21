@@ -14,10 +14,10 @@ from datetime import date
 from importlib.metadata import version
 from typing import Any
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, METHODOLOGY_VERSION, PUE
 
 
-SCHEMA = "aem-data/1"
+SCHEMA = "aem-data/2"
 
 # A passage quoted in an evidence entry's `shows`: double quotes around at least 8 characters.
 _QUOTED = re.compile(r'"([^"]{8,})"')
@@ -35,12 +35,10 @@ ALLOWED_KEYS = {
         "pue",
         "band_upper",
         "draft",
-        "grid",
         "counts",
         "intensity_spread",
         "featured_model",
     },
-    "meta.grid": {"year"},
     "meta.counts": {"organizations", "routes", "models", "grids"},
     "organizations[]": {
         "slug",
@@ -65,13 +63,11 @@ ALLOWED_KEYS = {
         "letter",
         "gap",
         "score",
-        "score_lifecycle",
         "energy",
         "intensity",
         "embodied",
         "band",
         "served_as",
-        "flags",
     },
 }
 
@@ -89,7 +85,6 @@ def check_contract(data: dict) -> list[str]:
     check(data, "")
     meta = data.get("meta", {})
     check(meta, "meta")
-    check(meta.get("grid"), "meta.grid")
     check(meta.get("counts"), "meta.counts")
     for org in data.get("organizations", []):
         check(org, "organizations[]")
@@ -127,13 +122,11 @@ def route_entry(name: str, route: Mapping[str, Any]) -> dict:
         "letter": disclosure["letter"],
         "gap": disclosure["gap"],
         "score": carbon["score_g"],
-        "score_lifecycle": carbon["score_lifecycle_g"],
         "energy": carbon["energy_wh"],
         "intensity": carbon["intensity_g_per_kwh"],
         "embodied": carbon["embodied_g"],
         "band": carbon["band"],
         "served_as": route.get("served_as"),
-        "flags": carbon["flags"],
     }
 
 
@@ -208,7 +201,6 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
             "pue": list(PUE),
             "band_upper": list(CARBON_BAND_UPPER),
             "draft": DRAFT,
-            "grid": {"year": GRID_YEAR},
             "counts": {
                 "organizations": len(org_entries),
                 "routes": len(route_entries),

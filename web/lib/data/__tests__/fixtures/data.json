@@ -1,5 +1,5 @@
 {
-  "schema": "aem-data/1",
+  "schema": "aem-data/2",
   "meta": {
     "release_date": "2026-10-08",
     "inputs_sha": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -16,9 +16,6 @@
       1.0
     ],
     "draft": true,
-    "grid": {
-      "year": 2025
-    },
     "counts": {
       "organizations": 1,
       "routes": 1,
@@ -81,10 +78,6 @@
         2
       ],
       "served_as": null,
-      "score_lifecycle": {
-        "low": 0.08,
-        "high": 0.09
-      },
       "energy": {
         "low": 0.5,
         "high": 0.6
@@ -92,8 +85,7 @@
       "intensity": {
         "low": 30.0,
         "high": 30.0
-      },
-      "flags": {}
+      }
     }
   ]
 }

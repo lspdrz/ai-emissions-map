@@ -13,7 +13,6 @@ the exact checks to run.
 | Add the record for a model a route serves | [`workflows/add-model.md`](workflows/add-model.md) | `add-model` |
 | Record where an organization serves a model | [`workflows/add-route.md`](workflows/add-route.md) | `add-route` |
 | Re-check an organization's evidence | [`workflows/refresh-organization.md`](workflows/refresh-organization.md) | `refresh-organization` |
-| Move the map to a new year of grid data | [`workflows/refresh-grids.md`](workflows/refresh-grids.md) | `refresh-grids` |
 
 Changing or retiring an existing record has no workflow yet: edit the file surgically (never load
 and re-dump it) and follow [`reference/identity.md`](reference/identity.md) for renames.

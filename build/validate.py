@@ -9,8 +9,7 @@ from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
 
-from build.carbon_score import grid_value
-from build.constants.config import GRID_YEAR
+from build.carbon_score import grid_intensity
 from build.load_sources import SOURCE_DIRS
 from build.schemas.grid import CheckedGrid
 from build.schemas.model import Model
@@ -97,7 +96,7 @@ def check_models(routes: dict, models: dict) -> list[str]:
     ]
 
 
-# Grids: one file per zone, a consumption-based direct value for the scoring year or earlier, each used by a route.
+# Grids: one file per zone, each valued by EcoLogits' mix for its country, each used by a route.
 
 
 def check_zones(grids: dict) -> list[str]:
@@ -115,18 +114,15 @@ def check_zones(grids: dict) -> list[str]:
     return errors
 
 
-def check_grid_values(grids: dict, scoring_year: int) -> list[str]:
-    """Every grid has the value a score uses (build.carbon_score.grid_value): a consumption-based value with a direct
-    figure, for `scoring_year` (GRID_YEAR when validating) or an earlier year."""
+def check_grid_intensities(grids: dict) -> list[str]:
+    """Every grid has the intensity a score uses (build.carbon_score.grid_intensity): EcoLogits' electricity mix for
+    its country. An on-site grid, or a country EcoLogits has no mix for, cannot be scored."""
     errors: list[str] = []
-    for name, grid in sorted(grids.items()):
+    for _, grid in sorted(grids.items()):
         try:
-            grid_value(grid, scoring_year)
-        except ValueError:
-            errors.append(
-                f"grids/{name}.yaml: no consumption-based direct value for {scoring_year} or earlier; "
-                "add one (docs/workflows/add-grid.md)"
-            )
+            grid_intensity(grid)
+        except ValueError as error:
+            errors.append(f"{error}; see docs/workflows/add-grid.md")
     return errors
 
 
@@ -223,7 +219,7 @@ def validate_sources(
     errors += check_orgs(data.get("organizations") or {}, routes)
     errors += check_models(routes, data.get("models") or {})
     errors += check_zones(grids)
-    errors += check_grid_values(grids, GRID_YEAR)
+    errors += check_grid_intensities(grids)
     candidate_errors, used = check_candidates(routes, data.get("grids") or {}, cloud_regions)
     errors += candidate_errors
     errors += check_defaults(routes)

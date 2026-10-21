@@ -5,9 +5,9 @@ import type { Route } from "@/lib/data/types";
 function route(slug: string, score: [number, number] | null, embodied: [number, number] = [0.05, 0.05]): Route {
   return {
     slug, org: "acme", model: "m", label: "Somewhere", default: false, letter: "B", gap: null,
-    score: score && { low: score[0], high: score[1] }, score_lifecycle: null,
+    score: score && { low: score[0], high: score[1] },
     energy: { low: 0.5, high: 0.6 }, intensity: null, embodied: { low: embodied[0], high: embodied[1] },
-    band: null, served_as: null, flags: {},
+    band: null, served_as: null,
   };
 }
 

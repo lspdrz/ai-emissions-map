@@ -1,10 +1,9 @@
 from datetime import date
 
-from build.constants.config import GRID_YEAR
 from build.validate import (
     check_candidates,
     check_defaults,
-    check_grid_values,
+    check_grid_intensities,
     check_models,
     check_orgs,
     check_stored_scores,
@@ -14,7 +13,7 @@ from build.validate import (
 )
 from tests.builders.broken import changed, without
 from tests.builders.corpus import make_corpus, make_raw_corpus
-from tests.builders.grid import make_grid, make_intensity
+from tests.builders.grid import make_grid
 from tests.builders.location import make_location
 from tests.builders.model import make_model
 from tests.builders.organization import make_organization
@@ -121,11 +120,10 @@ def test_a_schema_error_names_a_nested_field_with_its_index():
     ]
 
 
-def test_a_schema_error_names_a_grids_year():
+def test_a_schema_error_names_a_grids_field():
     grid = make_grid(name="ch", country="CH", zone="CH")
-    press = changed(make_intensity(direct=30.0), "evidence", 0, "kind", to="corroborating")
-    corpus = make_raw_corpus(grids=[changed(grid, "values", "2025", "consumption", to=press)])
-    assert validate_sources(corpus) == ["grids/ch.yaml: values.2025.consumption: needs at least one primary source"]
+    corpus = make_raw_corpus(grids=[changed(grid, "country", to="CHE")])
+    assert validate_sources(corpus) == ["grids/ch.yaml: country: String should match pattern '^[A-Z]{2}$'"]
 
 
 def test_model_files_are_checked_against_the_model_schema():
@@ -152,10 +150,10 @@ def test_an_organization_failing_its_schema_does_not_orphan_its_routes():
 
 def test_a_grid_failing_its_schema_is_not_reported_missing():
     de = make_grid(name="de", country="DE", zone="DE")
-    unquoted_year = changed(de, "values", to={2025: de["values"]["2025"]})
+    alpha_3 = changed(de, "country", to="DEU")
     corpus = make_raw_corpus(
         organizations=[make_organization(name="acme")],
-        grids=[unquoted_year],
+        grids=[alpha_3],
         routes=[
             make_route(
                 name="acme-m-70b", org="acme", model="m-70b", location=make_location(candidates=["cloud:cloudx:eu-de"])
@@ -164,7 +162,7 @@ def test_a_grid_failing_its_schema_is_not_reported_missing():
         models=[make_model(name="m-70b")],
     )
     assert validate_sources(corpus, cloud_regions={("cloudx", "eu-de"): ["DE"]}) == [
-        "grids/de.yaml: values[2025]: Input should be a valid string"
+        "grids/de.yaml: country: String should match pattern '^[A-Z]{2}$'"
     ]
 
 
@@ -231,15 +229,10 @@ def test_validate_sources_checks_zones():
     assert validate_sources(corpus) == ["grids/ch-2.yaml: zone 'CH' is also claimed by grids/ch.yaml"]
 
 
-def test_validate_sources_checks_grid_years_against_the_configured_scoring_year():
-    later = str(GRID_YEAR + 1)
-    corpus = make_corpus(
-        grids=[
-            make_grid(name="ch", country="CH", zone="CH", values={later: {"consumption": make_intensity(direct=30.0)}})
-        ]
-    )
+def test_validate_sources_checks_every_grid_has_an_ecologits_mix():
+    corpus = make_corpus(grids=[make_grid(name="ch", country="ZZ", zone="CH")])  # ZZ is no ISO 3166 country
     assert validate_sources(corpus) == [
-        f"grids/ch.yaml: no consumption-based direct value for {GRID_YEAR} or earlier; add one (docs/workflows/add-grid.md)"
+        "grids/ch.yaml: EcoLogits has no electricity mix for 'ZZ'; see docs/workflows/add-grid.md"
     ]
 
 
@@ -303,7 +296,7 @@ def test_a_route_must_name_an_existing_model():
     ]
 
 
-# Grids: one file per zone, and a consumption-based direct value for the scoring year or an earlier one.
+# Grids: one file per zone, each valued by EcoLogits' mix for its country.
 
 
 def test_two_grids_may_not_claim_one_zone():
@@ -316,29 +309,23 @@ def test_grids_without_a_zone_claim_none():
     assert check_zones(grids) == []
 
 
-def test_a_grid_with_a_consumption_based_direct_value_for_an_earlier_year_passes():
-    grids = {"ch": make_grid(name="ch", values={"2023": {"consumption": make_intensity(direct=30.0)}})}
-    assert check_grid_values(grids, scoring_year=2025) == []
+def test_a_grid_whose_country_has_an_ecologits_mix_passes(monkeypatch):
+    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
+    assert check_grid_intensities({"ch": make_grid(name="ch", country="CH")}) == []
 
 
-def test_a_grid_with_only_later_years_is_refused():
-    grids = {"ch": make_grid(name="ch", values={"2026": {"consumption": make_intensity(direct=30.0)}})}
-    assert check_grid_values(grids, scoring_year=2025) == [
-        "grids/ch.yaml: no consumption-based direct value for 2025 or earlier; add one (docs/workflows/add-grid.md)"
+def test_a_grid_whose_country_has_no_ecologits_mix_is_refused(monkeypatch):
+    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
+    assert check_grid_intensities({"xk": make_grid(name="xk", country="XK", zone="XK")}) == [
+        "grids/xk.yaml: EcoLogits has no electricity mix for 'XK'; see docs/workflows/add-grid.md"
     ]
 
 
-def test_a_grid_with_only_production_based_values_is_refused():
-    grids = {"ch": make_grid(name="ch", values={"2025": {"production": make_intensity(direct=30.0)}})}
-    assert check_grid_values(grids, scoring_year=2025) == [
-        "grids/ch.yaml: no consumption-based direct value for 2025 or earlier; add one (docs/workflows/add-grid.md)"
-    ]
-
-
-def test_a_grid_with_only_life_cycle_figures_is_refused():
-    grids = {"ch": make_grid(name="ch", values={"2025": {"consumption": make_intensity(direct=None, lifecycle=50.0)}})}
-    assert check_grid_values(grids, scoring_year=2025) == [
-        "grids/ch.yaml: no consumption-based direct value for 2025 or earlier; add one (docs/workflows/add-grid.md)"
+def test_an_onsite_grid_is_refused(monkeypatch):
+    monkeypatch.setattr("build.carbon_score.ecologits_grid_intensity", lambda country: {"CH": 39.2}.get(country))
+    onsite = make_grid(name="acme-1-onsite", country="CH", zone=None, supply="onsite")
+    assert check_grid_intensities({"acme-1-onsite": onsite}) == [
+        "grids/acme-1-onsite.yaml: an on-site grid has no EcoLogits country mix; see docs/workflows/add-grid.md"
     ]
 
 

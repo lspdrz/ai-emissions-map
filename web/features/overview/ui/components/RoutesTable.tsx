@@ -1,12 +1,7 @@
 import { formatRange } from "@/features/overview/utils/format";
 import { operational, sortRoutes } from "@/features/overview/utils/routes";
 import { BandBadge, LetterBadge } from "@/features/overview/ui/components/Badges";
-import type { Flags, Model, Organization, Route } from "@/lib/data/types";
-
-const FLAG_TEXT: Record<keyof Flags, string> = {
-  gas: "Grid value counts CO₂ only",
-  year: "Grid value is from an older year",
-};
+import type { Model, Organization, Route } from "@/lib/data/types";
 
 export function RoutesTable({ routes, models, organizations }: {
   routes: Route[]; models: Model[]; organizations: Organization[];
@@ -54,11 +49,6 @@ export function RoutesTable({ routes, models, organizations }: {
                           operational {formatRange(op)} + embodied {formatRange(r.embodied)}
                         </div>
                       )}
-                      {r.score_lifecycle && (
-                        <div className="whitespace-nowrap text-neutral-500 tabular-nums">
-                          life-cycle {formatRange(r.score_lifecycle)} g
-                        </div>
-                      )}
                     </>
                   ) : (
                     <div className="text-neutral-500">not scored</div>
@@ -68,11 +58,6 @@ export function RoutesTable({ routes, models, organizations }: {
                   <div>E {formatRange(r.energy)} Wh</div>
                   {r.intensity && <div>I {formatRange(r.intensity)} g/kWh</div>}
                   <div>M {formatRange(r.embodied)} g</div>
-                  {(Object.keys(r.flags) as (keyof Flags)[]).map((flag) => (
-                    <div key={flag} className="text-amber-700">
-                      {FLAG_TEXT[flag]}: {r.flags[flag]?.join(", ")}
-                    </div>
-                  ))}
                 </td>
               </tr>
             );

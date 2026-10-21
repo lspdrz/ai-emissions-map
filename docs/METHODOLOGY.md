@@ -32,15 +32,9 @@ Providers' own hardware, serving configurations and published energy figures are
 
 **Grid intensity (I)** is the carbon intensity of the electricity a route draws from the grid it is connected to, in grams of CO₂e per kWh. A grid is the finest area that a facility can draw electricity from. If a facility runs on its own generation, then it is a grid of its own.
 
-Grid values come from published pages: grid operators, national agencies, open datasets or other sources.
+Every grid's intensity comes from one source, so that routes are compared on the same basis: the electricity mix EcoLogits publishes for the grid's **country**. EcoLogits sources this data from Our World in Data. It is a **life-cycle** value: in addition to what power plants emit while generating, it counts their construction, fuel supply chains and upstream methane. It is an annual average of the electricity **generated** in the country, so imports and exports are not traced. The values are fixed by the EcoLogits version each release states, and change only when the map moves to a new version.
 
-Every score uses the same kind of value, so that routes can be compared: a grid's annual average on a **consumption** basis, with **direct** emission factors. Consumption-based values follow electricity across interconnectors, so a grid importing from a fossil-heavy neighbor is not credited with its own clean generation alone. Direct (operational) factors count what power plants emit while generating.
-
-The value is for the release's year (2025 in this one) or, where the grid has none for that year, its most recent earlier year; a later year is never used. A grid without such a value is not used, and the routes that draw on it are left out until one is found.
-
-Two properties of the value are flagged, without changing which value is used: a value that counts carbon dioxide only, leaving out methane and the other gases and so lowering the score, is flagged *gas*; a value more than two years older than the release's year is flagged *year*. Each flag is shown on every route whose score uses the value, and names the grid.
-
-Where every grid of a route also has a life-cycle figure for that value, a second score using it is shown alongside. Life-cycle factors add power-plant construction, fuel supply chains and upstream methane to the direct emissions, none of it the servers counted in M. Life-cycle figures never stand in for direct ones, so every route's main score uses the same kind of value.
+Zones within one country share its value: a route that may run in two US grids has one intensity. A facility that runs on its own generation cannot be valued from a country's mix, so a route on an on-site grid is not scored until the method can value it.
 
 **Embodied emissions (M)** are the emissions of manufacturing the hardware that serves a request: the servers and the accelerators (GPUs) in them. EcoLogits estimates how many accelerators the model needs from its size, and gives each request a share of their manufacturing emissions:
 
@@ -88,24 +82,25 @@ Anyone, the organization included, may submit corrections or new location disclo
 
 ### Versions
 
-Each release states its methodology version, grid data year and EcoLogits version. Every change in a score or rating between releases comes from new evidence, new input data (a new grid year or EcoLogits release) or a change of method. The band edges, the rating scale and the fixed PUE range are deliberate choices, reviewed when the evidence changes materially.
+Each release states its methodology version and EcoLogits version, which fixes the energy, embodied and grid figures. Every change in a score or rating between releases comes from new evidence, a new EcoLogits release or a change of method. The band edges, the rating scale and the fixed PUE range are deliberate choices, reviewed when the evidence changes materially.
 
 ### Presentation
 
-Every carbon score is labeled as an estimate from EcoLogits and grid data, and shown as a numeric range with its band or band span, its operational and embodied parts, and its life-cycle score where there is one. A route that is not scored says *not scored* and never shows a band. The disclosure rating uses letters and the carbon band a numbered color scale, so the two cannot be confused.
+Every carbon score is labeled as a life-cycle estimate from EcoLogits, and shown as a numeric range with its band or band span and its operational and embodied parts. A route that is not scored says *not scored* and never shows a band. The disclosure rating uses letters and the carbon band a numbered color scale, so the two cannot be confused.
 
 ### Limitations
 
 - The assessed set is a curated sample, not a census.
 - Locations are established from public documents, not observed in providers' operations.
-- The carbon score is an estimate built on two models: EcoLogits' for energy and embodied emissions, and the grid data's for intensity.
+- The carbon score is an estimate built on EcoLogits: its models for energy and embodied emissions, and its country electricity mixes for intensity.
 - EcoLogits assumes NVIDIA H100-class hardware and estimates generation speed from parameter counts, so real deployments may differ several-fold.
 - The fixed PUE range reflects no particular building: efficient operators get no credit, and very inefficient facilities are underestimated.
 - Providers' actual hardware, efficiency and energy figures are not reflected.
 - Closed models' sizes are EcoLogits' estimates.
 - Embodied emissions rest on life-cycle data for one class of server and a fixed three-year lifetime, and carry no uncertainty beyond that of the model's parameter counts.
 - Grid intensity is an annual average: it reflects neither when requests are served nor marginal emissions.
-- The latest full year of grid data may precede the release.
-- Grid values come from different publishers: all are consumption-based with direct factors, but publishers trace power flows and account for emissions in different ways. Values counting CO₂ only are flagged.
-- Requiring consumption-based values leaves out grids for which none is published.
+- Grid intensity is per country: regions within a country (US balancing authorities, Nordic bidding zones) share one value, however much their grids differ.
+- Grid intensity is production-based: a country that imports fossil-heavy electricity is credited with its own generation alone, and one that exports clean electricity is not credited for it.
+- Grid intensity is life-cycle, so scores are higher than those using direct emission factors, and the year of the underlying data is the one EcoLogits' version carries, which may precede the release.
+- Facilities with their own generation are not scored.
 - The score excludes water, networking, storage, users' devices, input tokens and training.

@@ -1,17 +1,21 @@
 """A route's carbon score: full SCI, (E x I) + M per 1,000 output tokens, with its parts kept separately.
 
-E and M come from EcoLogits for the parameter counts in the model's record; I comes from the grid files the route's
-location resolves to. Every value is computed as a Range and stored as {low, high}, rounded to 6 places.
+E and M come from EcoLogits for the parameter counts in the model's record; I is EcoLogits' electricity mix for the
+country of each grid the route's location resolves to (life-cycle, from Our World in Data). Every value is computed
+as a Range and stored as {low, high}, rounded to 6 places.
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping
+
+import pycountry
+from ecologits.electricity_mix_repository import electricity_mixes
 from ecologits.impacts.llm import compute_llm_impacts
 from ecologits.utils.range_value import RangeValue
 
-from build.constants.config import CARBON_BAND_UPPER, GRID_YEAR, MAX_GRID_AGE, OUTPUT_TOKENS, PUE
-from build.schemas.carbon_score import CarbonScore, Flag, GridValue, Interval
+from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS, PUE
+from build.schemas.carbon_score import CarbonScore, Interval
 from build.schemas.grid import Grid
 from build.schemas.model import Model
 from build.utils.bands import band_span
@@ -44,7 +48,7 @@ def ecologits_estimate(model: Model) -> tuple[Range, Range]:
             output_token_count=OUTPUT_TOKENS,
             if_electricity_mix_adpe=0.0,
             if_electricity_mix_pe=0.0,
-            if_electricity_mix_gwp=0.0,  # grid emissions are computed from the grid files, not here
+            if_electricity_mix_gwp=0.0,  # grid emissions are computed from the grids' countries, not here
             if_electricity_mix_wue=0.0,
             datacenter_pue=pue,
             datacenter_wue=0.0,
@@ -54,33 +58,26 @@ def ecologits_estimate(model: Model) -> tuple[Range, Range]:
     return Range(min(energies), max(energies)), Range(min(embodied), max(embodied))
 
 
-def grid_value(grid: Grid, scoring_year: int) -> GridValue:
-    """The one value of `grid` a score uses: its consumption-based value with a direct figure, for the newest year up
-    to `scoring_year` (GRID_YEAR when scoring). A year after scoring_year is never used; production-based values and
-    life-cycle figures never stand in.
-
-    ValueError if the grid has no such value, which validation refuses before any score."""
-    for year in sorted((int(year) for year in grid["values"] if int(year) <= scoring_year), reverse=True):
-        intensity = grid["values"][str(year)].get("consumption")
-        if intensity is not None and "direct" in intensity:
-            return GridValue(
-                year=year,
-                intensity=intensity["direct"],
-                lifecycle=intensity.get("lifecycle"),
-                gas=intensity["gas"],
-            )
-    raise ValueError(f"grids/{grid['name']}.yaml: no consumption-based direct value for {scoring_year} or earlier")
+def ecologits_grid_intensity(country: str) -> float | None:
+    """The carbon intensity, gCO2e/kWh, of EcoLogits' electricity mix for a country (ISO 3166-1 alpha-2): its life-cycle
+    value from Our World in Data, per country. None when EcoLogits has no mix for it. Tests replace it with their own
+    intensities (monkeypatch)."""
+    found = pycountry.countries.get(alpha_2=country)
+    mix = electricity_mixes.find_electricity_mix(found.alpha_3) if found else None
+    return mix.gwp * 1000 if mix else None  # kgCO2e/kWh -> gCO2e/kWh
 
 
-def value_flags(value: GridValue, scoring_year: int, max_age: int) -> list[Flag]:
-    """What a reader must be told about a value, without it changing which value is used: CO2 only, or a year more
-    than `max_age` (MAX_GRID_AGE when scoring) years older than `scoring_year` (GRID_YEAR when scoring)."""
-    flags: list[Flag] = []
-    if value["gas"] == "co2":
-        flags.append("gas")
-    if value["year"] < scoring_year - max_age:
-        flags.append("year")
-    return flags
+def grid_intensity(grid: Grid) -> float:
+    """The intensity a score uses for a grid: EcoLogits' mix for its country.
+
+    ValueError for an on-site grid (a facility's own generation, which a country's mix does not describe) or a
+    country EcoLogits has no mix for; validation refuses both before any score."""
+    if grid.get("supply") == "onsite":
+        raise ValueError(f"grids/{grid['name']}.yaml: an on-site grid has no EcoLogits country mix")
+    intensity = ecologits_grid_intensity(grid["country"])
+    if intensity is None:
+        raise ValueError(f"grids/{grid['name']}.yaml: EcoLogits has no electricity mix for {grid['country']!r}")
+    return intensity
 
 
 def _interval(r: Range) -> Interval:
@@ -89,9 +86,9 @@ def _interval(r: Range) -> Interval:
 
 
 def carbon_score(model: Model, grids: Mapping[str, Grid]) -> CarbonScore:
-    """A route's carbon score, (E x I) + M per 1,000 output tokens, with its parts, its grids and its flags, as its
-    carbon_score: field stores it. `model` is the record of the model the route serves; `grids` the grid files its
-    location resolves to (none when the location is undisclosed)."""
+    """A route's carbon score, (E x I) + M per 1,000 output tokens, with its parts and its grids, as its carbon_score:
+    field stores it. `model` is the record of the model the route serves; `grids` the grid files its location resolves
+    to (none when the location is undisclosed)."""
     energy, embodied = ecologits_estimate(model)
     if not grids:
         return CarbonScore(
@@ -100,34 +97,17 @@ def carbon_score(model: Model, grids: Mapping[str, Grid]) -> CarbonScore:
             embodied_g=_interval(embodied),
             intensity_g_per_kwh=None,
             score_g=None,
-            score_lifecycle_g=None,
             band=None,
-            flags={},
         )
     names = sorted(grids)
-    grid_values = {g: grid_value(grids[g], GRID_YEAR) for g in names}
-    intensity = Range(
-        min(v["intensity"] for v in grid_values.values()),
-        max(v["intensity"] for v in grid_values.values()),
-    )
+    intensities = [grid_intensity(grids[g]) for g in names]
+    intensity = Range(min(intensities), max(intensities))
     score = energy.times(intensity).scale(1 / 1000).plus(embodied)  # Wh x g/kWh / 1000 = g
-    lifecycles = [v["lifecycle"] for v in grid_values.values() if v["lifecycle"] is not None]
-    lifecycle = (
-        energy.times(Range(min(lifecycles), max(lifecycles))).scale(1 / 1000).plus(embodied)
-        if len(lifecycles) == len(grid_values)
-        else None
-    )
-    flags: dict[Flag, list[str]] = {}
-    for g in names:
-        for f in value_flags(grid_values[g], GRID_YEAR, MAX_GRID_AGE):
-            flags.setdefault(f, []).append(g)
     return CarbonScore(
         grids=names,
         energy_wh=_interval(energy),
         embodied_g=_interval(embodied),
         intensity_g_per_kwh=_interval(intensity),
         score_g=_interval(score),
-        score_lifecycle_g=_interval(lifecycle) if lifecycle else None,
         band=list(band_span(score, CARBON_BAND_UPPER)),
-        flags=dict(sorted(flags.items())),
     )

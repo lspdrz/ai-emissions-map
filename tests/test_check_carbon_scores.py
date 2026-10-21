@@ -16,9 +16,7 @@ def test_current_scores_pass(monkeypatch):
         "embodied_g": {"low": 0.05, "high": 0.06},
         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
         "score_g": {"low": 0.065, "high": 0.078},
-        "score_lifecycle_g": None,
         "band": [2, 2],
-        "flags": {},
     }
     run = ScoreRun(
         errors=[],
@@ -58,9 +56,7 @@ def test_a_missing_score_is_named(monkeypatch):
                         "embodied_g": {"low": 0.05, "high": 0.06},
                         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
                         "score_g": {"low": 0.065, "high": 0.078},
-                        "score_lifecycle_g": None,
                         "band": [2, 2],
-                        "flags": {},
                     }
                 }
             },
@@ -79,9 +75,7 @@ def test_a_moved_value_is_named(monkeypatch):
         "embodied_g": {"low": 0.05, "high": 0.06},
         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
         "score_g": {"low": 0.0, "high": 0.0},
-        "score_lifecycle_g": None,
         "band": [2, 2],
-        "flags": {},
     }
     computed = {**stored, "score_g": {"low": 0.065, "high": 0.078}}
     run = ScoreRun(
@@ -103,9 +97,7 @@ def test_several_moved_values_are_named_in_the_fields_order(monkeypatch):
         "embodied_g": {"low": 0.05, "high": 0.06},
         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
         "score_g": {"low": 0.0, "high": 0.0},
-        "score_lifecycle_g": None,
         "band": [1, 1],
-        "flags": {},
     }
     computed = {**stored, "score_g": {"low": 0.065, "high": 0.078}, "band": [2, 2]}
     run = ScoreRun(
@@ -127,9 +119,7 @@ def test_a_moved_disclosure_rating_is_not_this_gates_concern(monkeypatch):
         "embodied_g": {"low": 0.05, "high": 0.06},
         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
         "score_g": {"low": 0.065, "high": 0.078},
-        "score_lifecycle_g": None,
         "band": [2, 2],
-        "flags": {},
     }
     run = ScoreRun(
         errors=[],
@@ -158,9 +148,7 @@ def test_routes_are_named_in_order(monkeypatch):
         "embodied_g": {"low": 0.05, "high": 0.06},
         "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
         "score_g": {"low": 0.065, "high": 0.078},
-        "score_lifecycle_g": None,
         "band": [2, 2],
-        "flags": {},
     }
     run = ScoreRun(
         errors=[],

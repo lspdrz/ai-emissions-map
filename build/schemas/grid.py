@@ -1,51 +1,14 @@
-"""A grid: where a route's electricity comes from, with its yearly carbon intensity. sources/grids/<slug>.yaml.
+"""A grid: where a route's electricity comes from. sources/grids/<slug>.yaml.
 
-Curated like every other record (docs/workflows/add-grid.md): each value is read from a published page and
-recorded with its evidence and its method (basis, factors, gases)."""
+A grid file records location only (docs/workflows/add-grid.md): its zone, its country and its supply. Its carbon
+intensity is not curated: every score uses EcoLogits' electricity mix for the grid's country (build/carbon_score.py).
+"""
 
 from typing import Annotated, Literal, NotRequired, TypedDict
 
 from pydantic import AfterValidator, Field, with_config
 
 from build.schemas.common import RECORD, NonEmptyStr, Slug
-from build.schemas.evidence import Evidence, has_primary
-
-GCO2PerKWh = Annotated[float, Field(ge=0)]
-Year = Annotated[str, Field(pattern=r"^\d{4}$", description="The year, quoted in YAML")]
-
-
-@with_config(RECORD)
-class Intensity(TypedDict):
-    direct: NotRequired[
-        Annotated[GCO2PerKWh, Field(description="gCO2(e)/kWh, direct (operational) factors: what the score uses")]
-    ]
-    lifecycle: NotRequired[Annotated[GCO2PerKWh, Field(description="gCO2(e)/kWh, life-cycle factors: shown alongside")]]
-    gas: Annotated[Literal["co2e", "co2"], Field(description="co2 when the source counts carbon dioxide only")]
-    source: Annotated[NonEmptyStr, Field(description="Who published the value")]
-    evidence: list[Evidence]
-
-
-def _measured(intensity: Intensity) -> Intensity:
-    if "direct" not in intensity and "lifecycle" not in intensity:
-        raise ValueError("needs direct or lifecycle")
-    if not has_primary(intensity["evidence"]):
-        raise ValueError("needs at least one primary source")
-    return intensity
-
-
-CheckedIntensity = Annotated[Intensity, AfterValidator(_measured)]
-
-
-@with_config(RECORD)
-class GridYear(TypedDict):
-    consumption: NotRequired[CheckedIntensity]
-    production: NotRequired[CheckedIntensity]
-
-
-def _has_a_basis(year: GridYear) -> GridYear:
-    if not year:
-        raise ValueError("needs consumption or production")
-    return year
 
 
 @with_config(RECORD)
@@ -62,7 +25,13 @@ class Grid(TypedDict):
             ),
         ]
     ]
-    country: Annotated[str, Field(pattern=r"^[A-Z]{2}$", description="ISO 3166-1 alpha-2")]
+    country: Annotated[
+        str,
+        Field(
+            pattern=r"^[A-Z]{2}$",
+            description="ISO 3166-1 alpha-2: the country whose EcoLogits electricity mix gives the grid's intensity",
+        ),
+    ]
     subdivided: NotRequired[
         Annotated[
             bool,
@@ -78,7 +47,6 @@ class Grid(TypedDict):
             Field(description="onsite: a facility's own generation, not the public grid. Default public"),
         ]
     ]
-    values: Annotated[dict[Year, Annotated[GridYear, AfterValidator(_has_a_basis)]], Field(min_length=1)]
     comments: NotRequired[str]
 
 

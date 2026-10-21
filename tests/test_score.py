@@ -140,9 +140,7 @@ def test_written_fields_read_back_equal():
             "embodied_g": {"low": 0.05, "high": 0.06},
             "intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
             "score_g": {"low": 0.07, "high": 0.258},
-            "score_lifecycle_g": None,
             "band": [2, 3],
-            "flags": {"gas": ["de"]},
         },
     }
     text = route_text("name: acme-m-70b\n", route_score)
