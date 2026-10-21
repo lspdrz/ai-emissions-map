@@ -13,7 +13,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from build.schemas.carbon_score import CarbonScore
-from build.score import ScoreRun, score
+from build.score import score
+from build.types import ScoreRun
 
 RUN = "run `python -m build score`"
 # The keys of a route's carbon_score: field.

@@ -72,7 +72,7 @@ build/
   check_site_data.py     CI gate: web/data/data.json is current with its inputs and keeps to its contract
   import_ember.py        python -m build import-ember: Ember's downloads -> grid_intensity.csv, then every grid
   import_cloud_regions.py  python -m build import-cloud-regions: the GSF's region metadata -> cloud_regions.csv
-  types.py               the commands' results (GridRun, Release, SiteDataCheck, Import): not records; never validated
+  types.py               Sources (what load_sources returns) and the commands' results: not records; never validated
   __main__.py            the commands: python -m build score, release, the three gates check-carbon-scores,
                          check-disclosure-ratings, check-site-data, grid-emissions (a gate; --write writes),
                          import-ember and import-cloud-regions
@@ -97,13 +97,14 @@ build/
   module stays in that module.
 - **`utils/`:** pure helpers, no I/O. `range` (the `Range` value class), `bands` (carbon bands).
 - **`schemas/`:** the shape of every record in `sources/`, one file per record (`route`,
-  `evidence`, `organization`, `grid`, `model`, plus `common`, `carbon_score`, `disclosure_rating`, `score` and `sources`):
+  `evidence`, `organization`, `grid`, `model`, plus `common`, `carbon_score`, `disclosure_rating` and `score`):
   `TypedDict`s that pyright checks and Pydantic validates. Records stay plain dicts.
-- **`types`:** the commands' results (`GridRun`, `Release`, `SiteDataCheck`, `Import`): plain `NamedTuple`s, never
-  validated, since they are not records. A record in `sources/` has its schema in `schemas/`.
+- **`types`:** `Sources` (what `load_sources` returns) and the commands' results (`ScoreRun`, `GridRun`, `Release`,
+  `SiteDataCheck`, `Import`): never validated, since they are not records, and built from `schemas/`. A record in
+  `sources/` has its schema in `schemas/`.
 - **Import rules** (`pyproject.toml`, checked in CI by `uv run ruff check` and
-  `uv run lint-imports`): `constants/`, `schemas/` and `types` import nothing from `build/`; `utils/`
-  imports only other `utils/`; every other module may import them, never the
+  `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`, and `types` only `schemas/`;
+  `utils/` imports only other `utils/`; every other module may import them, never the
   other way round. Imports are absolute and at the top of the file, with no exceptions.
 - **Types** are checked in CI by `uv run pyright` (standard mode, `build/` and `tests/`).
 - **Formatting** is `uv run ruff format`, 120 columns (`pyproject.toml`); CI fails on any file it would change. The

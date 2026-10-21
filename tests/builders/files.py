@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from build.schemas.sources import Sources
+from build.types import Sources
 
 
 def write_source(root: Path, path: str, text: str = "") -> None:

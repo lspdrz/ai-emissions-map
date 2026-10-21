@@ -39,8 +39,8 @@ from build.grid_emissions import grid_emissions
 from build.import_cloud_regions import import_cloud_regions
 from build.import_ember import import_ember
 from build.release import release
-from build.score import ScoreRun, score
-from build.types import GridRun, Import, Release, SiteDataCheck
+from build.score import score
+from build.types import GridRun, Import, Release, ScoreRun, SiteDataCheck
 
 
 def _score(args: argparse.Namespace) -> ScoreRun:

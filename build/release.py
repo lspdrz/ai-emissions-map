@@ -16,8 +16,7 @@ from typing import Any, cast
 
 from build.generate_site_data import build_data, check_contract
 from build.load_sources import SOURCE_DIRS, load_sources
-from build.schemas.sources import Sources
-from build.types import Release
+from build.types import Release, Sources
 from build.validate import check_stored_scores, validate_sources
 
 DATA_FILE = Path("web") / "data" / "data.json"

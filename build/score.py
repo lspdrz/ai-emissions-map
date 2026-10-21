@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, NamedTuple, cast
+from typing import Any, cast
 
 import yaml
 
@@ -20,16 +20,8 @@ from build.schemas.disclosure_rating import Letter
 from build.schemas.grid import Grid
 from build.schemas.route import Route
 from build.schemas.score import OrgRating, RouteScore
-from build.schemas.sources import Sources
+from build.types import ScoreRun, Sources
 from build.validate import validate_sources
-
-
-class ScoreRun(NamedTuple):
-    errors: list[str]
-    written: list[Path]  # with write=False: the files that would be written
-    data: Mapping[str, Any] = {}  # the records as read, and every computed field: what the CI gates
-    routes: Mapping[str, RouteScore] = {}  # compare (empty when there are errors)
-    orgs: Mapping[str, OrgRating] = {}
 
 
 # The line above the fields score writes, at the end of each route and organization file.
