@@ -1,0 +1,15 @@
+name: "no"
+display_name: Norway
+country: "NO"
+subdivided: true
+comments: >-
+  Norway as a whole, for a route whose provider names the country but no bidding zone or facility. Norway's grid is
+  split into five bidding zones (NO1 to NO5), so naming the country does not determine the grid. Its intensity is
+  Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 28.05
+  year: 2025
+  geography: 'NO'
+  source: Ember

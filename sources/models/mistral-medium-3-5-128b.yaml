@@ -1,0 +1,13 @@
+name: mistral-medium-3-5-128b
+display_name: Mistral Medium 3.5
+architecture: dense
+active_b: 128
+total_b: 128
+evidence:
+- url: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B
+  shows: 'Model card: "It is a dense 128B model with a 256k context window"; "Dense 128B parameters."'
+  accessed: "2026-10-22"
+  kind: primary
+comments: >-
+  Mistral states 128B. Hugging Face counts 127.7B parameters in the safetensors, 121.8B of them in FP8 and 5.9B in
+  BF16.
