@@ -1,0 +1,12 @@
+name: gpt-6-luna
+display_name: GPT-6 Luna
+architecture: moe
+active_b: { min: 3.8, max: 11 }
+total_b: 38
+evidence:
+- url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
+  shows: 'EcoLogits catalogue, "gpt-6-luna": architecture "moe", parameters "total": 38, "active": {"min": 3.8, "max": 11}; warnings "model-arch-not-released", "model-arch-multimodal"'
+  accessed: "2026-10-22"
+  kind: corroborating
+comments: >-
+  EcoLogits marks GPT-6 Luna's architecture as not released by OpenAI: these counts are its estimate.
