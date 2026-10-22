@@ -8,18 +8,18 @@
     ],
     "counts": {
       "grids": 45,
-      "models": 9,
-      "organizations": 7,
-      "routes": 16
+      "models": 10,
+      "organizations": 8,
+      "routes": 19
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": "gemini-3-6-flash",
+    "featured_model": "deepseek-v4-1-flash",
     "grid": {
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "f12d5c0c689f148585483227143eaa68784cbe3197f5e484460deb18bdbac138",
+    "inputs_sha": "ec634c883f49c3269aac5765a05f6fc095f84d2dcf3df8c64bf9de195d3f53fc",
     "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
@@ -79,6 +79,13 @@
       "display_name": "Gemini 3.8 Flash",
       "slug": "gemini-3-8-flash",
       "total_b": 750
+    },
+    {
+      "active_b": 5.1,
+      "architecture": "moe",
+      "display_name": "gpt-oss-120b",
+      "slug": "gpt-oss-120b",
+      "total_b": 117
     },
     {
       "active_b": 39,
@@ -455,6 +462,97 @@
       ],
       "slug": "nebius",
       "type": "inference_host"
+    },
+    {
+      "country": "FR",
+      "description": "Scaleway says every Generative APIs Serverless model is hosted in one data center in Paris operated by OPCORE, and that customers will be notified before that changes. It does not say which of its Paris data centers it is.",
+      "display_name": "Scaleway",
+      "evidence": [
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "deepseek-v4.1-flash - output token - realtime - fr-par",
+            "locality",
+            "gpt-oss-120b - output token - realtime - fr-par",
+            "mistral-medium-3.5-128b - output token - realtime - fr-par"
+          ],
+          "routes": [
+            "scaleway-deepseek-v4-1-flash",
+            "scaleway-gpt-oss-120b",
+            "scaleway-mistral-medium-3-5-128b"
+          ],
+          "url": "https://api.scaleway.com/product-catalog/v2alpha1/public-catalog/products?product_types=generative_apis"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Scaleway’s GPU products are initially available in DC5 (par2)"
+          ],
+          "routes": [
+            "scaleway-deepseek-v4-1-flash",
+            "scaleway-gpt-oss-120b",
+            "scaleway-mistral-medium-3-5-128b"
+          ],
+          "url": "https://www.scaleway.com/en/cloud-solutions-ai/"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Power Usage Effectiveness (PUE) specific to the datacenter hosting the model (e.g., DC5)"
+          ],
+          "routes": [
+            "scaleway-deepseek-v4-1-flash",
+            "scaleway-gpt-oss-120b",
+            "scaleway-mistral-medium-3-5-128b"
+          ],
+          "url": "https://www.scaleway.com/en/docs/environmental-footprint/additional-content/generative-apis-dedicated-env-footprint.md"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Where are the inference servers located?",
+            "All *Serverless models* are currently hosted in a secure data center located in Paris, France, operated by [OPCORE](https://www.opcore.com/).",
+            "Customers will be notified when the hosting location changes from France-only to Europe."
+          ],
+          "routes": [
+            "scaleway-deepseek-v4-1-flash",
+            "scaleway-gpt-oss-120b",
+            "scaleway-mistral-medium-3-5-128b"
+          ],
+          "url": "https://www.scaleway.com/en/docs/generative-apis/faq.md"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "DC2 PAR1 Paris",
+            "DC3 PAR1 Paris",
+            "DC4 Paris",
+            "DC5 PAR2 Paris"
+          ],
+          "routes": [
+            "scaleway-deepseek-v4-1-flash",
+            "scaleway-gpt-oss-120b",
+            "scaleway-mistral-medium-3-5-128b"
+          ],
+          "url": "https://www.scaleway.com/en/environmental-leadership/"
+        }
+      ],
+      "homepage": "https://www.scaleway.com",
+      "rating": {
+        "letter": "A",
+        "mean": 3.0,
+        "spread": {
+          "A": 3
+        },
+        "summary": "A (3 routes at A)"
+      },
+      "routes": [
+        "scaleway-deepseek-v4-1-flash",
+        "scaleway-gpt-oss-120b",
+        "scaleway-mistral-medium-3-5-128b"
+      ],
+      "slug": "scaleway",
+      "type": "cloud"
     },
     {
       "country": "US",
@@ -913,6 +1011,96 @@
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "nebius-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        4,
+        4
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.218011,
+        "low": 2.899883
+      },
+      "gap": null,
+      "intensity": {
+        "high": 41.224,
+        "low": 41.224
+      },
+      "label": "OPCORE DC5, Paris",
+      "letter": "A",
+      "model": "deepseek-v4-1-flash",
+      "org": "scaleway",
+      "score": {
+        "high": 0.435828,
+        "low": 0.38149
+      },
+      "served_as": "deepseek-v4.1-flash",
+      "slug": "scaleway-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.027928,
+        "low": 0.027928
+      },
+      "energy": {
+        "high": 0.456713,
+        "low": 0.313991
+      },
+      "gap": null,
+      "intensity": {
+        "high": 41.224,
+        "low": 41.224
+      },
+      "label": "OPCORE DC5, Paris",
+      "letter": "A",
+      "model": "gpt-oss-120b",
+      "org": "scaleway",
+      "score": {
+        "high": 0.046756,
+        "low": 0.040872
+      },
+      "served_as": "gpt-oss-120b",
+      "slug": "scaleway-gpt-oss-120b"
+    },
+    {
+      "band": [
+        3,
+        3
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.082218,
+        "low": 0.082218
+      },
+      "energy": {
+        "high": 1.252045,
+        "low": 0.860781
+      },
+      "gap": null,
+      "intensity": {
+        "high": 41.224,
+        "low": 41.224
+      },
+      "label": "OPCORE DC5, Paris",
+      "letter": "A",
+      "model": "mistral-medium-3-5-128b",
+      "org": "scaleway",
+      "score": {
+        "high": 0.133832,
+        "low": 0.117703
+      },
+      "served_as": "mistral-medium-3.5-128b",
+      "slug": "scaleway-mistral-medium-3-5-128b"
     },
     {
       "band": [
