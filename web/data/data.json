@@ -9,8 +9,8 @@
     "counts": {
       "grids": 45,
       "models": 10,
-      "organizations": 8,
-      "routes": 19
+      "organizations": 9,
+      "routes": 20
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,7 +19,7 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "ec634c883f49c3269aac5765a05f6fc095f84d2dcf3df8c64bf9de195d3f53fc",
+    "inputs_sha": "c33fff590a21b11e68fa63f53f1bfca22dfabffc5ddef92684b522d693a08d41",
     "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
@@ -461,6 +461,88 @@
         "nebius-deepseek-v4-1-flash"
       ],
       "slug": "nebius",
+      "type": "inference_host"
+    },
+    {
+      "country": "US",
+      "description": "Public AI's Inference Utility routes each request to an inference partner's compute. Its pages say only that its compute providers are \"all over the world\"; its open-source deployment configuration names the partner serving each model.",
+      "display_name": "Public AI",
+      "evidence": [
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "environments:",
+            "- staging",
+            "; the one active entry, ",
+            "model: openai/inference-apertus-v15-70b",
+            "api_base: https://maas.phoeniqs.com/v1",
+            "api_key: os.environ/PHOENIQS_API_KEY"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/aa8d775fae7232af3c49cd04922a05e797ce474c/charts/platform/charts/litellm/models/swiss-ai/apertus-v1.5-70b.yaml"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "The Public AI Gateway is a unified API that routes requests to open-source models hosted by inference partners worldwide. We handle load balancing, traffic routing, and failover so developers can access public AI models through a single OpenAI-compatible endpoint."
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://platform.publicai.co/inference-partners-faq"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Where is my data processed and stored?",
+            "We have multiple compute providers all over the world that provide GPUs that support the processing of queries for Apertus, SEA-LION, and the other models we support."
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://publicai.co/"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "PHOENIQS Takes Over New Sovereign AI Data Center at uptownBasel",
+            "The new facility, integrated into the Pioneer building at uptownBasel",
+            "On top of this sovereign infrastructure, PHOENIQS is also making Apertus — Switzerland’s open large language model — available to organizations."
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://www.phoeniqs.com/en/news/phoeniqs-takes-over-new-sovereign-ai-data-center-at-uptownbasel"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "PHOENIQS operates Switzerland’s first commercially available AI supercomputer at uptownBasel. Powered by 192 NVIDIA H100 GPUs and built on the IBM Vela architecture",
+            "Hosted and operated entirely in Switzerland",
+            "Metro Campus Zurich",
+            "Datacenter Münchenstein (Basel) 1"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://www.phoeniqs.com/en/why-phoeniqs/data-centers"
+        }
+      ],
+      "homepage": "https://publicai.co",
+      "rating": {
+        "letter": "A",
+        "mean": 3.0,
+        "spread": {
+          "A": 1
+        },
+        "summary": "A (1 route at A)"
+      },
+      "routes": [
+        "public-ai-apertus-v1-5-70b"
+      ],
+      "slug": "public-ai",
       "type": "inference_host"
     },
     {
@@ -1011,6 +1093,36 @@
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "nebius-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.056597,
+        "low": 0.056597
+      },
+      "energy": {
+        "high": 0.876705,
+        "low": 0.602735
+      },
+      "gap": null,
+      "intensity": {
+        "high": 39.278,
+        "low": 39.278
+      },
+      "label": "PHOENIQS, uptownBasel",
+      "letter": "A",
+      "model": "apertus-v1-5-70b",
+      "org": "public-ai",
+      "score": {
+        "high": 0.091032,
+        "low": 0.080271
+      },
+      "served_as": "swiss-ai/apertus-v1.5-70b",
+      "slug": "public-ai-apertus-v1-5-70b"
     },
     {
       "band": [
