@@ -8,9 +8,9 @@
     ],
     "counts": {
       "grids": 45,
-      "models": 10,
+      "models": 13,
       "organizations": 9,
-      "routes": 20
+      "routes": 23
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,7 +19,7 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "c33fff590a21b11e68fa63f53f1bfca22dfabffc5ddef92684b522d693a08d41",
+    "inputs_sha": "edc1f2e23effb563d566f5eb0c33ec2a52213d74ca5b6812a32375408ab655e8",
     "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
@@ -30,11 +30,25 @@
   },
   "models": [
     {
+      "active_b": 40.43,
+      "architecture": "dense",
+      "display_name": "ALIA 40B Instruct",
+      "slug": "alia-40b-instruct",
+      "total_b": 40.43
+    },
+    {
       "active_b": 70,
       "architecture": "dense",
       "display_name": "Apertus 1.5 70B",
       "slug": "apertus-v1-5-70b",
       "total_b": 70
+    },
+    {
+      "active_b": 11,
+      "architecture": "dense",
+      "display_name": "Bielik 11B v3.0 Instruct",
+      "slug": "bielik-11b-v3-0-instruct",
+      "total_b": 11
     },
     {
       "active_b": {
@@ -107,6 +121,13 @@
       "display_name": "Mistral Small 4",
       "slug": "mistral-small-4-119b-2603",
       "total_b": 119
+    },
+    {
+      "active_b": 32,
+      "architecture": "dense",
+      "display_name": "Qwen-SEA-LION-v4-32B-IT",
+      "slug": "qwen-sea-lion-v4-32b-it",
+      "total_b": 32
     }
   ],
   "organizations": [
@@ -471,6 +492,49 @@
         {
           "accessed": "2026-10-22",
           "quotes": [
+            "The free API is rate-limited and meant for POC testing"
+          ],
+          "routes": [
+            "public-ai-qwen-sea-lion-v4-32b-it"
+          ],
+          "url": "https://docs.sea-lion.ai/overview/readme/faq"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "- model_name: BSC-LT/ALIA-40b-instruct",
+            "api_base: https://api.nextbit256.com/v1"
+          ],
+          "routes": [
+            "public-ai-alia-40b-instruct"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/894b329f634b2c64ab73273512d23fe5ccf161f2/charts/platform/charts/litellm/models/BSC-LT/ALIA-40b-instruct.yaml"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "- model_name: aisingapore/Qwen-SEA-LION-v4-32B-IT",
+            "api_base: https://api.sea-lion.ai"
+          ],
+          "routes": [
+            "public-ai-qwen-sea-lion-v4-32b-it"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/894b329f634b2c64ab73273512d23fe5ccf161f2/charts/platform/charts/litellm/models/aisingapore/Qwen-SEA-LION-v4-32B-IT.yaml"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "- model_name: speakleash/Bielik-11B-v3.0-Instruct",
+            "api_base: https://llmlab.plgrid.pl/api/v1"
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/894b329f634b2c64ab73273512d23fe5ccf161f2/charts/platform/charts/litellm/models/speakleash/Bielik-11B-v3.0-Instruct.yaml"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
             "environments:",
             "- staging",
             "; the one active entry, ",
@@ -486,10 +550,34 @@
         {
           "accessed": "2026-10-22",
           "quotes": [
+            "PLGrid offers access to o a distributed ecosystem of high-performance computing (HPC) clusters located at national supercomputing centers and partner infrastructures, including access to the LUMI EuroHPC system in Finland."
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://guide.plgrid.pl/en/infrastructure/resources"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "PLGrid Forge is a service for inference, management of credits and API keys, and access to models within a specific grant using PLGrid supercomputers. The service is hosted at https://llmlab.plgrid.pl",
+            "model instances run on a supercomputer"
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://guide.plgrid.pl/en/integrated-platforms/plgrid_forge"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "The Public AI Gateway is a unified API that routes requests to open-source models hosted by inference partners worldwide.",
             "The Public AI Gateway is a unified API that routes requests to open-source models hosted by inference partners worldwide. We handle load balancing, traffic routing, and failover so developers can access public AI models through a single OpenAI-compatible endpoint."
           ],
           "routes": [
-            "public-ai-apertus-v1-5-70b"
+            "public-ai-alia-40b-instruct",
+            "public-ai-apertus-v1-5-70b",
+            "public-ai-bielik-11b-v3-0-instruct"
           ],
           "url": "https://platform.publicai.co/inference-partners-faq"
         },
@@ -503,6 +591,49 @@
             "public-ai-apertus-v1-5-70b"
           ],
           "url": "https://publicai.co/"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "We work with third-party service providers to provide website and application development, hosting, maintenance, backup, storage, virtual infrastructure"
+          ],
+          "routes": [
+            "public-ai-qwen-sea-lion-v4-32b-it"
+          ],
+          "url": "https://sea-lion.ai/privacy-policy"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "el EU Endpoint ( https://eu.api.nextbit256.com/v1 ), con inferencia exclusivamente en España",
+            "y el Global Endpoint ( https://api.nextbit256.com/v1 ), con inferencia fuera del EEE"
+          ],
+          "routes": [
+            "public-ai-alia-40b-instruct"
+          ],
+          "url": "https://www.nextbit256.com/docs/dpa"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Una empresa española que sirve inferencia desde hardware propio en España (modelos marcados como EU)",
+            "Nuestra inferencia corre sobre hardware propio en España"
+          ],
+          "routes": [
+            "public-ai-alia-40b-instruct"
+          ],
+          "url": "https://www.nextbit256.com/inference/eu-compliance"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "El catálogo entero, desde la UE por defecto. Lo que corre fuera va marcado en la tabla.",
+            "ALIA-40B"
+          ],
+          "routes": [
+            "public-ai-alia-40b-instruct"
+          ],
+          "url": "https://www.nextbit256.com/inference/models-api"
         },
         {
           "accessed": "2026-10-22",
@@ -532,15 +663,21 @@
       ],
       "homepage": "https://publicai.co",
       "rating": {
-        "letter": "A",
-        "mean": 3.0,
+        "letter": "C",
+        "mean": 1.5,
         "spread": {
-          "A": 1
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1
         },
-        "summary": "A (1 route at A)"
+        "summary": "C (1 route at A, 1 route at B, 1 route at C, 1 route at D)"
       },
       "routes": [
-        "public-ai-apertus-v1-5-70b"
+        "public-ai-alia-40b-instruct",
+        "public-ai-apertus-v1-5-70b",
+        "public-ai-bielik-11b-v3-0-instruct",
+        "public-ai-qwen-sea-lion-v4-32b-it"
       ],
       "slug": "public-ai",
       "type": "inference_host"
@@ -1101,6 +1238,36 @@
       ],
       "default": true,
       "embodied": {
+        "high": 0.021767,
+        "low": 0.021767
+      },
+      "energy": {
+        "high": 0.342673,
+        "low": 0.235588
+      },
+      "gap": "The grid is disclosed, not the facility.",
+      "intensity": {
+        "high": 153.459,
+        "low": 153.459
+      },
+      "label": "Nextbit, Spain",
+      "letter": "B",
+      "model": "alia-40b-instruct",
+      "org": "public-ai",
+      "score": {
+        "high": 0.074354,
+        "low": 0.05792
+      },
+      "served_as": "BSC-LT/ALIA-40b-instruct",
+      "slug": "public-ai-alia-40b-instruct"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": true,
+      "embodied": {
         "high": 0.056597,
         "low": 0.056597
       },
@@ -1123,6 +1290,57 @@
       },
       "served_as": "swiss-ai/apertus-v1.5-70b",
       "slug": "public-ai-apertus-v1-5-70b"
+    },
+    {
+      "band": [
+        1,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.007634,
+        "low": 0.007634
+      },
+      "energy": {
+        "high": 0.123724,
+        "low": 0.08506
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 590.814,
+        "low": 57.182
+      },
+      "label": "PLGrid supercomputers (Poland or Finland)",
+      "letter": "C",
+      "model": "bielik-11b-v3-0-instruct",
+      "org": "public-ai",
+      "score": {
+        "high": 0.080731,
+        "low": 0.012498
+      },
+      "served_as": "speakleash/Bielik-11B-v3.0-Instruct",
+      "slug": "public-ai-bielik-11b-v3-0-instruct"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.009953,
+        "low": 0.009953
+      },
+      "energy": {
+        "high": 0.157698,
+        "low": 0.108418
+      },
+      "gap": "Location not disclosed by the provider.",
+      "intensity": null,
+      "label": "AI Singapore's SEA-LION API, location not disclosed",
+      "letter": "D",
+      "model": "qwen-sea-lion-v4-32b-it",
+      "org": "public-ai",
+      "score": null,
+      "served_as": "aisingapore/Qwen-SEA-LION-v4-32B-IT",
+      "slug": "public-ai-qwen-sea-lion-v4-32b-it"
     },
     {
       "band": [
