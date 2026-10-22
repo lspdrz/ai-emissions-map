@@ -1,0 +1,15 @@
+name: dk
+display_name: Denmark
+country: DK
+subdivided: true
+comments: >-
+  Denmark as a whole, for a route whose provider names the country but no bidding zone or facility. Denmark's grid is
+  split into two bidding zones (DK1 in the west, DK2 in the east), so naming the country does not determine the grid.
+  Its intensity is Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 99.904
+  year: 2025
+  geography: DK
+  source: Ember

@@ -7,10 +7,10 @@
       1.0
     ],
     "counts": {
-      "grids": 42,
-      "models": 6,
-      "organizations": 6,
-      "routes": 13
+      "grids": 45,
+      "models": 9,
+      "organizations": 7,
+      "routes": 16
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -19,7 +19,7 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "bcf98b151e14d18671964950c21d314e6ae4cbbb2169d694ece0812fa3609786",
+    "inputs_sha": "f12d5c0c689f148585483227143eaa68784cbe3197f5e484460deb18bdbac138",
     "intensity_spread": 25,
     "methodology_version": "0.3.0",
     "pue": [
@@ -79,6 +79,27 @@
       "display_name": "Gemini 3.8 Flash",
       "slug": "gemini-3-8-flash",
       "total_b": 750
+    },
+    {
+      "active_b": 39,
+      "architecture": "moe",
+      "display_name": "Mistral Large 3",
+      "slug": "mistral-large-3-675b-instruct-2512",
+      "total_b": 673
+    },
+    {
+      "active_b": 128,
+      "architecture": "dense",
+      "display_name": "Mistral Medium 3.5",
+      "slug": "mistral-medium-3-5-128b",
+      "total_b": 128
+    },
+    {
+      "active_b": 6.5,
+      "architecture": "moe",
+      "display_name": "Mistral Small 4",
+      "slug": "mistral-small-4-119b-2603",
+      "total_b": 119
     }
   ],
   "organizations": [
@@ -255,6 +276,113 @@
       ],
       "slug": "infomaniak",
       "type": "inference_host"
+    },
+    {
+      "country": "FR",
+      "description": "Mistral AI serves its models from a global endpoint, with no commitment to where a request runs, and from regional endpoints in the European Union and the United States. Its subprocessor list names the countries of its own infrastructure and of its inference provider, but not the buildings.",
+      "display_name": "Mistral AI",
+      "evidence": [
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "EU-NORTH-01A",
+            "Falun, Sweden",
+            "EU-NORTH-02A",
+            "Kristiansand, Norway",
+            "EU-NORTH-04A",
+            "Stockholm, Sweden",
+            "EU-NORTH-05A",
+            "Skovlunde, Denmark",
+            "EU-SOUTH-01A",
+            "Barcelona, Spain",
+            "EU-SOUTH-03B",
+            "Barcelona, Spain",
+            "EU-SOUTH-04A",
+            "Alava, Spain",
+            "EU-WEST-01A",
+            "Crawley, UK",
+            "EU-WEST-02A",
+            "London, UK"
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-3-675b-instruct-2512",
+            "mistral-ai-mistral-medium-3-5-128b",
+            "mistral-ai-mistral-small-4-119b-2603"
+          ],
+          "url": "https://docs.coreweave.com/platform/regions/all-availability-zones.md"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "if you do not specify a region, the API uses the global Mistral endpoint.",
+            "Not region-specific",
+            "Mistral does not commit to a specific inference location for requests sent to this endpoint."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-3-675b-instruct-2512",
+            "mistral-ai-mistral-medium-3-5-128b",
+            "mistral-ai-mistral-small-4-119b-2603"
+          ],
+          "url": "https://docs.mistral.ai/inference/regional-inference.md"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Where do you store my data or my Organization's data?",
+            "By default, your data is hosted in the European Union."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-3-675b-instruct-2512",
+            "mistral-ai-mistral-medium-3-5-128b",
+            "mistral-ai-mistral-small-4-119b-2603"
+          ],
+          "url": "https://help.mistral.ai/en/articles/347629-where-do-you-store-my-data-or-my-organization-s-data"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Feb 2026",
+            "GB200 serving production."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-3-675b-instruct-2512",
+            "mistral-ai-mistral-medium-3-5-128b",
+            "mistral-ai-mistral-small-4-119b-2603"
+          ],
+          "url": "https://mistral.ai/cloud/"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Mistral Compute • Cloud infrastructure",
+            "Products: All",
+            "CoreWeave Inc. • Inference Provider",
+            "Products: All SaaS"
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-3-675b-instruct-2512",
+            "mistral-ai-mistral-medium-3-5-128b",
+            "mistral-ai-mistral-small-4-119b-2603"
+          ],
+          "url": "https://trust.mistral.ai/subprocessors"
+        }
+      ],
+      "homepage": "https://mistral.ai",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 3
+        },
+        "summary": "C (3 routes at C)"
+      },
+      "routes": [
+        "mistral-ai-mistral-large-3-675b-instruct-2512",
+        "mistral-ai-mistral-medium-3-5-128b",
+        "mistral-ai-mistral-small-4-119b-2603"
+      ],
+      "slug": "mistral-ai",
+      "type": "model_lab"
     },
     {
       "country": "NL",
@@ -665,6 +793,96 @@
       },
       "served_as": "swiss-ai/Apertus-v1.5-70B",
       "slug": "infomaniak-apertus-v1-5-70b"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.343225,
+        "low": 0.343225
+      },
+      "energy": {
+        "high": 5.408743,
+        "low": 3.718511
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 153.459,
+        "low": 28.05
+      },
+      "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
+      "letter": "C",
+      "model": "mistral-large-3-675b-instruct-2512",
+      "org": "mistral-ai",
+      "score": {
+        "high": 1.173245,
+        "low": 0.447529
+      },
+      "served_as": "mistral-large-2512",
+      "slug": "mistral-ai-mistral-large-3-675b-instruct-2512"
+    },
+    {
+      "band": [
+        3,
+        3
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.082218,
+        "low": 0.082218
+      },
+      "energy": {
+        "high": 1.252045,
+        "low": 0.860781
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 153.459,
+        "low": 28.05
+      },
+      "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
+      "letter": "C",
+      "model": "mistral-medium-3-5-128b",
+      "org": "mistral-ai",
+      "score": {
+        "high": 0.274355,
+        "low": 0.106363
+      },
+      "served_as": "mistral-medium-3-5",
+      "slug": "mistral-ai-mistral-medium-3-5-128b"
+    },
+    {
+      "band": [
+        2,
+        3
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.028547,
+        "low": 0.028547
+      },
+      "energy": {
+        "high": 0.465773,
+        "low": 0.320219
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "intensity": {
+        "high": 153.459,
+        "low": 28.05
+      },
+      "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
+      "letter": "C",
+      "model": "mistral-small-4-119b-2603",
+      "org": "mistral-ai",
+      "score": {
+        "high": 0.100024,
+        "low": 0.037529
+      },
+      "served_as": "mistral-small-2603",
+      "slug": "mistral-ai-mistral-small-4-119b-2603"
     },
     {
       "band": [
