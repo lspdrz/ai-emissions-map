@@ -1,0 +1,14 @@
+name: bielik-11b-v3-0-instruct
+display_name: Bielik 11B v3.0 Instruct
+architecture: dense
+active_b: 11
+total_b: 11
+evidence:
+- url: https://huggingface.co/api/models/speakleash/Bielik-11B-v3.0-Instruct?expand%5B%5D=safetensors&expand%5B%5D=config
+  shows: 'Hugging Face model metadata (JSON): "architectures":["LlamaForCausalLM"]; "total":11168796672'
+  accessed: "2026-10-22"
+  kind: primary
+comments: >-
+  SpeakLeash names the model 11B; Hugging Face counts 11.17B parameters in its safetensors. The model card is gated
+  behind a login, so the counts come from the published weights' public metadata: a Llama architecture, which is
+  dense.

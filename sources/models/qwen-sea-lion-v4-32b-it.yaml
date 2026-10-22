@@ -1,0 +1,16 @@
+name: qwen-sea-lion-v4-32b-it
+display_name: Qwen-SEA-LION-v4-32B-IT
+architecture: dense
+active_b: 32
+total_b: 32
+evidence:
+- url: https://huggingface.co/aisingapore/Qwen-SEA-LION-v4-32B-IT
+  shows: 'Model card: "Continue pretrained from model: Qwen3-32B"'
+  accessed: "2026-10-22"
+  kind: primary
+- url: https://huggingface.co/aisingapore/Qwen-SEA-LION-v4-32B-IT/raw/main/config.json
+  shows: 'config.json: "architectures": ["Qwen3ForCausalLM"], "model_type": "qwen3", with no expert fields: a dense model'
+  accessed: "2026-10-22"
+  kind: primary
+comments: >-
+  AI Singapore names the model 32B; Hugging Face counts 32.76B parameters in its safetensors.

@@ -1,0 +1,13 @@
+name: alia-40b-instruct
+display_name: ALIA 40B Instruct
+architecture: dense
+active_b: 40.43
+total_b: 40.43
+evidence:
+- url: https://huggingface.co/BSC-LT/ALIA-40b-instruct-2606
+  shows: 'Model card: "The ALIA-40b is a transformer-based, decoder-only language model"; "Total Parameters", "40,433,885,184"'
+  accessed: "2026-10-22"
+  kind: primary
+comments: >-
+  The Barcelona Supercomputing Center's instruct releases 2601, 2605 and 2606 all hold 40,433,885,184 parameters in
+  their safetensors, so the counts hold whichever release a provider serves.
