@@ -2,7 +2,7 @@
 
 The AI Emissions Map estimates the emissions of AI **serving routes** (an organization serving a model) and rates how precisely each organization discloses where its routes run.
 
-- **Carbon score**: the Software Carbon Intensity (SCI, ISO/IEC 21031) of generating 1,000 output tokens,
+- **Carbon intensity**: the Software Carbon Intensity (SCI, ISO/IEC 21031) of generating 1,000 output tokens,
   `(E × I) + M`. Energy (E) and embodied hardware emissions (M) are estimated with EcoLogits from the model's
   parameter counts; grid intensity (I) is [Ember](https://ember-energy.org/)'s life-cycle intensity of generation
   for the country (or US state or Chinese province) of each grid the route may draw from.
@@ -10,7 +10,7 @@ The AI Emissions Map estimates the emissions of AI **serving routes** (an organi
   grid, C several possible grids, D undisclosed). An organization's rating is the mean of its routes'.
 
 Every input is curated as YAML in `sources/`, each claim with its evidence; the Python pipeline in `build/` computes
-the scores and ratings and writes `web/data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.
+the carbon intensities and ratings and writes `web/data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.
 
 ## Documentation
 
@@ -52,7 +52,7 @@ New organizations, routes, grids and models are added by pull request.
 3. **Cite every claim.** Read each page yourself and quote the passage that supports the claim in `shows`, with
    the date you read it ([`docs/reference/evidence-and-freshness.md`](docs/reference/evidence-and-freshness.md)).
 4. **Regenerate the results:** run `uv run python -m build score`, then `uv run python -m build release`. Never
-   edit the generated `disclosure_rating` and `carbon_score` fields or `web/data/data.json` by hand.
+   edit the generated `disclosure_rating` and `carbon_intensity` fields or `web/data/data.json` by hand.
 5. **Check:** `uv run pytest` passes.
 6. **Commit everything**: your files, the fields that the `score` command wrote and `web/data/data.json`.
 7. **Open a pull request against `main`.** Describe what you added and the evidence for each source.

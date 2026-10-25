@@ -22,7 +22,7 @@ DISCLOSURE_POINTS: dict[Literal["A", "B", "C", "D"], int] = {"A": 3, "B": 2, "C"
 
 # Data-center overhead (Power Usage Effectiveness), applied by EcoLogits as its final step:
 # request energy = PUE x IT energy. v1 uses ONE range for every route, from efficient hyperscale
-# (~1.1) to the industry average (~1.56, Uptime Institute), so scores are not biased optimistic
+# (~1.1) to the industry average (~1.56, Uptime Institute), so carbon intensities are not biased optimistic
 # and only the grid differs between providers.
 #
 # TODO(v2, MAJOR, #10): use each facility's published PUE where one exists (e.g. a facility that publishes
@@ -31,10 +31,10 @@ DISCLOSURE_POINTS: dict[Literal["A", "B", "C", "D"], int] = {"A": 3, "B": 2, "C"
 # differences between operators.
 PUE: tuple[float, float] = (1.1, 1.6)
 
-# Functional unit: every route's score is express per this many output tokens.
+# Functional unit: every route's carbon intensity is expressed per this many output tokens.
 OUTPUT_TOKENS = 1000
 
-# The year of grid data every score uses: each grid's Ember value for this year, or for its latest earlier year
+# The year of grid data every carbon intensity uses: each grid's Ember value for this year, or for its latest earlier year
 # (sources/snapshots/grid_intensity.csv; sources/snapshots/README.md says how to refresh it).
 GRID_YEAR = 2025
 

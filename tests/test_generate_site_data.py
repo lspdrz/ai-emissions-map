@@ -68,12 +68,12 @@ def test_a_routes_entry_carries_its_stored_fields():
         model="m-70b",
         location=make_location(candidates=["grid:ch"]),
         disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-        carbon_score={
+        carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
-            "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
-            "score_g": {"low": 0.065, "high": 0.078},
+            "grid_intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "sci_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
     )
@@ -85,9 +85,9 @@ def test_a_routes_entry_carries_its_stored_fields():
         "default": False,
         "letter": "B",
         "gap": "The grid is disclosed, not the facility.",
-        "score": {"low": 0.065, "high": 0.078},
+        "sci": {"low": 0.065, "high": 0.078},
         "energy": {"low": 0.5, "high": 0.6},
-        "intensity": {"low": 30.0, "high": 30.0},
+        "grid_intensity": {"low": 30.0, "high": 30.0},
         "embodied": {"low": 0.05, "high": 0.06},
         "band": [2, 2],
         "served_as": None,
@@ -102,12 +102,12 @@ def test_a_default_routes_entry_is_marked_default():
         location=make_location(candidates=["grid:ch"]),
         default=True,
         disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-        carbon_score={
+        carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
-            "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
-            "score_g": {"low": 0.065, "high": 0.078},
+            "grid_intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "sci_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
     )
@@ -123,12 +123,12 @@ def test_a_routes_entry_carries_the_name_it_is_served_as():
         served_as="acme/M-70B-Instruct",
         served_model_evidence=[make_evidence(kind="primary")],
         disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-        carbon_score={
+        carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
-            "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
-            "score_g": {"low": 0.065, "high": 0.078},
+            "grid_intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+            "sci_g": {"low": 0.065, "high": 0.078},
             "band": [2, 2],
         },
     )
@@ -333,12 +333,12 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
                 disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-                carbon_score={
+                carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
-                    "score_g": {"low": 0.065, "high": 0.078},
+                    "grid_intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "sci_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
             ),
@@ -348,12 +348,12 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                 model="m-70b",
                 location=make_location(candidates=["grid:ch", "grid:de"]),
                 disclosure_rating={"letter": "C", "gap": "The grid is not determined: several are possible."},
-                carbon_score={
+                carbon_intensity={
                     "grids": ["ch", "de"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": {"low": 30.0, "high": 330.0},
-                    "score_g": {"low": 0.065, "high": 0.258},
+                    "grid_intensity_g_per_kwh": {"low": 30.0, "high": 330.0},
+                    "sci_g": {"low": 0.065, "high": 0.258},
                     "band": [2, 3],
                 },
             ),
@@ -392,12 +392,12 @@ def test_entries_are_sorted_by_slug():
                 model="m-8b",
                 location=make_location(candidates=[], evidence=[make_evidence(kind="corroborating")]),
                 disclosure_rating={"letter": "D", "gap": "Location not disclosed by the provider."},
-                carbon_score={
+                carbon_intensity={
                     "grids": [],
                     "energy_wh": {"low": 0.08, "high": 0.12},
                     "embodied_g": {"low": 0.007, "high": 0.007},
-                    "intensity_g_per_kwh": None,
-                    "score_g": None,
+                    "grid_intensity_g_per_kwh": None,
+                    "sci_g": None,
                     "band": None,
                 },
             ),
@@ -407,12 +407,12 @@ def test_entries_are_sorted_by_slug():
                 model="m-70b",
                 location=make_location(candidates=[], evidence=[make_evidence(kind="corroborating")]),
                 disclosure_rating={"letter": "D", "gap": "Location not disclosed by the provider."},
-                carbon_score={
+                carbon_intensity={
                     "grids": [],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": None,
-                    "score_g": None,
+                    "grid_intensity_g_per_kwh": None,
+                    "sci_g": None,
                     "band": None,
                 },
             ),
@@ -427,7 +427,7 @@ def test_entries_are_sorted_by_slug():
     ) == (["acme", "zeta"], ["acme-m-70b", "acme-m-8b"], ["m-70b", "m-8b"])
 
 
-def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
+def test_the_grid_intensity_spread_is_the_highest_grid_intensity_over_the_lowest():
     corpus = make_corpus(
         organizations=[
             make_organization(
@@ -442,12 +442,12 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
                 disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-                carbon_score={
+                carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
-                    "score_g": {"low": 0.065, "high": 0.078},
+                    "grid_intensity_g_per_kwh": {"low": 30.0, "high": 30.0},
+                    "sci_g": {"low": 0.065, "high": 0.078},
                     "band": [2, 2],
                 },
             ),
@@ -457,22 +457,22 @@ def test_the_intensity_spread_is_the_highest_scored_intensity_over_the_lowest():
                 model="m-70b",
                 location=make_location(candidates=["grid:de"]),
                 disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
-                carbon_score={
+                carbon_intensity={
                     "grids": ["de"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": {"low": 330.0, "high": 330.0},
-                    "score_g": {"low": 0.215, "high": 0.258},
+                    "grid_intensity_g_per_kwh": {"low": 330.0, "high": 330.0},
+                    "sci_g": {"low": 0.215, "high": 0.258},
                     "band": [3, 3],
                 },
             ),
         ],
         models=[make_model(name="m-70b")],
     )
-    assert build_data(corpus, date(2026, 10, 8))["meta"]["intensity_spread"] == 11  # 330 / 30
+    assert build_data(corpus, date(2026, 10, 8))["meta"]["grid_intensity_spread"] == 11  # 330 / 30
 
 
-def test_there_is_no_intensity_spread_when_no_route_is_scored():
+def test_there_is_no_grid_intensity_spread_when_no_route_has_a_carbon_intensity():
     corpus = make_corpus(
         organizations=[
             make_organization(
@@ -487,19 +487,19 @@ def test_there_is_no_intensity_spread_when_no_route_is_scored():
                 model="m-70b",
                 location=make_location(candidates=[], evidence=[make_evidence(kind="corroborating")]),
                 disclosure_rating={"letter": "D", "gap": "Location not disclosed by the provider."},
-                carbon_score={
+                carbon_intensity={
                     "grids": [],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": None,
-                    "score_g": None,
+                    "grid_intensity_g_per_kwh": None,
+                    "sci_g": None,
                     "band": None,
                 },
             )
         ],
         models=[make_model(name="m-70b")],
     )
-    assert build_data(corpus, date(2026, 10, 8))["meta"]["intensity_spread"] is None
+    assert build_data(corpus, date(2026, 10, 8))["meta"]["grid_intensity_spread"] is None
 
 
 def test_the_featured_model_is_the_one_most_routes_serve():
@@ -517,12 +517,12 @@ def test_the_featured_model_is_the_one_most_routes_serve():
                 model=model,
                 location=make_location(candidates=[], evidence=[make_evidence(kind="corroborating")]),
                 disclosure_rating={"letter": "D", "gap": "Location not disclosed by the provider."},
-                carbon_score={
+                carbon_intensity={
                     "grids": [],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": None,
-                    "score_g": None,
+                    "grid_intensity_g_per_kwh": None,
+                    "sci_g": None,
                     "band": None,
                 },
             )
@@ -548,12 +548,12 @@ def test_on_a_tie_the_featured_model_is_the_first_by_name():
                 model=model,
                 location=make_location(candidates=[], evidence=[make_evidence(kind="corroborating")]),
                 disclosure_rating={"letter": "D", "gap": "Location not disclosed by the provider."},
-                carbon_score={
+                carbon_intensity={
                     "grids": [],
                     "energy_wh": {"low": 0.5, "high": 0.6},
                     "embodied_g": {"low": 0.05, "high": 0.06},
-                    "intensity_g_per_kwh": None,
-                    "score_g": None,
+                    "grid_intensity_g_per_kwh": None,
+                    "sci_g": None,
                     "band": None,
                 },
             )

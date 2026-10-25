@@ -5,7 +5,7 @@ it came from, when, and under what licence.
 
 - `cloud_regions.csv`: which grid zone(s) each cloud region draws power from. Committed.
 - `grid_intensity.csv`: Ember's yearly intensity of electricity generation (gCO2e/kWh) for each country, US state
-  and Chinese province: the grid intensity (I) of every score. Committed. Ember's data is CC-BY-4.0: credit Ember wherever it is shown.
+  and Chinese province: the grid intensity (I) of every carbon intensity. Committed. Ember's data is CC-BY-4.0: credit Ember wherever it is shown.
 - `files/`: the files the importers read, as downloaded, kept so each table can be traced to the data behind it.
   `files/ember_files/` holds Ember's three downloads as `import-ember` last read them, under the file names in their
   URLs, and `files/gsf_files/` the Green Software Foundation's `Cloud_Region_Metadata.csv` as `import-cloud-regions`
@@ -30,7 +30,7 @@ region the zones it lists in the most recent year that has an `em-zone-id`: a re
    (today), `sha256` (of the file as downloaded), and `skipped`: one `{vendor, region, reason}` per region left out: a
    provider not kept, or a region with no `em-zone-id` in any year).
 3. **Check and review.** Run `uv run python -m build score`, then `uv run python -m build release`, and read the diff:
-   a region whose zone changed moves the scores of every route that names it.
+   a region whose zone changed moves the carbon intensities of every route that names it.
 
 ## Refreshing the grid-intensity table
 
@@ -55,8 +55,8 @@ only, on another basis. To refresh it:
    earlier). It then rewrites every grid's `intensity:` from the new table, as `python -m build grid-emissions --write`
    does.
 3. **Check and review.** Run `uv run python -m build score`, then `uv run python -m build release`, and read the diff:
-   Ember revises recent years, so scores can move. Say in the pull request that they move with the new data.
+   Ember revises recent years, so carbon intensities can move. Say in the pull request that they move with the new data.
 
-To move every score to a newer year of data, change `GRID_YEAR` in `build/constants/config.py` in its own pull request
+To move every carbon intensity to a newer year of data, change `GRID_YEAR` in `build/constants/config.py` in its own pull request
 once Ember publishes most countries for that year, and import Ember's releases again (step 2), since the table holds only
 the year it was imported for; until then each geography uses its latest earlier year.

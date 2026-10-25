@@ -2,7 +2,7 @@ import { OrganizationList } from "@/features/overview/ui/components/Organization
 import { RoutesTable } from "@/features/overview/ui/components/RoutesTable";
 import type { MapData } from "@/lib/data/types";
 
-/** The whole release on one page: every route with its score, every organization with its rating and evidence. */
+/** The whole release on one page: every route with its carbon intensity, every organization with its rating and evidence. */
 export function OverviewView({ data }: { data: MapData }) {
   const { meta, routes, models, organizations } = data;
   return (
@@ -10,7 +10,7 @@ export function OverviewView({ data }: { data: MapData }) {
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold">AI Emissions Map</h1>
         <p className="text-neutral-600">
-          Carbon scores for AI serving routes, and how precisely each organization discloses where they run.
+          Carbon intensities for AI serving routes, and how precisely each organization discloses where they run.
         </p>
         <p className="text-sm text-neutral-500">
           Release {meta.release_date}
@@ -39,7 +39,7 @@ export function OverviewView({ data }: { data: MapData }) {
               Routes <span className="text-base font-normal text-neutral-500">({routes.length})</span>
             </summary>
             <p className="mt-1 mb-4 text-sm text-neutral-600">
-              Each score is a life-cycle estimate from EcoLogits and Ember, in grams of CO₂e per 1,000 output tokens:
+              Each carbon intensity (SCI) is a life-cycle estimate from EcoLogits and Ember, in grams of CO₂e per 1,000 output tokens:
               operational (E × I) plus embodied (M), lowest first. Disclosure is rated A to D.
             </p>
             <RoutesTable routes={routes} models={models} organizations={organizations} />

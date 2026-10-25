@@ -1,12 +1,12 @@
 """The commands: python -m build score, then python -m build release.
 
-score   checks sources/ and the cloud-region table, and writes every disclosure_rating: and carbon_score: whose
+score   checks sources/ and the cloud-region table, and writes every disclosure_rating: and carbon_intensity: whose
         value changed.
         Run it after changing facts in sources/, and commit what it writes.
 release validates sources/ and writes web/data/data.json from it, with the hash of its inputs. It computes
         nothing. Run it last, and commit what it writes.
-check-carbon-scores, check-disclosure-ratings
-        the CI gates: recompute every stored score and rating from the committed files, without writing
+check-carbon-intensities, check-disclosure-ratings
+        the CI gates: recompute every stored carbon intensity and rating from the committed files, without writing
         anything, and fail on any that differs from what score would write.
 check-site-data
         the CI gate on web/data/data.json: fails if it is out of date with what it was built from, or leaves
@@ -32,7 +32,7 @@ from datetime import date
 from pathlib import Path
 
 from build.constants.config import ROOT
-from build.check_carbon_scores import check_carbon_scores
+from build.check_carbon_intensities import check_carbon_intensities
 from build.check_disclosure_ratings import check_disclosure_ratings
 from build.check_site_data import check_site_data
 from build.grid_emissions import grid_emissions
@@ -51,8 +51,8 @@ def _release(args: argparse.Namespace) -> Release:
     return release(args.root, date.today())
 
 
-def _check_carbon_scores(args: argparse.Namespace) -> ScoreRun:
-    return check_carbon_scores(args.root)
+def _check_carbon_intensities(args: argparse.Namespace) -> ScoreRun:
+    return check_carbon_intensities(args.root)
 
 
 def _check_disclosure_ratings(args: argparse.Namespace) -> ScoreRun:
@@ -83,18 +83,23 @@ def main(argv: list[str] | None = None) -> int:
         dest="command",
         required=True,
         metavar=(
-            "{score,release,check-carbon-scores,check-disclosure-ratings,check-site-data,grid-emissions,import-ember,"
+            "{score,release,check-carbon-intensities,check-disclosure-ratings,check-site-data,grid-emissions,import-ember,"
             "import-cloud-regions}"
         ),
     )
     for name, run, done, about in (
-        ("score", _score, "nothing changed", "check sources/, write the disclosure_rating: and carbon_score: fields"),
+        (
+            "score",
+            _score,
+            "nothing changed",
+            "check sources/, write the disclosure_rating: and carbon_intensity: fields",
+        ),
         ("release", _release, "nothing changed", "validate sources/ and write web/data/data.json; computes nothing"),
         (
-            "check-carbon-scores",
-            _check_carbon_scores,
+            "check-carbon-intensities",
+            _check_carbon_intensities,
             "0 error(s)",
-            "CI gate: every route's stored carbon score is what score would write now",
+            "CI gate: every route's stored carbon intensity is what score would write now",
         ),
         (
             "check-disclosure-ratings",

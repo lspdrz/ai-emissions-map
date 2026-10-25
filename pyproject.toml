@@ -1,7 +1,7 @@
 [project]
 name = "ai-emissions-map"
 version = "0.1.0"
-description = "Carbon scores for AI serving routes and location-disclosure ratings for providers"
+description = "Carbon intensities for AI serving routes and location-disclosure ratings for providers"
 requires-python = ">=3.12"
 dependencies = [
     "pyyaml>=6.0",
@@ -60,9 +60,9 @@ forbidden_modules = ["build.*"]
 [[tool.importlinter.contracts]]
 name = "the scoring modules never import the commands"
 type = "forbidden"
-source_modules = ["build.carbon_score", "build.disclosure_rating"]
+source_modules = ["build.carbon_intensity", "build.disclosure_rating"]
 forbidden_modules = ["build.load_sources", "build.validate", "build.score", "build.generate_site_data",
-                     "build.release", "build.check_carbon_scores",
+                     "build.release", "build.check_carbon_intensities",
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
 
 [tool.pyright]

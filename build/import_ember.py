@@ -2,7 +2,7 @@
 
 Reads Ember's three yearly releases, downloaded by hand from the URLs below (sources/snapshots/README.md), keeps the
 emissions intensity of total generation of each country, US state and Chinese province for GRID_YEAR (or its latest
-earlier year), and writes the table every score's grid intensity comes from, with a .provenance.json beside it. It keeps
+earlier year), and writes the table every route's grid intensity comes from, with a .provenance.json beside it. It keeps
 a copy of each download in sources/snapshots/files/ember_files/, under Ember's file name, replacing the previous one; git holds the
 earlier ones. Ember's data is CC-BY-4.0.
 

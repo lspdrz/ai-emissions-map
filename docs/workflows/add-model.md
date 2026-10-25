@@ -75,7 +75,7 @@ developer, or, where the developer has not released the architecture, from EcoLo
 uv run python -m build score
 uv run python -m build release
 ```
-`score` rewrites the score of every route that serves the model; `release` rewrites `web/data/data.json`.
+`score` rewrites the carbon intensity of every route that serves the model; `release` rewrites `web/data/data.json`.
 Both must end without `ERROR:` lines; commit everything they write. The route that needed the model must no longer be reported.
 `score` also checks that every record has evidence; whether the evidence is good is for the pull request's
 review.

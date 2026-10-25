@@ -2,7 +2,7 @@
 
 We assess the routes through which organizations serve AI models. An **organization** is a company or institution that serves AI models itself, through an API or another service. A **model** is one specific version of an AI model, such as a particular release of an open-weight model. A **route** is one organization serving one model.
 
-Each route receives a **carbon score**: the estimated emissions of generating 1,000 output tokens, calculated from the energy the model requires, the embodied emissions of the hardware it runs on, and the carbon intensity of the electricity where the route runs.
+Each route receives a **carbon intensity**: the estimated emissions of generating 1,000 output tokens, calculated from the energy the model requires, the embodied emissions of the hardware it runs on, and the **grid intensity** where the route runs: the emissions of each kilowatt-hour of its electricity.
 
 Each organization receives a **location disclosure rating** for how precisely it reveals where its routes' electricity comes from.
 
@@ -10,9 +10,9 @@ Each organization receives a **location disclosure rating** for how precisely it
 
 The map rests on one observation: efficiency is not environmental cost. A model served efficiently from a high-emission grid can emit more than a less efficient model served from a low-emission grid.
 
-It works at two levels. Each **route** receives a carbon score, calculated the same way for every route. Each **organization** receives a location disclosure rating, based on how precisely its own publications establish where its routes run.
+It works at two levels. Each **route** receives a carbon intensity, calculated the same way for every route. Each **organization** receives a location disclosure rating, based on how precisely its own publications establish where its routes run.
 
-## The carbon score
+## The carbon intensity
 
 The calculation follows the [Software Carbon Intensity specification](https://greensoftware.foundation/standards/sci/) (SCI, ISO/IEC 21031:2024):
 
@@ -20,32 +20,32 @@ The calculation follows the [Software Carbon Intensity specification](https://gr
 SCI = ((E × I) + M) per R
 ```
 
-where E is the energy consumed, I is the carbon intensity of the electricity, M is the embodied emissions of the hardware allocated to the work, and R is the functional unit (1,000 output tokens). The carbon score is the full SCI, in grams of CO₂-equivalent per 1,000 output tokens, always shown with its **operational part** (E × I) and its **embodied part** (M).
+where E is the energy consumed, I is the grid intensity of the electricity, M is the embodied emissions of the hardware allocated to the work, and R is the functional unit (1,000 output tokens). The carbon intensity is the full SCI, in grams of CO₂-equivalent per 1,000 output tokens, always shown with its **operational part** (E × I) and its **embodied part** (M).
 
 **Energy (E)** is the electricity needed to generate 1,000 output tokens. It depends on the model alone, so a model has the same E on every route that serves it. E is estimated with EcoLogits from three inputs:
 
 - **The model's size**, its active and total parameter counts. These come from the developer's own publications (model card, published weights, technical report) wherever the developer releases them, and otherwise from EcoLogits' estimate, cited from its catalog. A size known only as a range is evaluated at both ends.
 - **Generation speed**, which sets how long a request occupies the server. EcoLogits estimates it from the model's size; no measured speed or latency is used.
-- **Power usage effectiveness (PUE)**, a data center's total energy divided by that of its computing equipment: about 1.1 in efficient large facilities, about 1.6 on average, and above 2 in older ones. Every route uses the same range, 1.1–1.6, which spans efficient to average facilities. Using a single value would bias every score.
+- **Power usage effectiveness (PUE)**, a data center's total energy divided by that of its computing equipment: about 1.1 in efficient large facilities, about 1.6 on average, and above 2 in older ones. Every route uses the same range, 1.1–1.6, which spans efficient to average facilities. Using a single value would bias every carbon intensity.
 
-Providers' own hardware, serving configurations and published energy figures are not used, so that every score comes from one consistent pipeline.
+Providers' own hardware, serving configurations and published energy figures are not used, so that every carbon intensity comes from one consistent pipeline.
 
-**Grid intensity (I)** is the carbon intensity of the electricity a route draws from the grid it is connected to, in grams of CO₂e per kWh. A grid is the finest area that a facility can draw electricity from. If a facility runs on its own generation, then it is a grid of its own.
+**Grid intensity (I)** is the emissions of the electricity a route draws from the grid it is connected to, in grams of CO₂e per kWh. A grid is the finest area that a facility can draw electricity from. If a facility runs on its own generation, then it is a grid of its own.
 
 Every grid's intensity comes from one source, so that routes are compared on the same basis: [Ember](https://ember-energy.org/)'s yearly emissions intensity of electricity generation, for the grid's **country**, or for its **subdivision** where Ember publishes one: its state in the United States, its province in China. Ember publishes it openly (CC-BY-4.0) for over 200 countries, every US state and every Chinese province. It is a **life-cycle** value: Ember multiplies the electricity generated from each fuel by an IPCC emission factor that counts, in addition to what power plants emit while generating, their construction, fuel supply chains and upstream methane. It is an average of the electricity **generated** in the country or state, so imports and exports are not traced.
 
-The value is for the release's year (2025 in this one) or, where a country or subdivision has none for that year, its most recent earlier year; a later year is never used. The values come from a committed snapshot of Ember's data, refreshed and recorded with their source, and each grid's file records the value it uses, its year and the area it is for, so every score can be traced to the figure behind it.
+The value is for the release's year (2025 in this one) or, where a country or subdivision has none for that year, its most recent earlier year; a later year is never used. The values come from a committed snapshot of Ember's data, refreshed and recorded with their source, and each grid's file records the value it uses, its year and the area it is for, so every carbon intensity can be traced to the figure behind it.
 
-Zones within one country, or one US state or Chinese province, share its value. A facility that runs on its own generation cannot be valued from a country's or subdivision's average, so a route on an on-site grid is not scored until the method can value it.
+Zones within one country, or one US state or Chinese province, share its value. A facility that runs on its own generation cannot be valued from a country's or subdivision's average, so a route on an on-site grid has no carbon intensity until the method can value it.
 
 **Embodied emissions (M)** are the emissions of manufacturing the hardware that serves a request: the servers and the accelerators (GPUs) in them. EcoLogits estimates how many accelerators the model needs from its size, and gives each request a share of their manufacturing emissions:
 
 - **by time:** the fraction of the hardware's assumed three-year lifetime that generating the request takes;
 - **by batch:** that time is shared among the requests the server handles at once.
 
-**Ranges.** Where a route's location is established only as several possible grids, I spans their intensities, and the score is a range from the lowest energy, intensity and embodied emissions to the highest. A route whose location is not established is **not scored**. Scores are never reduced to a point. Where routes must be ordered, the geometric midpoint is used as a sort key and is not displayed.
+**Ranges.** Where a route's location is established only as several possible grids, I spans their intensities, and the carbon intensity is a range from the lowest energy, intensity and embodied emissions to the highest. A route whose location is not established has **no carbon intensity**: it is *not calculated*. Carbon intensities are never reduced to a point. Where routes must be ordered, the geometric midpoint is used as a sort key and is not displayed.
 
-**Bands.** Each score is placed on an absolute scale of five bands, in grams of CO₂e per 1,000 output tokens: 1 below 0.03, 2 from 0.03 to below 0.1, 3 from 0.1 to below 0.3, 4 from 0.3 to below 1, and 5 at 1 or above. The edges are about a factor of three apart because scores span three orders of magnitude. Because M is included, each model has a floor no route can fall below, however clean the grid. The scale is absolute, not relative to model size. A range within one band shows that band; a range that crosses bands shows the span.
+**Bands.** Each carbon intensity is placed on an absolute scale of five bands, in grams of CO₂e per 1,000 output tokens: 1 below 0.03, 2 from 0.03 to below 0.1, 3 from 0.1 to below 0.3, 4 from 0.3 to below 1, and 5 at 1 or above. The edges are about a factor of three apart because carbon intensities span three orders of magnitude. Because M is included, each model has a floor no route can fall below, however clean the grid. The scale is absolute, not relative to model size. A range within one band shows that band; a range that crosses bands shows the span.
 
 ### Where a route runs
 
@@ -70,7 +70,7 @@ The rating is generated from the recorded location, never assigned by hand, and 
 
 An organization's rating is the average of its routes' ratings, with A counted as 3, B as 2, C as 1 and D as 0. Each route is weighted equally, and the result is rounded to the nearest rating, ties rounding down. It is always shown with its distribution: two routes at B and one at D average 1.33, shown as "C (2 routes at B, 1 route at D)". Where customers can choose among regions or jurisdictions, each choice is a separate route, and all of the routes count toward the organization's rating. Only routes for models within the map's scope are curated, so the rating describes those services, not an organization's whole catalog.
 
-The rating measures disclosure, not emissions: an organization that discloses a facility on a coal-heavy grid is rated A, and its routes score poorly; one that discloses nothing is rated D, and its routes are not scored.
+The rating measures disclosure, not emissions: an organization that discloses a facility on a coal-heavy grid is rated A, and its routes have high carbon intensities; one that discloses nothing is rated D, and its routes have none.
 
 ## Notes
 
@@ -84,17 +84,17 @@ Anyone, the organization included, may submit corrections or new location disclo
 
 ### Versions
 
-Each release states its methodology version, its grid data (Ember, and the year) and its EcoLogits version. Every change in a score or rating between releases comes from new evidence, new input data (a refreshed Ember snapshot or a new EcoLogits release) or a change of method. The band edges, the rating scale and the fixed PUE range are deliberate choices, reviewed when the evidence changes materially.
+Each release states its methodology version, its grid data (Ember, and the year) and its EcoLogits version. Every change in a carbon intensity or rating between releases comes from new evidence, new input data (a refreshed Ember snapshot or a new EcoLogits release) or a change of method. The band edges, the rating scale and the fixed PUE range are deliberate choices, reviewed when the evidence changes materially.
 
 ### Presentation
 
-Every carbon score is labeled as a life-cycle estimate from EcoLogits and Ember, and shown as a numeric range with its band or band span and its operational and embodied parts. A route that is not scored says *not scored* and never shows a band. The disclosure rating uses letters and the carbon band a numbered color scale, so the two cannot be confused.
+Every carbon intensity is labeled as a life-cycle estimate from EcoLogits and Ember, and shown as a numeric range with its band or band span and its operational and embodied parts. A route without one says *not calculated* and never shows a band. The disclosure rating uses letters and the carbon band a numbered color scale, so the two cannot be confused.
 
 ### Limitations
 
 - The assessed set is a curated sample, not a census.
 - Locations are established from public documents, not observed in providers' operations.
-- The carbon score is an estimate built on two sources: EcoLogits' models for energy and embodied emissions, and Ember's data for intensity.
+- The carbon intensity is an estimate built on two sources: EcoLogits' models for energy and embodied emissions, and Ember's data for grid intensity.
 - EcoLogits assumes NVIDIA H100-class hardware and estimates generation speed from parameter counts, so real deployments may differ several-fold.
 - The fixed PUE range reflects no particular building: efficient operators get no credit, and very inefficient facilities are underestimated.
 - Providers' actual hardware, efficiency and energy figures are not reflected.
@@ -103,8 +103,8 @@ Every carbon score is labeled as a life-cycle estimate from EcoLogits and Ember,
 - Grid intensity is an annual average: it reflects neither when requests are served nor marginal emissions.
 - Grid intensity is per country, or per state in the United States and per province in China: regions within any other country share one value, and a state or province is not a grid (US grids are balancing authorities, which cross state lines; Chinese provinces trade power across regional grids).
 - Grid intensity is production-based: a country that imports fossil-heavy electricity is credited with its own generation alone, and one that exports clean electricity is not credited for it.
-- Grid intensity is life-cycle, so scores are higher than those using direct emission factors.
+- Grid intensity is life-cycle, so carbon intensities are higher than those using direct emission factors.
 - Ember applies one emission factor per fuel everywhere: a coal plant counts the same whatever its efficiency or fuel quality.
 - The latest full year of grid data may precede the release, and Ember revises recent years.
-- Facilities with their own generation are not scored.
-- The score excludes water, networking, storage, users' devices, input tokens and training.
+- Routes on facilities with their own generation have no carbon intensity.
+- The carbon intensity excludes water, networking, storage, users' devices, input tokens and training.

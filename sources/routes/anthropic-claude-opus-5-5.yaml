@@ -20,7 +20,7 @@ disclosure_rating:
   letter: D
   gap: Location not disclosed by the provider.
 
-carbon_score:
+carbon_intensity:
   grids: []
   energy_wh:
     low: 4.821879
@@ -28,6 +28,6 @@ carbon_score:
   embodied_g:
     low: 0.452776
     high: 0.912183
-  intensity_g_per_kwh: null
-  score_g: null
+  grid_intensity_g_per_kwh: null
+  sci_g: null
   band: null

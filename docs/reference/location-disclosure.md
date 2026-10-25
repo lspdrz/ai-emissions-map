@@ -3,7 +3,7 @@
 How precisely a route's location establishes where its electricity comes from, how that becomes the
 route's rating, and how an organization is rated. Which sources count is in
 [`evidence-and-freshness.md`](evidence-and-freshness.md); how the location then enters the carbon
-score is in the [methodology](../METHODOLOGY.md).
+intensity is in the [methodology](../METHODOLOGY.md).
 
 ## A route's rating
 
@@ -32,7 +32,7 @@ Each candidate resolves to one or more grid files in `sources/grids/`:
 | Candidate | Resolves through |
 |---|---|
 | `grid:<slug>` | `sources/grids/<slug>.yaml` directly |
-| `cloud:<vendor>:<region>` | `sources/snapshots/cloud_regions.csv` (`vendor` is `aws`, `azure` or `gcp`) to its zone codes, then to the grid files whose `zone:` is that code. A region may span several zones, and the route's score is then a range across them |
+| `cloud:<vendor>:<region>` | `sources/snapshots/cloud_regions.csv` (`vendor` is `aws`, `azure` or `gcp`) to its zone codes, then to the grid files whose `zone:` is that code. A region may span several zones, and the route's carbon intensity is then a range across them |
 
 Two candidates on the same grid count as one grid. A route whose evidence names its buildings lists them in
 `location.facilities`, in words, and gives the grid they draw from as its candidate: the public grid's zone, or
@@ -42,7 +42,7 @@ the facility's on-site grid.
 
 When a provider states only that a request may be processed in any of its locations (a "global"
 endpoint, for example), the candidates are every region the provider lists for that model, which makes the
-rating C. The score is a range across all of them. When it commits to a jurisdiction (the United States, the European Union, a
+rating C. The carbon intensity is a range across all of them. When it commits to a jurisdiction (the United States, the European Union, a
 single country), the candidates are all of its regions within that jurisdiction, because the
 commitment is to the jurisdiction, not to the region the endpoint is named after.
 

@@ -29,7 +29,7 @@ disclosure_rating:
   letter: C
   gap: 'The grid is not determined: several are possible.'
 
-carbon_score:
+carbon_intensity:
   grids:
   - be
   - de
@@ -45,10 +45,10 @@ carbon_score:
   embodied_g:
     low: 0.470445
     high: 0.912183
-  intensity_g_per_kwh:
+  grid_intensity_g_per_kwh:
     low: 41.224
     high: 590.814
-  score_g:
+  sci_g:
     low: 0.676559
     high: 9.032251
   band:

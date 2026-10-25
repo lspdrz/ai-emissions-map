@@ -52,7 +52,7 @@ disclosure_rating:
   letter: A
   gap: null
 
-carbon_score:
+carbon_intensity:
   grids:
   - ch
   energy_wh:
@@ -61,10 +61,10 @@ carbon_score:
   embodied_g:
     low: 0.056597
     high: 0.056597
-  intensity_g_per_kwh:
+  grid_intensity_g_per_kwh:
     low: 39.278
     high: 39.278
-  score_g:
+  sci_g:
     low: 0.080271
     high: 0.091032
   band:

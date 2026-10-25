@@ -1,7 +1,7 @@
 """The website's data: web/data/data.json, copied from the fields `python -m build score` writes in sources/, under
 its contract.
 
-The data file holds only what the site displays: per-route results (each score with its energy E, grid intensity I
+The data file holds only what the site displays: per-route results (each carbon intensity with its energy E, grid intensity I
 and embodied part M), ratings, evidence quotes, model facts and release metadata.
 """
 
@@ -17,7 +17,7 @@ from typing import Any
 from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
 
 
-SCHEMA = "aem-data/3"
+SCHEMA = "aem-data/4"
 
 # A passage quoted in an evidence entry's `shows`: double quotes around at least 8 characters.
 _QUOTED = re.compile(r'"([^"]{8,})"')
@@ -37,7 +37,7 @@ ALLOWED_KEYS = {
         "draft",
         "grid",
         "counts",
-        "intensity_spread",
+        "grid_intensity_spread",
         "featured_model",
     },
     "meta.grid": {"source", "year"},
@@ -64,9 +64,9 @@ ALLOWED_KEYS = {
         "default",
         "letter",
         "gap",
-        "score",
+        "sci",
         "energy",
-        "intensity",
+        "grid_intensity",
         "embodied",
         "band",
         "served_as",
@@ -115,7 +115,7 @@ def route_label(location: Mapping[str, Any], grids: list[str]) -> str:
 
 def route_entry(name: str, route: Mapping[str, Any]) -> dict:
     """A route as the site shows it: its two ratings and how it is labelled."""
-    disclosure, carbon = route["disclosure_rating"], route["carbon_score"]
+    disclosure, carbon = route["disclosure_rating"], route["carbon_intensity"]
     return {
         "slug": name,
         "org": route["org"],
@@ -124,9 +124,9 @@ def route_entry(name: str, route: Mapping[str, Any]) -> dict:
         "default": bool(route.get("default")),
         "letter": disclosure["letter"],
         "gap": disclosure["gap"],
-        "score": carbon["score_g"],
+        "sci": carbon["sci_g"],
         "energy": carbon["energy_wh"],
-        "intensity": carbon["intensity_g_per_kwh"],
+        "grid_intensity": carbon["grid_intensity_g_per_kwh"],
         "embodied": carbon["embodied_g"],
         "band": carbon["band"],
         "served_as": route.get("served_as"),
@@ -192,9 +192,11 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
     routes_per_model = Counter(route["model"] for route in routes.values())
     model_entries = [model_entry(slug, data["models"][slug]) for slug in sorted(routes_per_model)]
 
-    scored = [route["carbon_score"] for route in routes.values() if route["carbon_score"]["score_g"] is not None]
-    lowest = min((score["intensity_g_per_kwh"]["low"] for score in scored), default=None)
-    highest = max((score["intensity_g_per_kwh"]["high"] for score in scored), default=None)
+    calculated = [
+        route["carbon_intensity"] for route in routes.values() if route["carbon_intensity"]["sci_g"] is not None
+    ]
+    lowest = min((carbon["grid_intensity_g_per_kwh"]["low"] for carbon in calculated), default=None)
+    highest = max((carbon["grid_intensity_g_per_kwh"]["high"] for carbon in calculated), default=None)
     return {
         "schema": SCHEMA,
         "meta": {
@@ -209,10 +211,10 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
                 "organizations": len(org_entries),
                 "routes": len(route_entries),
                 "models": len(model_entries),
-                "grids": len({grid for route in routes.values() for grid in route["carbon_score"]["grids"]}),
+                "grids": len({grid for route in routes.values() for grid in route["carbon_intensity"]["grids"]}),
             },
-            # How many times the highest grid intensity is the lowest, across the scored routes.
-            "intensity_spread": round(highest / lowest) if lowest and highest is not None else None,
+            # How many times the highest grid intensity is the lowest, across the routes with a carbon intensity.
+            "grid_intensity_spread": round(highest / lowest) if lowest and highest is not None else None,
             # The model most routes serve; on a tie, the first by name.
             "featured_model": min(routes_per_model, key=lambda slug: (-routes_per_model[slug], slug), default=None),
         },

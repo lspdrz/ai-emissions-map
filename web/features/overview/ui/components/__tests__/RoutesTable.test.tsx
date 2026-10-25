@@ -13,7 +13,7 @@ const render = (data: MapData) =>
   renderToStaticMarkup(<RoutesTable routes={data.routes} models={data.models} organizations={data.organizations} />);
 
 describe("RoutesTable", () => {
-  it("shows each route's score with its band and parts", () => {
+  it("shows each route's carbon intensity with its band and parts", () => {
     const html = render(fixture());
     expect(html).toContain("0.075–0.084 g");
     expect(html).toContain("Band 2");
@@ -36,11 +36,11 @@ describe("RoutesTable", () => {
     expect(render(data)).toContain("offered as vendor/M-Instruct");
   });
 
-  it("says not scored, with no band, when a route has no score", () => {
+  it("says not calculated, with no band, when a route has no carbon intensity", () => {
     const data = fixture();
-    data.routes[0] = { ...data.routes[0], score: null, band: null };
+    data.routes[0] = { ...data.routes[0], sci: null, band: null };
     const html = render(data);
-    expect(html).toContain("not scored");
+    expect(html).toContain("not calculated");
     expect(html).not.toContain("Band ");
   });
 });
