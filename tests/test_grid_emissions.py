@@ -42,7 +42,7 @@ def test_a_grid_without_a_subdivision_uses_the_national_value():
     assert (resolved["g_per_kwh"], resolved["geography"]) == (384.0, "US")
 
 
-def test_a_grid_without_the_scoring_year_uses_its_latest_earlier_year():
+def test_a_grid_without_the_grid_year_uses_its_latest_earlier_year():
     resolved = grid_intensity(make_grid(), {"CH": {2023: 40.0, 2024: 34.6}}, year=2025)
     assert (resolved["g_per_kwh"], resolved["year"]) == (34.6, 2024)
 

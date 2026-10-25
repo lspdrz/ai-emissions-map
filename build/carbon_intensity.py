@@ -1,4 +1,4 @@
-"""A route's carbon score: full SCI, (E x I) + M per 1,000 output tokens, with its parts kept separately.
+"""A route's carbon intensity: full SCI, (E x I) + M per 1,000 output tokens, with its parts kept separately.
 
 E and M come from EcoLogits for the parameter counts in the model's record; I is each resolved grid's intensity
 (build/grid_emissions.py: Ember's yearly value for its subdivision or country), for the grids the route's location
@@ -13,7 +13,7 @@ from ecologits.impacts.llm import compute_llm_impacts
 from ecologits.utils.range_value import RangeValue
 
 from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS, PUE
-from build.schemas.carbon_score import CarbonScore, Interval
+from build.schemas.carbon_intensity import CarbonIntensity, Interval
 from build.schemas.grid import GridIntensity
 from build.schemas.model import Model
 from build.utils.bands import band_span
@@ -57,33 +57,33 @@ def ecologits_estimate(model: Model) -> tuple[Range, Range]:
 
 
 def _interval(r: Range) -> Interval:
-    """A range as a carbon_score: field stores it, rounded to 6 places."""
+    """A range as a carbon_intensity: field stores it, rounded to 6 places."""
     return {"low": round(r.low, 6), "high": round(r.high, 6)}
 
 
-def carbon_score(model: Model, grids: Mapping[str, GridIntensity]) -> CarbonScore:
-    """A route's carbon score, (E x I) + M per 1,000 output tokens, with its parts and its grids, as its carbon_score:
-    field stores it. `model` is the record of the model the route serves; `grids` the intensity of each grid its
-    location resolves to, by grid name (none when the location is undisclosed)."""
+def carbon_intensity(model: Model, grids: Mapping[str, GridIntensity]) -> CarbonIntensity:
+    """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts and its grids, as its
+    carbon_intensity: field stores it. `model` is the record of the model the route serves; `grids` the intensity of
+    each grid its location resolves to, by grid name (none when the location is undisclosed)."""
     energy, embodied = ecologits_estimate(model)
     if not grids:
-        return CarbonScore(
+        return CarbonIntensity(
             grids=[],
             energy_wh=_interval(energy),
             embodied_g=_interval(embodied),
-            intensity_g_per_kwh=None,
-            score_g=None,
+            grid_intensity_g_per_kwh=None,
+            sci_g=None,
             band=None,
         )
     names = sorted(grids)
     values = [grids[g]["g_per_kwh"] for g in names]
     intensity = Range(min(values), max(values))
-    score = energy.times(intensity).scale(1 / 1000).plus(embodied)  # Wh x g/kWh / 1000 = g
-    return CarbonScore(
+    sci = energy.times(intensity).scale(1 / 1000).plus(embodied)  # Wh x g/kWh / 1000 = g
+    return CarbonIntensity(
         grids=names,
         energy_wh=_interval(energy),
         embodied_g=_interval(embodied),
-        intensity_g_per_kwh=_interval(intensity),
-        score_g=_interval(score),
-        band=list(band_span(score, CARBON_BAND_UPPER)),
+        grid_intensity_g_per_kwh=_interval(intensity),
+        sci_g=_interval(sci),
+        band=list(band_span(sci, CARBON_BAND_UPPER)),
     )

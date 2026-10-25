@@ -1,6 +1,6 @@
 """
 Carbon bands: which band a value falls in, given the band edges (CARBON_BAND_UPPER in build/constants/config.py
-when scoring).
+for a route's carbon intensity).
 """
 
 from __future__ import annotations

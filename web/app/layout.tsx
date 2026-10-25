@@ -7,7 +7,7 @@ export function generateMetadata(): Metadata {
   return {
     title: { default: "AI Emissions Map", template: "%s · AI Emissions Map" },
     description:
-      "Carbon scores for AI serving routes and location-disclosure ratings for the organizations that run them.",
+      "Carbon intensities for AI serving routes and location-disclosure ratings for the organizations that run them.",
     // A draft is never indexed: providers have not had their notice (DRAFT in build/constants/config.py).
     robots: meta.draft ? { index: false, follow: false } : undefined,
   };

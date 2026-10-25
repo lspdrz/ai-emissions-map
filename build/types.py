@@ -26,7 +26,7 @@ class Sources(TypedDict):
 
 
 class ScoreRun(NamedTuple):
-    """What python -m build score returns, and the CI gates check-carbon-scores and check-disclosure-ratings compare."""
+    """What python -m build score returns, and the CI gates check-carbon-intensities and check-disclosure-ratings compare."""
 
     errors: list[str]
     written: list[Path]  # with write=False: the files that would be written

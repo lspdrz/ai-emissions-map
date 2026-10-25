@@ -1,7 +1,7 @@
 """Gate: every stored disclosure letter and organization rating is what `python -m build score` computes now.
 
 Recomputes from the committed files and compares with each route's and each organization's disclosure_rating:
-field (build/check_carbon_scores.py checks the carbon scores). CI runs it.
+field (build/check_carbon_intensities.py checks the carbon intensities). CI runs it.
 
     uv run python -m build check-disclosure-ratings
 """

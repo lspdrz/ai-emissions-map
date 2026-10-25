@@ -55,7 +55,7 @@ You are recording where an organization serves a model. The organization must al
      ([`identity.md`](../reference/identity.md#routes)).
 
 ## Validation
-Write the route's `disclosure_rating:` and `carbon_score:` and its organization's `disclosure_rating:`, then the
+Write the route's `disclosure_rating:` and `carbon_intensity:` and its organization's `disclosure_rating:`, then the
 website's data:
 ```bash
 uv run python -m build score
@@ -63,12 +63,12 @@ uv run python -m build release
 ```
 `score` lists the files it wrote: the new route and its organization, each ending with those fields below a
 comment saying they are generated (never edit below it); `release` writes `web/data/data.json`. Both must end
-without `ERROR:` lines; commit everything they write. CI recomputes every stored score and rejects a data file
+without `ERROR:` lines; commit everything they write. CI recomputes every stored carbon intensity and rejects a data file
 that no longer matches `sources/`. If `score` reports a zone or grid with no grid file, follow
 [`add-grid.md`](add-grid.md), then run both again.
 
 ## Expected PR contents
-The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_score:` fields `score` wrote,
+The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_intensity:` fields `score` wrote,
 the organization's `disclosure_rating:`, and `web/data/data.json`. One short note per route on the evidence that
 settled its candidates.
 

@@ -7,7 +7,7 @@ every PR. The code is [MIT licensed](LICENSE); the license of the dataset has no
 
 ```bash
 uv sync
-uv run python -m build score     # check sources/ and write the disclosure_rating: and carbon_score: fields your change moves
+uv run python -m build score     # check sources/ and write the disclosure_rating: and carbon_intensity: fields your change moves
 uv run python -m build release   # write web/data/data.json; commit everything both write
 uv run pytest
 ```
@@ -31,7 +31,7 @@ context but never establishes a location. The rules are in [`docs/reference/`](d
 
 ## What not to commit
 
-- Hand edits to the `intensity:`, `disclosure_rating:` and `carbon_score:` fields, or anything below the comments that mark them
+- Hand edits to the `intensity:`, `disclosure_rating:` and `carbon_intensity:` fields, or anything below the comments that mark them
   as generated: change the facts above them and run `python -m build grid-emissions --write` (for a grid) or
   `python -m build score`.
 
