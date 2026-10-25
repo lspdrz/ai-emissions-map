@@ -20,7 +20,7 @@ A thin wrapper. The procedure lives in the workflow; this file does not restate 
 
 ## Scripts to run
 ```bash
-uv run python -m build score     # checks, writes the disclosure_rating: and carbon_score: fields
+uv run python -m build score     # checks, writes the disclosure_rating: and carbon_intensity: fields
 uv run python -m build release   # writes web/data/data.json; commit everything both write
 ```
 

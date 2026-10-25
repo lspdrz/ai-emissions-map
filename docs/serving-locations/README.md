@@ -3,7 +3,7 @@
 [`serving-locations.v1.schema.json`](serving-locations.v1.schema.json) is the JSON Schema for the
 **serving-locations file**: a small JSON file an organization that serves AI models can publish on its own domain to
 say where each model actually runs. The AI Emissions Map reads it to rate how precisely the organization
-discloses its serving locations, and to choose the electricity grids its carbon scores use.
+discloses its serving locations, and to choose the electricity grids its carbon intensities use.
 
 This page is for organizations that want to publish one. The schema describes every field, and
 [`EXAMPLES.md`](EXAMPLES.md) has complete files for common setups.
@@ -16,9 +16,9 @@ file, the rating is derived from independent research.
 
 A serving-locations file on your own domain is a primary source: it states your locations directly, so your
 routes get the best rating your real setup supports. It does not make a carbon-heavy grid look clean: the carbon
-score still uses the grid your requests run on. What it does is make that score precise. A route that could run
-in any of twenty regions is scored across all their grids; a route you place on one grid is scored on that grid
-alone.
+intensity still uses the grid your requests run on. What it does is make it precise. A route that could run in
+any of twenty regions is calculated across all their grids; a route you place on one grid is calculated on that
+grid alone.
 
 ## How the rating follows from the file
 

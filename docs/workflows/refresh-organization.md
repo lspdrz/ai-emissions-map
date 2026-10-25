@@ -27,7 +27,7 @@ something has changed.
 uv run python -m build score
 uv run python -m build release
 ```
-`score` rewrites the scores and ratings the corrections move; `release` rewrites `web/data/data.json`.
+`score` rewrites the carbon intensities and ratings the corrections move; `release` rewrites `web/data/data.json`.
 Both must end without `ERROR:` lines; commit everything they write.
 
 ## Expected PR contents

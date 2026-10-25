@@ -9,7 +9,7 @@ from build.check_site_data import check_site_data
 
 def test_current_site_data_within_its_contract_passes(tmp_path, monkeypatch):
     monkeypatch.setattr("build.check_site_data.inputs_sha", lambda root: "abc")
-    data = {"schema": "aem-data/3", "meta": {"inputs_sha": "abc"}, "organizations": [], "models": [], "routes": []}
+    data = {"schema": "aem-data/4", "meta": {"inputs_sha": "abc"}, "organizations": [], "models": [], "routes": []}
     (tmp_path / "web" / "data").mkdir(parents=True)
     (tmp_path / "web" / "data" / "data.json").write_text(json.dumps(data))
     assert check_site_data(tmp_path).errors == []
@@ -17,7 +17,7 @@ def test_current_site_data_within_its_contract_passes(tmp_path, monkeypatch):
 
 def test_site_data_built_from_other_inputs_is_out_of_date(tmp_path, monkeypatch):
     monkeypatch.setattr("build.check_site_data.inputs_sha", lambda root: "abc")
-    data = {"schema": "aem-data/3", "meta": {"inputs_sha": "old"}, "organizations": [], "models": [], "routes": []}
+    data = {"schema": "aem-data/4", "meta": {"inputs_sha": "old"}, "organizations": [], "models": [], "routes": []}
     (tmp_path / "web" / "data").mkdir(parents=True)
     (tmp_path / "web" / "data" / "data.json").write_text(json.dumps(data))
     assert check_site_data(tmp_path).errors == [
@@ -29,7 +29,7 @@ def test_site_data_built_from_other_inputs_is_out_of_date(tmp_path, monkeypatch)
 def test_a_field_outside_the_contract_is_named(tmp_path, monkeypatch):
     monkeypatch.setattr("build.check_site_data.inputs_sha", lambda root: "abc")
     data = {
-        "schema": "aem-data/3",
+        "schema": "aem-data/4",
         "meta": {"inputs_sha": "abc"},
         "organizations": [],
         "models": [],
@@ -60,7 +60,7 @@ def test_a_data_file_that_is_not_json_is_named(tmp_path, monkeypatch):
 def test_the_gate_hashes_the_root_it_checks(tmp_path, monkeypatch):
     fake_inputs_sha = Mock(return_value="abc")
     monkeypatch.setattr("build.check_site_data.inputs_sha", fake_inputs_sha)
-    data = {"schema": "aem-data/3", "meta": {"inputs_sha": "abc"}, "organizations": [], "models": [], "routes": []}
+    data = {"schema": "aem-data/4", "meta": {"inputs_sha": "abc"}, "organizations": [], "models": [], "routes": []}
     (tmp_path / "web" / "data").mkdir(parents=True)
     (tmp_path / "web" / "data" / "data.json").write_text(json.dumps(data))
     check_site_data(tmp_path)

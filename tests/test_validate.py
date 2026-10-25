@@ -403,13 +403,13 @@ def test_one_default_route_per_model_is_allowed():
     assert check_defaults(routes) == []
 
 
-# The fields score writes: a route's disclosure_rating: and carbon_score:, an organization's disclosure_rating:.
+# The fields score writes: a route's disclosure_rating: and carbon_intensity:, an organization's disclosure_rating:.
 
 
 def test_stored_fields_that_are_present_pass():
     grid: dict = {**make_grid(name="ch"), "intensity": {}}
     org: dict = {**make_organization(name="acme"), "disclosure_rating": {}}
-    route: dict = {**make_route(name="acme-m-70b"), "disclosure_rating": {}, "carbon_score": {}}
+    route: dict = {**make_route(name="acme-m-70b"), "disclosure_rating": {}, "carbon_intensity": {}}
     data = {"grids": {"ch": grid}, "organizations": {"acme": org}, "routes": {"acme-m-70b": route}}
     assert check_stored_scores(data) == []
 
@@ -422,5 +422,5 @@ def test_missing_stored_fields_are_named():
     assert check_stored_scores(data) == [
         "organizations/acme.yaml: is missing the disclosure_rating field; run `python -m build score`",
         "routes/acme-m-70b.yaml: is missing the disclosure_rating field; run `python -m build score`",
-        "routes/acme-m-70b.yaml: is missing the carbon_score field; run `python -m build score`",
+        "routes/acme-m-70b.yaml: is missing the carbon_intensity field; run `python -m build score`",
     ]

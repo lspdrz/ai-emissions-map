@@ -5,7 +5,7 @@ from typing import Annotated, NotRequired, TypedDict
 
 from pydantic import AfterValidator, Field, with_config
 
-from build.schemas.carbon_score import CarbonScore
+from build.schemas.carbon_intensity import CarbonIntensity
 from build.schemas.common import RECORD, NonEmptyStr, Slug
 from build.schemas.disclosure_rating import DisclosureRating
 from build.schemas.evidence import Evidence, has_primary
@@ -83,9 +83,9 @@ class Route(TypedDict):
             Field(description="Written by `python -m build score` from the location above it; part of curation"),
         ]
     ]
-    carbon_score: NotRequired[
+    carbon_intensity: NotRequired[
         Annotated[
-            CarbonScore,
+            CarbonIntensity,
             Field(description="Written by `python -m build score` from the facts above it; part of curation"),
         ]
     ]

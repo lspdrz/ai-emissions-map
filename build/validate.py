@@ -227,7 +227,7 @@ def validate_sources(
 
 
 def check_stored_scores(data: Mapping[str, Any]) -> list[str]:
-    """Every organization has its disclosure_rating: and every route its disclosure_rating: and carbon_score:, the
+    """Every organization has its disclosure_rating: and every route its disclosure_rating: and carbon_intensity:, the
     fields `python -m build score` writes. Call on data validate_sources passed: their shape is checked there."""
     return [
         f"organizations/{name}.yaml: is missing the disclosure_rating field; {_RUN_SCORE}"
@@ -236,6 +236,6 @@ def check_stored_scores(data: Mapping[str, Any]) -> list[str]:
     ] + [
         f"routes/{name}.yaml: is missing the {key} field; {_RUN_SCORE}"
         for name, route in sorted(data["routes"].items())
-        for key in ("disclosure_rating", "carbon_score")
+        for key in ("disclosure_rating", "carbon_intensity")
         if key not in route
     ]

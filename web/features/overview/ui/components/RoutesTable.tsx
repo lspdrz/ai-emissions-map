@@ -16,7 +16,7 @@ export function RoutesTable({ routes, models, organizations }: {
             <th className="py-2 pr-4 font-medium">Organization and model</th>
             <th className="py-2 pr-4 font-medium">Location</th>
             <th className="py-2 pr-4 font-medium">Disclosure</th>
-            <th className="py-2 pr-4 font-medium">Carbon score</th>
+            <th className="py-2 pr-4 font-medium">Carbon intensity (SCI)</th>
             <th className="py-2 font-medium">Inputs</th>
           </tr>
         </thead>
@@ -38,10 +38,10 @@ export function RoutesTable({ routes, models, organizations }: {
                   <LetterBadge letter={r.letter} hint={r.gap} />
                 </td>
                 <td className="py-3 pr-4">
-                  {r.score && r.band ? (
+                  {r.sci && r.band ? (
                     <>
                       <div className="whitespace-nowrap text-base font-semibold tabular-nums">
-                        {formatRange(r.score)} g
+                        {formatRange(r.sci)} g
                       </div>
                       <BandBadge band={r.band} />
                       {op && (
@@ -51,12 +51,12 @@ export function RoutesTable({ routes, models, organizations }: {
                       )}
                     </>
                   ) : (
-                    <div className="text-neutral-500">not scored</div>
+                    <div className="text-neutral-500">not calculated</div>
                   )}
                 </td>
                 <td className="py-3 whitespace-nowrap text-neutral-600 tabular-nums">
                   <div>E {formatRange(r.energy)} Wh</div>
-                  {r.intensity && <div>I {formatRange(r.intensity)} g/kWh</div>}
+                  {r.grid_intensity && <div>I {formatRange(r.grid_intensity)} g/kWh</div>}
                   <div>M {formatRange(r.embodied)} g</div>
                 </td>
               </tr>

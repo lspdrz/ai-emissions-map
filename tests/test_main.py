@@ -27,10 +27,10 @@ def test_release_runs_release_on_the_root_with_todays_date(monkeypatch):
     fake_release.assert_called_once_with(Path("/repo"), date(2026, 10, 15))
 
 
-def test_check_carbon_scores_runs_its_gate_on_the_root(monkeypatch):
+def test_check_carbon_intensities_runs_its_gate_on_the_root(monkeypatch):
     fake_gate = Mock(return_value=ScoreRun([], []))
-    monkeypatch.setattr("build.__main__.check_carbon_scores", fake_gate)
-    main(["check-carbon-scores", "--root", "/repo"])
+    monkeypatch.setattr("build.__main__.check_carbon_intensities", fake_gate)
+    main(["check-carbon-intensities", "--root", "/repo"])
     fake_gate.assert_called_once_with(Path("/repo"))
 
 
@@ -53,7 +53,7 @@ def test_check_site_data_runs_its_gate_on_the_root(monkeypatch):
     [
         ("score", "build.__main__.score", ScoreRun),
         ("release", "build.__main__.release", Release),
-        ("check-carbon-scores", "build.__main__.check_carbon_scores", ScoreRun),
+        ("check-carbon-intensities", "build.__main__.check_carbon_intensities", ScoreRun),
         ("check-disclosure-ratings", "build.__main__.check_disclosure_ratings", ScoreRun),
         ("check-site-data", "build.__main__.check_site_data", SiteDataCheck),
     ],
@@ -76,7 +76,7 @@ def test_the_files_score_wrote_are_listed_relative_to_the_root(monkeypatch, caps
     [
         ("score", "build.__main__.score", ScoreRun, "nothing changed"),
         ("release", "build.__main__.release", Release, "nothing changed"),
-        ("check-carbon-scores", "build.__main__.check_carbon_scores", ScoreRun, "0 error(s)"),
+        ("check-carbon-intensities", "build.__main__.check_carbon_intensities", ScoreRun, "0 error(s)"),
         ("check-disclosure-ratings", "build.__main__.check_disclosure_ratings", ScoreRun, "0 error(s)"),
         ("check-site-data", "build.__main__.check_site_data", SiteDataCheck, "0 error(s)"),
     ],
@@ -90,9 +90,9 @@ def test_a_command_with_nothing_to_report_says_so(monkeypatch, capsys, command, 
 @pytest.mark.parametrize(
     "command, about",
     [
-        ("score", "check sources/, write the disclosure_rating: and carbon_score: fields"),
+        ("score", "check sources/, write the disclosure_rating: and carbon_intensity: fields"),
         ("release", "validate sources/ and write web/data/data.json; computes nothing"),
-        ("check-carbon-scores", "CI gate: every route's stored carbon score is what score would write now"),
+        ("check-carbon-intensities", "CI gate: every route's stored carbon intensity is what score would write now"),
         (
             "check-disclosure-ratings",
             "CI gate: every stored disclosure letter and rating is what score would write now",
