@@ -19,17 +19,17 @@
       "source": "Ember",
       "year": 2025
     },
-    "inputs_sha": "4add52f494a96bccd2d38784a1869ab978ad24eaeb1a396400fe9b593aa1c679",
-    "intensity_spread": null,
+    "grid_intensity_spread": null,
+    "inputs_sha": "652867d666a7df47cfbb24244e95194a7e7afe7a3efc1868261d19f5f8e88e91",
     "methodology_version": "0.3.0",
     "pue": [
       1.1,
       1.6
     ],
-    "release_date": "2026-10-21"
+    "release_date": "2026-10-25"
   },
   "models": [],
   "organizations": [],
   "routes": [],
-  "schema": "aem-data/3"
+  "schema": "aem-data/4"
 }

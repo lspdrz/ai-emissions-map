@@ -19,8 +19,8 @@ and re-dump it) and follow [`reference/identity.md`](reference/identity.md) for 
 
 ## The kinds of document
 
-- **[`METHODOLOGY.md`](METHODOLOGY.md)** is the canonical statement of how routes are scored and
-  organizations rated, and the normative home of the carbon score.
+- **[`METHODOLOGY.md`](METHODOLOGY.md)** is the canonical statement of how routes' carbon intensities are
+  calculated and organizations rated, and the normative home of the carbon intensity.
 - **`workflows/`** answers *how do I accomplish this task?*, one per task, all in the same template.
 - **`reference/`** answers *what rules govern the task?* A rule lives in one place; workflows link
   to it rather than restating it:

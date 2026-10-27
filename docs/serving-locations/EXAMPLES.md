@@ -120,7 +120,7 @@ customer who wants requests kept in Geneva can call a separate endpoint. Two mod
 | Example-70B `geneva` | **A** | Its one location names its facility |
 | Example-12B `standard` (default) | **A** | Both locations name their facility |
 
-`share_of_traffic` is shown on the map but not used to weight the score.
+`share_of_traffic` is shown on the map but not used to weight the carbon intensity.
 
 ## 3. Cloud regions, without naming facilities
 
@@ -278,5 +278,5 @@ though it carries little traffic.
 |---|---|---|
 | `standard` (default) | **A** | Both locations name their facility |
 
-The rating stays A, but the carbon score is now a range across the Swiss and French grids, because a request may
+The rating stays A, but the carbon intensity is now a range across the Swiss and French grids, because a request may
 run on either. Leaving the Lyon site out would make the route look more precise than it is.

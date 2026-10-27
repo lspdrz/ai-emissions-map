@@ -1,13 +1,13 @@
-/** The shapes of data/data.json (contract aem-data/3), written by `uv run python -m build release`. */
-export const SCHEMA = "aem-data/3";
+/** The shapes of data/data.json (contract aem-data/4), written by `uv run python -m build release`. */
+export const SCHEMA = "aem-data/4";
 
 export type Range = { low: number; high: number };
 export type Params = number | { min: number; max: number };
 
 export interface Route {
   slug: string; org: string; model: string; label: string; default: boolean;
-  letter: string; gap: string | null; score: Range | null;
-  energy: Range; intensity: Range | null; embodied: Range;
+  letter: string; gap: string | null; sci: Range | null;
+  energy: Range; grid_intensity: Range | null; embodied: Range;
   band: [number, number] | null; served_as: string | null;
 }
 export interface Evidence { url: string; quotes: string[]; accessed: string; routes: string[] }
@@ -25,6 +25,6 @@ export interface Meta {
   release_date: string; inputs_sha: string; methodology_version: string; ecologits_version: string; pue: [number, number];
   band_upper: number[]; draft: boolean; grid: { source: string; year: number };
   counts: { organizations: number; routes: number; models: number; grids: number };
-  intensity_spread: number | null; featured_model: string | null;
+  grid_intensity_spread: number | null; featured_model: string | null;
 }
 export interface MapData { schema: typeof SCHEMA; meta: Meta; organizations: Organization[]; models: Model[]; routes: Route[] }

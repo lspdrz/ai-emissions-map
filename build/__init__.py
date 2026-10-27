@@ -1,1 +1,1 @@
-"""AI Emissions Map: carbon scores for AI serving routes, location-disclosure ratings for providers."""
+"""AI Emissions Map: carbon intensities for AI serving routes, location-disclosure ratings for providers."""

@@ -155,7 +155,7 @@ def test_several_moved_values_are_named_in_the_fields_order(monkeypatch):
     ]
 
 
-def test_a_moved_carbon_score_is_not_this_gates_concern(monkeypatch):
+def test_a_moved_carbon_intensity_is_not_this_gates_concern(monkeypatch):
     route_rating = {"letter": "B", "gap": "The grid is disclosed, not the facility."}
     run = ScoreRun(
         errors=[],
@@ -165,7 +165,7 @@ def test_a_moved_carbon_score_is_not_this_gates_concern(monkeypatch):
             "routes": {
                 "acme-m-70b": {
                     "disclosure_rating": route_rating,
-                    "carbon_score": {"score_g": {"low": 0.0, "high": 0.0}},
+                    "carbon_intensity": {"sci_g": {"low": 0.0, "high": 0.0}},
                 }
             },
         },
@@ -174,7 +174,7 @@ def test_a_moved_carbon_score_is_not_this_gates_concern(monkeypatch):
             {
                 "acme-m-70b": {
                     "disclosure_rating": route_rating,
-                    "carbon_score": {"score_g": {"low": 0.065, "high": 0.078}},
+                    "carbon_intensity": {"sci_g": {"low": 0.065, "high": 0.078}},
                 }
             },
         ),

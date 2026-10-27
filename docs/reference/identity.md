@@ -69,7 +69,7 @@ themselves have no record: a route names its buildings in `location.facilities`.
 ## Models
 
 Every model a route serves has a record, `sources/models/<slug>.yaml`, so the parameter counts
-behind every score are visible in the repository, each with evidence for where they come from:
+behind every carbon intensity are visible in the repository, each with evidence for where they come from:
 
 - **From the developer**, whenever the developer publishes them: its model card, the published weights, its
   report or announcement, cited as `primary`.

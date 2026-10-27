@@ -77,35 +77,35 @@ def test_a_routes_grids_are_sorted_by_name():
 
 
 def test_a_routes_fields_are_appended_below_the_comment():
-    route_score: Any = {"disclosure_rating": {"letter": "B", "gap": None}, "carbon_score": {"grids": ["ch"]}}
+    route_score: Any = {"disclosure_rating": {"letter": "B", "gap": None}, "carbon_intensity": {"grids": ["ch"]}}
     assert route_text("name: acme-m-70b\n# a curated comment\norg: acme\n", route_score) == (
         "name: acme-m-70b\n# a curated comment\norg: acme\n\n"
         + GENERATED_COMMENT
-        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_score:\n  grids:\n  - ch\n"
+        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_intensity:\n  grids:\n  - ch\n"
     )
 
 
 def test_a_route_written_again_with_the_same_fields_is_unchanged():
-    route_score: Any = {"disclosure_rating": {"letter": "B", "gap": None}, "carbon_score": {"grids": ["ch"]}}
+    route_score: Any = {"disclosure_rating": {"letter": "B", "gap": None}, "carbon_intensity": {"grids": ["ch"]}}
     text = (
         "name: acme-m-70b\n\n"
         + GENERATED_COMMENT
-        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_score:\n  grids:\n  - ch\n"
+        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_intensity:\n  grids:\n  - ch\n"
     )
     assert route_text(text, route_score) == text
 
 
 def test_a_routes_fields_that_moved_replace_the_old_ones():
-    route_score: Any = {"disclosure_rating": {"letter": "C", "gap": None}, "carbon_score": {"grids": ["ch", "de"]}}
+    route_score: Any = {"disclosure_rating": {"letter": "C", "gap": None}, "carbon_intensity": {"grids": ["ch", "de"]}}
     text = (
         "name: acme-m-70b\n\n"
         + GENERATED_COMMENT
-        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_score:\n  grids:\n  - ch\n"
+        + "\ndisclosure_rating:\n  letter: B\n  gap: null\n\ncarbon_intensity:\n  grids:\n  - ch\n"
     )
     assert route_text(text, route_score) == (
         "name: acme-m-70b\n\n"
         + GENERATED_COMMENT
-        + "\ndisclosure_rating:\n  letter: C\n  gap: null\n\ncarbon_score:\n  grids:\n  - ch\n  - de\n"
+        + "\ndisclosure_rating:\n  letter: C\n  gap: null\n\ncarbon_intensity:\n  grids:\n  - ch\n  - de\n"
     )
 
 
@@ -134,12 +134,12 @@ def test_trailing_blank_lines_above_the_comment_become_one():
 def test_written_fields_read_back_equal():
     route_score: RouteScore = {
         "disclosure_rating": {"letter": "C", "gap": "The grid is not determined: several are possible."},
-        "carbon_score": {
+        "carbon_intensity": {
             "grids": ["de", "fr"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
-            "intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
-            "score_g": {"low": 0.07, "high": 0.258},
+            "grid_intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
+            "sci_g": {"low": 0.07, "high": 0.258},
             "band": [2, 3],
         },
     }
@@ -156,7 +156,7 @@ def _rel(root, paths):
 
 
 def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
     write_corpus(
         tmp_path,
         make_corpus(
@@ -176,7 +176,7 @@ def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
 
 
 def test_a_second_run_writes_nothing(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
     write_corpus(
         tmp_path,
         make_corpus(
@@ -236,7 +236,7 @@ def test_score_resolves_cloud_regions_through_the_committed_table(tmp_path):
 
 
 def test_check_mode_lists_what_score_would_write_and_writes_nothing(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_score.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
     write_corpus(
         tmp_path,
         make_corpus(
