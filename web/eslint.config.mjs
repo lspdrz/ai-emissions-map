@@ -11,7 +11,8 @@ import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
  *   features/    One folder per capability:
  *     <feature>/
  *       ui/        React. index.tsx is the entry point and the only thing app/ imports.
- *       lib/       The feature's own logic, pure and testable.
+ *       lib/       The feature's services: what it reads from data.json, through @/lib/data.
+ *       utils/     The feature's pure helpers (formatting, sorting), no data access.
  *   features/{constants,components,utils}/  shared across features.
  *   lib/         Infrastructure every feature uses: the data loader (lib/data/).
  *

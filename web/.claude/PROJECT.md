@@ -17,7 +17,7 @@ release states (Versions). Read them before designing a page.
 
 ```
 features/<name>/
-├── lib/              feature services, pure and unit-tested
+├── lib/              feature services: what the feature reads from data.json (via @/lib/data), unit-tested
 ├── utils/            the feature's pure helpers (formatting, sorting), unit-tested
 └── ui/
     ├── index.tsx      entry point — the only thing app/ imports
