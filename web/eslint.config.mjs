@@ -8,10 +8,12 @@ import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
  * Project structure (the eu-trade-explorer layout)
  *
  *   app/         Routing only: one-line pages that render a feature's ui/index.tsx.
+ *                _components/ holds the components every page shares (e.g. navbar).
  *   features/    One folder per capability:
  *     <feature>/
  *       ui/        React. index.tsx is the entry point and the only thing app/ imports.
- *       lib/       The feature's own logic, pure and testable.
+ *       lib/       The feature's services: what it reads from data.json, through @/lib/data.
+ *       utils/     The feature's pure helpers (formatting, sorting), no data access.
  *   features/{constants,components,utils}/  shared across features.
  *   lib/         Infrastructure every feature uses: the data loader (lib/data/).
  *
@@ -63,8 +65,12 @@ const eslintConfig = defineConfig([
   // Fonts answers with `/l/font?kit=…&v=…` URLs (vercel/next.js#99114), which broke the first Vercel build.
   {
     rules: {
-      "no-restricted-imports": ["error", { paths: [{ name: "next/font/google",
-        message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds." }] }],
+      "no-restricted-imports": ["error", {
+        paths: [{
+          name: "next/font/google",
+          message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds."
+        }]
+      }],
     },
   },
 
@@ -75,10 +81,14 @@ const eslintConfig = defineConfig([
     files: ["app/**"],
     rules: {
       "no-restricted-imports": ["error", {
-        paths: [{ name: "next/font/google",
-          message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds." }],
-        patterns: [{ regex: "^@/features/(?![a-z0-9-]+/ui$)",
-          message: "app/ imports only a feature's ui/ entry point (@/features/<name>/ui)." }],
+        paths: [{
+          name: "next/font/google",
+          message: "Self-host fonts with next/font/local (app/fonts/); next/font/google breaks Turbopack builds."
+        }],
+        patterns: [{
+          regex: "^@/features/(?![a-z0-9-]+/ui$)",
+          message: "app/ imports only a feature's ui/ entry point (@/features/<name>/ui)."
+        }],
       }],
     },
   },

@@ -17,7 +17,7 @@ release states (Versions). Read them before designing a page.
 
 ```
 features/<name>/
-├── lib/              feature services, pure and unit-tested
+├── lib/              feature services: what the feature reads from data.json (via @/lib/data), unit-tested
 ├── utils/            the feature's pure helpers (formatting, sorting), unit-tested
 └── ui/
     ├── index.tsx      entry point — the only thing app/ imports
@@ -28,7 +28,8 @@ features/<name>/
   feature needs it. A helper that only one component needs lives with that component.
 - Infrastructure every feature uses: `@/lib/` (`lib/data/` loads and checks `data.json`; `loadData` is
   `server-only`).
-- `app/` is routing only: one-line pages and the root layout.
+- `app/` is routing only: one-line pages and the root layout, plus the components every page shares
+  (`app/_components/`, e.g. the navbar).
 
 ## Import rules
 
@@ -38,7 +39,8 @@ features/<name>/
 
 ## Styling
 
-Tailwind v4, imported in `app/globals.css`. No design tokens yet: they come with the new design.
+Tailwind v4, imported in `app/globals.css`, whose `@theme` holds the design tokens (colors, the five band colors,
+`font-sans` and `font-mono`). Fonts are self-hosted in `app/fonts/` with `next/font/local`.
 
 ## Testing
 
