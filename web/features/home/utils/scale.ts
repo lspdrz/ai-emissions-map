@@ -22,6 +22,8 @@ function steps(lo: number, hi: number): number[] {
  *  high, so both ends sit on a tick. Computed from every route, never the shown page, so bars don't move as the
  *  reader searches or pages. Null without a range to show. */
 export function niceScale(ranges: Range[]): Scale | null {
+  // A log scale has no place for zero, negatives or NaN, and steps() would never finish on them.
+  ranges = ranges.filter((r) => r.low > 0 && Number.isFinite(r.low) && r.high > 0 && Number.isFinite(r.high));
   if (ranges.length === 0) return null;
   const lo = Math.min(...ranges.map((r) => r.low));
   const hi = Math.max(...ranges.map((r) => r.high));

@@ -30,18 +30,24 @@ describe("RoutesSection", () => {
     expect(html.indexOf("Org 1 · Model 1")).toBeLessThan(html.indexOf("Org 2 · Model 2"));
   });
 
-  it("marks the carbon column active with ↑ and the others ↕", () => {
+  it("names each sort button by its visible text, with no label hiding it", () => {
     const html = render([row(1)]);
-    expect(html).toContain("Organization · model ↕");
-    expect(html).toContain("disclosure ↕");
-    expect(html).toContain("g CO₂e per 1k tokens ↑");
-  });
-
-  it("sorts with buttons and labels the search", () => {
-    const html = render([row(1)]);
-    expect(html).toMatch(/<button[^>]*>Organization · model ↕<\/button>/);
+    expect(html).not.toMatch(/<button[^>]*aria-label="Sort/);
+    expect(html).toMatch(/<button[^>]*><span>Organization · model/);
     expect(html).toMatch(/<label[^>]*for="route-search"[^>]*>Search routes<\/label>/);
     expect(html).toContain('placeholder="Organization or model"');
+  });
+
+  it("shows ↑ on the active column and ↕ on the others, hidden from screen readers", () => {
+    const html = render([row(1)]);
+    expect(html).toContain('<span aria-hidden="true"> ↑</span>');
+    expect(html).toContain('<span aria-hidden="true"> ↕</span>');
+  });
+
+  it("tells screen readers which column is sorted, and which way", () => {
+    const html = render([row(1)]);
+    expect(html.match(/<span class="sr-only">, sorted ascending<\/span>/g)).toHaveLength(2); // the phone and desktop carbon headers
+    expect(html).not.toContain("sorted descending");
   });
 
   it("says no routes match, and shows none, for a search that finds none", () => {

@@ -29,12 +29,20 @@ export function RoutesSection({ routes, bandUpper, initialQuery = "" }: {
   const matches = sortRows(filterRows(routes, state.query), state.sort);
   const shown = pageOf(matches, state.page);
 
-  const arrow = (key: SortKey) => (state.sort.key !== key ? "↕" : state.sort.dir === 1 ? "↑" : "↓");
+  // The arrow is for the eye; screen readers hear the state in words, on the active column only.
+  const sortMark = (key: SortKey) => (
+    <>
+      <span aria-hidden="true"> {state.sort.key !== key ? "↕" : state.sort.dir === 1 ? "↑" : "↓"}</span>
+      {state.sort.key === key && (
+        <span className="sr-only">, sorted {state.sort.dir === 1 ? "ascending" : "descending"}</span>
+      )}
+    </>
+  );
   const tone = (key: SortKey) => (state.sort.key === key ? "text-ink" : "text-muted");
   const sortBy = (key: SortKey) => () => dispatch({ type: "sort", key });
 
   return (
-    <section id="routes" className="page-container flex flex-col gap-8 pt-14 pb-[88px]">
+    <section id="routes" tabIndex={-1} className="page-container outline-none flex flex-col gap-8 pt-14 pb-[88px]">
       <div className="flex flex-col gap-3">
         <h2 className="text-[32px] font-medium tracking-[-0.02em]">Routes</h2>
         <p className="text-[17px] leading-[1.55] text-body">
@@ -59,21 +67,21 @@ export function RoutesSection({ routes, bandUpper, initialQuery = "" }: {
       <div className="overflow-x-auto">
         <div className="min-w-[900px] max-[760px]:min-w-0">
           <div className={`${GRID} items-end border-b border-ink pb-1.5 font-mono text-[11px] text-muted`}>
-            <button type="button" onClick={sortBy("org")} aria-label="Sort alphabetically by organization"
+            <button type="button" onClick={sortBy("org")}
               className={`${HEADER_BUTTON} justify-self-start text-left whitespace-nowrap max-[760px]:whitespace-normal ${tone("org")}`}>
-              Organization · model {arrow("org")}
+              <span>Organization · model{sortMark("org")}</span>
             </button>
-            <button type="button" onClick={sortBy("letter")} aria-label="Sort by location disclosure rating"
+            <button type="button" onClick={sortBy("letter")}
               className={`${HEADER_BUTTON} items-center justify-self-center text-center ${tone("letter")}`}>
               <span>Location</span>
-              <span className="whitespace-nowrap">disclosure {arrow("letter")}</span>
+              <span className="whitespace-nowrap">disclosure{sortMark("letter")}</span>
             </button>
-            <button type="button" onClick={sortBy("score")} aria-label="Sort by grams of CO₂e"
+            <button type="button" onClick={sortBy("score")}
               className={`${HEADER_BUTTON} hidden items-end justify-self-end text-right max-[760px]:flex ${tone("score")}`}>
               <span className="whitespace-nowrap">g CO₂e per</span>
-              <span className="whitespace-nowrap">1k tokens {arrow("score")}</span>
+              <span className="whitespace-nowrap">1k tokens{sortMark("score")}</span>
             </button>
-            <ChartHeader scale={scale} label={`g CO₂e per 1k tokens ${arrow("score")}`} active={state.sort.key === "score"} onSort={sortBy("score")} />
+            <ChartHeader scale={scale} label={<>g CO₂e per 1k tokens{sortMark("score")}</>} active={state.sort.key === "score"} onSort={sortBy("score")} />
           </div>
 
           {shown.items.map((r) => (

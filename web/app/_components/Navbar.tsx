@@ -16,14 +16,19 @@ export const NAV_LINKS = [
 
 /** On the home page every link scrolls itself: to its section (the URL becoming /#section), or, for the name, to the
  *  top with no fragment. Left to Link and the browser, a click does nothing when the URL already ends in that
- *  fragment, or when it has none and the page is the one showing. Elsewhere the links navigate home as usual. */
-function goToSection(e: MouseEvent<HTMLAnchorElement>) {
+ *  fragment, or when it has none and the page is the one showing. Focus moves with the jump, as it does for a native
+ *  fragment link, so the next Tab continues from the section. A click with a modifier key or another button is left
+ *  to the browser (new tab, new window), and elsewhere the links navigate home as usual. */
+export function goToSection(e: MouseEvent<HTMLAnchorElement>) {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   if (window.location.pathname !== "/") return;
   e.preventDefault();
   const { hash } = new URL(e.currentTarget.href);
   window.history.replaceState(null, "", hash ? `/${hash}` : "/");
-  if (hash) document.getElementById(hash.slice(1))?.scrollIntoView();
+  const target = hash ? document.getElementById(hash.slice(1)) : document.querySelector("main");
+  if (hash) target?.scrollIntoView();
   else window.scrollTo({ top: 0 });
+  target?.focus({ preventScroll: true });
 }
 
 /** The site's navbar, on every page: sticky across the full width, its bottom rule appearing once the page has

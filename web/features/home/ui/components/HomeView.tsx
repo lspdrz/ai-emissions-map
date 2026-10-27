@@ -9,7 +9,8 @@ export function HomeView({ homeData }: { homeData: HomeData }) {
   const { meta, routes, organizations } = homeData;
   return (
     // Sections span the screen so their top rules do; each keeps its content to the page column.
-    <main>
+    // tabIndex -1: the navbar's name moves focus here (app/_components/Navbar.tsx), without adding a tab stop.
+    <main tabIndex={-1} className="outline-none">
       <div className="page-container">
         <p className="mt-0.5 max-w-[400px] text-[15px] leading-[1.6] text-body">
           is an open source project tracking the carbon emissions of AI deployments across the world.

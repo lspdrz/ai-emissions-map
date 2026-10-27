@@ -4,7 +4,7 @@ import { CONTRIBUTING_URL, REPO_URL } from "@/lib/links";
 export function ContributeSection() {
   return (
     // The rule spans the screen; the content keeps to the page column.
-    <section id="contribute" className="border-t border-ink">
+    <section id="contribute" tabIndex={-1} className="border-t border-ink outline-none">
       <div className="page-container flex flex-wrap items-end justify-between gap-x-16 gap-y-6 pt-14 pb-[72px]">
         <div className="flex flex-[1_1_520px] flex-col gap-3">
           <h2 className="text-[32px] font-medium tracking-[-0.02em]">Contribute</h2>

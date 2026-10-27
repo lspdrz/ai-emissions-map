@@ -79,3 +79,11 @@ describe("percent", () => {
     expect(percent(100)).toBe("100.00%");
   });
 });
+
+describe("niceScale with a bad score", () => {
+  it("leaves out ranges with a zero, negative or missing end, instead of looping forever", () => {
+    expect(niceScale([{ low: 0, high: 1 }, { low: 0.1, high: 0.3 }])).toEqual({ min: 0.1, max: 0.3, ticks: [0.1, 0.3] });
+    expect(niceScale([{ low: Number.NaN, high: 1 }])).toBeNull();
+    expect(niceScale([{ low: -1, high: 0 }])).toBeNull();
+  });
+});

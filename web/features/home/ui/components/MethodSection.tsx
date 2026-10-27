@@ -18,7 +18,7 @@ const SUBHEAD = "text-[19px] font-semibold";
 export function MethodSection({ meta }: { meta: Meta }) {
   return (
     // The rule spans the screen; the content keeps to the page column.
-    <section id="method" className="border-t border-ink">
+    <section id="method" tabIndex={-1} className="border-t border-ink outline-none">
       <div className="page-container flex flex-col gap-10 pt-14 pb-[88px]">
         <h2 className="text-[32px] font-medium tracking-[-0.02em]">Method</h2>
 
