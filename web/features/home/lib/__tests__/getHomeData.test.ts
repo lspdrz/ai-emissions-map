@@ -5,7 +5,7 @@ import { buildData, buildModel, buildOrganization, buildRoute } from "@/lib/data
 describe("getHomeData", () => {
   it("gives each route its organization and model names, location, letter and score", () => {
     const data = buildData({
-      routes: [buildRoute({ slug: "acme-m", org: "acme", model: "m", label: "Paris", letter: "A", score: { low: 0.04, high: 0.05 } })],
+      routes: [buildRoute({ slug: "acme-m", org: "acme", model: "m", label: "Paris", letter: "A", sci: { low: 0.04, high: 0.05 } })],
       organizations: [buildOrganization({ slug: "acme", display_name: "Acme Cloud" })],
       models: [buildModel({ slug: "m", display_name: "Model M" })],
     });
@@ -15,7 +15,7 @@ describe("getHomeData", () => {
   });
 
   it("keeps an unscored route, with no score", () => {
-    const data = buildData({ routes: [buildRoute({ letter: "D", score: null })] });
+    const data = buildData({ routes: [buildRoute({ letter: "D", sci: null })] });
     expect(getHomeData(data).routes[0]).toMatchObject({ letter: "D", score: null });
   });
 

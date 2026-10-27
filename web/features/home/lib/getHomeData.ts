@@ -21,7 +21,7 @@ export function getHomeData(data: MapData = loadData()): HomeData {
       model: modelName.get(r.model) ?? r.model,
       label: r.label,
       letter: r.letter,
-      score: r.score,
+      score: r.sci,
     })),
     organizations: data.organizations
       .map<OrgCard>((o) => ({
