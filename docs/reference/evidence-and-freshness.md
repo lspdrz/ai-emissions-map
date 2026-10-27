@@ -12,7 +12,8 @@ claim is corrected.
   that facility.
 - **Corroborating:** press, analysts and third-party datasets. They are recorded for context and
   are never sufficient on their own. A location known only from the press is undisclosed
-  (no candidates, rated D).
+  (no candidates, rated D). The one exception is a route's speed, which OpenRouter's figures may set
+  ([below](#a-routes-speed)).
 - A developer's statement about where it serves a model establishes nothing about where another
   provider serves the same weights.
 
@@ -29,6 +30,21 @@ included) or the facility operator's documents about that building. A third part
   figure in the route's comments, not in the facility's `pue:`.
 - **A cloud region's PUE** is not curated: it comes from the cloud provider's own reports, as the Green Software
   Foundation normalizes them in `sources/snapshots/cloud_regions.csv`.
+
+## A route's speed
+
+A route's `speed:` is its service's measured `tokens_per_second` and `time_to_first_token_s`, both required.
+
+- **From the provider**, primary: its own published figures for that service.
+- **Otherwise from OpenRouter**, corroborating: the one third party whose figure may set a speed, measured on its
+  own traffic (validation refuses any other third-party site). Read the model's providers page,
+  `https://openrouter.ai/<model>/providers`, in a browser (it renders in JavaScript), and quote the Performance
+  chart's **one-week average** for the provider and, where it shows one, the region of the route (such as "Google
+  Vertex (EU)"): `Throughput` as `tokens_per_second` and `Latency` as `time_to_first_token_s`. Not the providers
+  table, whose P50 is a rolling five-minute window, and not `E2E latency`, the whole request.
+- **No endpoint for the route's service** (a regional option OpenRouter does not list separately): record nothing,
+  and EcoLogits estimates the speed. Another service's figure is never borrowed.
+- **The figures move.** A refresh reads them again and updates the values, the quote and `accessed`.
 
 ## An evidence entry
 

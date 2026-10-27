@@ -1,14 +1,16 @@
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
-from build.schemas.route import CheckedLocation, CheckedRoute
-from tests.builders.broken import changed
+from build.schemas.route import CheckedLocation, CheckedRoute, CheckedSpeed
+from tests.builders.broken import changed, without
 from tests.builders.evidence import make_evidence
 from tests.builders.location import make_facility, make_facility_pue, make_location
 from tests.builders.route import make_route
+from tests.builders.speed import make_speed
 
 _LOCATION = TypeAdapter(CheckedLocation)
 _ROUTE = TypeAdapter(CheckedRoute)
+_SPEED = TypeAdapter(CheckedSpeed)
 
 
 # A location: what it discloses rests on primary evidence.
@@ -53,6 +55,41 @@ def test_a_pue_is_at_least_one():
     below_one = changed(location, "facilities", 0, "pue", "value", to=0.9)
     with pytest.raises(ValidationError, match="greater than or equal to 1"):
         _LOCATION.validate_python(below_one)
+
+
+# A route's speed: measured for its service, from the provider's own publications or OpenRouter's providers page.
+
+
+def test_a_speed_from_openrouter_is_valid():
+    speed = make_speed()
+    assert _SPEED.validate_python(speed) == speed
+
+
+def test_a_speed_from_the_provider_is_valid():
+    speed = make_speed(evidence=[make_evidence(kind="primary")])
+    assert _SPEED.validate_python(speed) == speed
+
+
+def test_a_third_partys_speed_is_from_openrouter_only():
+    speed = make_speed()
+    elsewhere = changed(speed, "evidence", 0, "url", to="https://benchmarks.example/acme")
+    with pytest.raises(ValidationError, match="a third party's speed must come from openrouter.ai"):
+        _SPEED.validate_python(elsewhere)
+
+
+def test_a_speed_is_above_zero():
+    with pytest.raises(ValidationError, match="greater than 0"):
+        _SPEED.validate_python(changed(make_speed(), "tokens_per_second", to=0))
+
+
+def test_a_speed_has_its_time_to_first_token():
+    with pytest.raises(ValidationError, match="time_to_first_token_s"):
+        _SPEED.validate_python(without(make_speed(), "time_to_first_token_s"))
+
+
+def test_a_route_can_have_its_speed():
+    route = make_route(speed=make_speed())
+    assert _ROUTE.validate_python(route) == route
 
 
 # A route: the model it serves.

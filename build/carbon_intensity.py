@@ -15,9 +15,10 @@ from ecologits.impacts.llm import compute_llm_impacts
 from ecologits.utils.range_value import RangeValue
 
 from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS
-from build.schemas.carbon_intensity import CarbonIntensity, Interval
+from build.schemas.carbon_intensity import CarbonIntensity, GenerationSpeed, Interval
 from build.schemas.grid import GridIntensity
 from build.schemas.model import Model
+from build.schemas.route import Speed
 from build.utils.bands import band_span
 from build.utils.range import Range
 
@@ -32,10 +33,10 @@ def _bounds(value) -> tuple[float, float]:
     return float(value), float(value)
 
 
-def ecologits_estimate(model: Model, pue: Range) -> tuple[Range, Range]:
+def ecologits_estimate(model: Model, pue: Range, speed: Speed | None) -> tuple[Range, Range]:
     """(energy in Wh, embodied gCO2e) per 1,000 output tokens for the parameter counts in this model's record, from
-    the pinned EcoLogits, with the route's PUE and EcoLogits' own generation-speed estimate (no latency input).
-    Tests replace it with their own E and M (monkeypatch)."""
+    the pinned EcoLogits, with the route's PUE and its measured speed, or without one EcoLogits' own estimate from the
+    parameter counts (no request latency either way). Tests replace it with their own E and M (monkeypatch)."""
     datacenter_pue = RangeValue(min=pue.low, max=pue.high)
     energies: list[float] = []
     embodied: list[float] = []
@@ -52,6 +53,8 @@ def ecologits_estimate(model: Model, pue: Range) -> tuple[Range, Range]:
             if_electricity_mix_wue=0.0,
             datacenter_pue=datacenter_pue,
             datacenter_wue=0.0,
+            tps=None if speed is None else speed["tokens_per_second"],
+            ttft=None if speed is None else speed["time_to_first_token_s"],
         )
         energies.extend(v * 1000 for v in _bounds(impacts.energy.value))  # kWh -> Wh
         embodied.extend(v * 1000 for v in _bounds(impacts.embodied.gwp.value))  # kg -> g
@@ -68,12 +71,21 @@ def carbon_intensity(
     grids: Mapping[str, GridIntensity],
     pue: Range,
     pue_source: Literal["published", "fallback"],
+    speed: Speed | None,
+    speed_source: Literal["published", "openrouter", "fallback"],
 ) -> CarbonIntensity:
     """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts, its grids and its PUE, as its
     carbon_intensity: field stores it. `model` is the record of the model the route serves; `grids` the intensity of
-    each grid its location resolves to, by grid name (none when the location is undisclosed); `pue` the PUE its energy
-    is computed with, and where it comes from."""
-    energy, embodied = ecologits_estimate(model, pue)
+    each grid its location resolves to, by grid name (none when the location is undisclosed); `pue` and `speed` the
+    PUE and measured speed its energy and embodied emissions are computed with, and where each comes from."""
+    energy, embodied = ecologits_estimate(model, pue, speed)
+    used_speed = (
+        None
+        if speed is None
+        else GenerationSpeed(
+            tokens_per_second=speed["tokens_per_second"], time_to_first_token_s=speed["time_to_first_token_s"]
+        )
+    )
     if not grids:
         return CarbonIntensity(
             grids=[],
@@ -84,6 +96,8 @@ def carbon_intensity(
             band=None,
             pue=_interval(pue),
             pue_source=pue_source,
+            speed=used_speed,
+            speed_source=speed_source,
         )
     names = sorted(grids)
     values = [grids[g]["g_per_kwh"] for g in names]
@@ -98,4 +112,6 @@ def carbon_intensity(
         band=list(band_span(sci, CARBON_BAND_UPPER)),
         pue=_interval(pue),
         pue_source=pue_source,
+        speed=used_speed,
+        speed_source=speed_source,
     )

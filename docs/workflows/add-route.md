@@ -9,9 +9,10 @@ You are recording where an organization serves a model. The organization must al
 - The organization's slug, and the slug of the record in `sources/models/` for the model it **actually** serves.
 - The organization's own pages that say where it serves that model, and, for any facility they name, the
   pages that give its PUE.
+- The provider's own speed figures for the service, or OpenRouter's providers page for the model.
 
 ## Files this changes
-1. `sources/routes/<org>-<model>.yaml`, new (with a qualifier for each location a customer can choose, step 6).
+1. `sources/routes/<org>-<model>.yaml`, new (with a qualifier for each location a customer can choose, step 7).
 2. A new grid ([`add-grid.md`](add-grid.md)) or model ([`add-model.md`](add-model.md)), when the route
    needs one.
 
@@ -53,7 +54,22 @@ You are recording where an organization serves a model. The organization must al
    nothing for a facility without one. A cloud region's PUE is not researched: `score` reads it from
    `sources/snapshots/cloud_regions.csv`. `score` uses the published PUE only when every candidate has one, and the
    fallback range (1.1–1.6) otherwise.
-6. **Write the route**, named `<org>-<model>` with the model part made into a slug per
+6. **Record the route's speed**: how fast its service generates, as `speed:` on the route, beside `location:`.
+   Look first for the provider's own published figures for that service, then at OpenRouter's providers page for
+   the model, read as [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-routes-speed)
+   says (the one-week average for that provider and region):
+   ```yaml
+   speed:
+     tokens_per_second: 70
+     time_to_first_token_s: 3.8
+     evidence:
+     - url: https://openrouter.ai/example-lab/example-70b/providers
+       shows: 'Performance, 1 week: "Example AI Avg 70 tok/s", "Example AI Avg 3.8 s"'
+       accessed: "2026-10-11"
+       kind: corroborating
+   ```
+   Record nothing when neither has a figure for this service; `score` then uses EcoLogits' estimate.
+7. **Write the route**, named `<org>-<model>` with the model part made into a slug per
    [`../reference/identity.md`](../reference/identity.md#routes) (`example-host` serving
    `example-lab/Example-Coder-13B-hf` is `example-host-example-coder-13b-hf`):
    ```yaml
@@ -94,7 +110,8 @@ that no longer matches `sources/`. If `score` reports a zone or grid with no gri
 ## Expected PR contents
 The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_intensity:` fields `score` wrote,
 the organization's `disclosure_rating:`, and `web/data/data.json`. One short note per route on the evidence that
-settled its candidates, and, for a route with facilities, on the PUE found for each or why there is none.
+settled its candidates, and, for a route with facilities, on the PUE found for each or why there is none, and on
+where its speed came from or why it has none.
 
 ## Stop and escalate when
 - Only the press says where it runs: record no candidates, and do not add any on press evidence.

@@ -19,7 +19,8 @@ from build.disclosure_rating import disclosure_rating, organization_rating
 from build.load_sources import load_cloud_regions, load_sources
 from build.schemas.disclosure_rating import Letter
 from build.schemas.grid import Grid
-from build.schemas.route import Route
+from build.schemas.route import Route, Speed
+from build.schemas.evidence import has_primary
 from build.schemas.score import OrgRating, RouteScore
 from build.types import CloudRegion, ScoreRun, Sources
 from build.utils.range import Range
@@ -108,13 +109,23 @@ def route_pue(
     return Range(*FALLBACK_PUE), "fallback"
 
 
+def route_speed(route: Route) -> tuple[Speed | None, Literal["published", "openrouter", "fallback"]]:
+    """The measured speed a route's energy and embodied emissions are computed with, and where it comes from: the
+    provider's own figure when a primary source shows it, else OpenRouter's (the one third party that may set it).
+    Without one, EcoLogits estimates the speed from the model's size."""
+    speed = route.get("speed")
+    if speed is None:
+        return None, "fallback"
+    return speed, "published" if has_primary(speed["evidence"]) else "openrouter"
+
+
 def score_routes(
     data: Sources,
     cloud_regions: Mapping[tuple[str, str], CloudRegion],
 ) -> dict[str, RouteScore]:
     """The fields score writes for every route: its disclosure letter and its carbon intensity, as they are stored. The
     carbon intensity reads each grid's stored intensity: (validation has checked every grid has one) and the route's
-    PUE (route_pue)."""
+    PUE and speed (route_pue, route_speed)."""
     route_scores: dict[str, RouteScore] = {}
     for name, route in sorted(data["routes"].items()):
         grids = route_grids(route, data["grids"], cloud_regions)
@@ -125,6 +136,7 @@ def score_routes(
                 data["models"][route["model"]],
                 {g: grid["intensity"] for g, grid in grids.items() if "intensity" in grid},
                 *route_pue(route, cloud_regions),
+                *route_speed(route),
             ),
         )
     return route_scores

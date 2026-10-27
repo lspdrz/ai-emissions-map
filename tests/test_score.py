@@ -4,7 +4,16 @@ import yaml
 
 from build.schemas.score import RouteScore
 from build.types import CloudRegion
-from build.score import GENERATED_COMMENT, org_text, route_grids, route_pue, route_text, score, score_organizations
+from build.score import (
+    GENERATED_COMMENT,
+    org_text,
+    route_grids,
+    route_pue,
+    route_speed,
+    route_text,
+    score,
+    score_organizations,
+)
 from build.utils.range import Range
 from tests.builders.corpus import make_corpus
 from tests.builders.files import write_corpus, write_source
@@ -13,6 +22,8 @@ from tests.builders.location import make_facility, make_facility_pue, make_locat
 from tests.builders.model import make_model
 from tests.builders.organization import make_organization
 from tests.builders.route import make_route
+from tests.builders.speed import make_speed
+from tests.builders.evidence import make_evidence
 
 
 # An organization's rating is computed from its own routes' ratings.
@@ -130,6 +141,23 @@ def test_an_undisclosed_location_is_on_the_range():
     assert route_pue(route, {}) == (Range(1.1, 1.6), "fallback")
 
 
+# A route's speed: its own measured figure, from the provider (published) or OpenRouter, else EcoLogits' estimate.
+
+
+def test_a_speed_the_provider_publishes_is_published():
+    speed = make_speed(evidence=[make_evidence(kind="primary")])
+    assert route_speed(make_route(speed=speed)) == (speed, "published")
+
+
+def test_a_speed_only_openrouter_shows_is_openrouters():
+    speed = make_speed()
+    assert route_speed(make_route(speed=speed)) == (speed, "openrouter")
+
+
+def test_a_route_without_a_speed_falls_back_to_ecologits_estimate():
+    assert route_speed(make_route()) == (None, "fallback")
+
+
 # The fields score writes go below GENERATED_COMMENT, at the end of a file: everything below it is rewritten, nothing
 # above it.
 
@@ -198,6 +226,8 @@ def test_written_fields_read_back_equal():
             "embodied_g": {"low": 0.05, "high": 0.06},
             "pue": {"low": 1.1, "high": 1.6},
             "pue_source": "fallback",
+            "speed": None,
+            "speed_source": "fallback",
             "grid_intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
             "sci_g": {"low": 0.07, "high": 0.258},
             "band": [2, 3],
@@ -217,7 +247,7 @@ def _rel(root, paths):
 
 def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (Range.point(0.0), Range.point(0.0))
     )
     write_corpus(
         tmp_path,
@@ -239,7 +269,7 @@ def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
 
 def test_a_second_run_writes_nothing(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (Range.point(0.0), Range.point(0.0))
     )
     write_corpus(
         tmp_path,
@@ -301,7 +331,7 @@ def test_score_resolves_cloud_regions_through_the_committed_table(tmp_path):
 
 def test_score_reads_a_cloud_regions_pue_from_the_committed_table(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (Range.point(0.0), Range.point(0.0))
     )
     write_corpus(
         tmp_path,
@@ -331,7 +361,7 @@ def test_score_reads_a_cloud_regions_pue_from_the_committed_table(tmp_path, monk
 
 def test_check_mode_lists_what_score_would_write_and_writes_nothing(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (Range.point(0.0), Range.point(0.0))
     )
     write_corpus(
         tmp_path,

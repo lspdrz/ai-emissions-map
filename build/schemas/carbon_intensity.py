@@ -9,6 +9,11 @@ class Interval(TypedDict):
     high: float
 
 
+class GenerationSpeed(TypedDict):
+    tokens_per_second: float
+    time_to_first_token_s: float
+
+
 class CarbonIntensity(TypedDict):
     grids: list[str]  # the grid files the location resolves to
     energy_wh: Interval  # E, Wh per 1,000 output tokens
@@ -18,3 +23,5 @@ class CarbonIntensity(TypedDict):
     band: list[int] | None  # lowest and highest band of sci_g
     pue: Interval  # the PUE E was computed with
     pue_source: Literal["published", "fallback"]  # every candidate's published PUE, or the fallback range
+    speed: GenerationSpeed | None  # the measured speed E and M were computed with; None when EcoLogits estimated it
+    speed_source: Literal["published", "openrouter", "fallback"]  # the provider, OpenRouter, or EcoLogits' estimate

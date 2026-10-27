@@ -2,6 +2,7 @@
 electricity comes from, as precisely as its evidence establishes."""
 
 from typing import Annotated, NotRequired, TypedDict
+from urllib.parse import urlparse
 
 from pydantic import AfterValidator, Field, with_config
 
@@ -81,6 +82,29 @@ CheckedLocation = Annotated[Location, AfterValidator(_established_by_its_evidenc
 
 
 @with_config(RECORD)
+class Speed(TypedDict):
+    """How fast the route's service generates, as measured: from the provider's own publications, or OpenRouter's
+    providers page (the one third party that may set it, from its own traffic)."""
+
+    tokens_per_second: Annotated[float, Field(gt=0, description="Output tokens per second, while generating")]
+    time_to_first_token_s: Annotated[
+        float, Field(ge=0, description="Seconds from the request to the first output token")
+    ]
+    evidence: Annotated[list[Evidence], Field(min_length=1)]
+
+
+def _from_the_provider_or_openrouter(speed: Speed) -> Speed:
+    for evidence in speed["evidence"]:
+        if evidence["kind"] == "corroborating" and urlparse(evidence["url"]).hostname != "openrouter.ai":
+            raise ValueError("a third party's speed must come from openrouter.ai")
+    return speed
+
+
+# Speed with its rule on its sources: the provider's own, or OpenRouter's.
+CheckedSpeed = Annotated[Speed, AfterValidator(_from_the_provider_or_openrouter)]
+
+
+@with_config(RECORD)
 class Route(TypedDict):
     name: Annotated[Slug, Field(description="The slug, '<org>-<model>'; must equal the filename stem")]
     org: Annotated[
@@ -100,6 +124,12 @@ class Route(TypedDict):
         ]
     ]
     location: CheckedLocation
+    speed: NotRequired[
+        Annotated[
+            CheckedSpeed,
+            Field(description="Its service's measured generation speed; without it, EcoLogits estimates one"),
+        ]
+    ]
     comments: NotRequired[str]
     disclosure_rating: NotRequired[
         Annotated[

@@ -19,7 +19,10 @@ something has changed.
    passage that now establishes the claim in `shows`, and set `accessed` to today.
 4. **Claim no longer true:** change the candidates and `facilities:` to what the remaining primary
    evidence supports, down to no candidates.
-5. **If the organization publishes a serving-locations file**, read it again and compare it with the
+5. **A route's speed** moves with the service: read its source again and update `tokens_per_second`,
+   `time_to_first_token_s`, the quote and `accessed`; remove `speed:` when the source no longer has a figure for
+   that service.
+6. **If the organization publishes a serving-locations file**, read it again and compare it with the
    routes (see [`../reference/location-disclosure.md`](../reference/location-disclosure.md#serving-locations-files)).
 
 ## Validation

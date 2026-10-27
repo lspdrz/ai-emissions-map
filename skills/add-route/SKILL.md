@@ -19,6 +19,8 @@ A thin wrapper. The procedure lives in the workflow; this file does not restate 
 - Needs a grid or a model that does not exist yet → `add-grid` / `add-model` first.
 - Names facilities → look for each one's PUE measured over twelve months (workflow step 5); a design figure, best
   month or fleet average goes in the comments, not in `pue:`.
+- Speed (workflow step 6): the provider's own figure, else OpenRouter's providers page rendered in a browser, the
+  Performance chart's one-week average for that provider and region; never another third party.
 
 ## Scripts to run
 ```bash
