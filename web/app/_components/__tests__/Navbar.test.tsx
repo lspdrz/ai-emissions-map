@@ -25,6 +25,24 @@ describe("Navbar", () => {
     expect((html.match(/<a /g) ?? []).length).toBe(NAV_LINKS.length + 1);
   });
 
+  it("hides the inline links on phones and shows a menu button there instead", () => {
+    const html = renderToStaticMarkup(<Navbar />);
+    expect(html).toMatch(/<nav aria-label="Main" class="[^"]*max-\[760px\]:hidden/);
+    expect(html).toMatch(/<div class="hidden max-\[760px\]:block"><button[^>]*aria-expanded="false"[^>]*aria-controls="mobile-menu"[^>]*aria-label="Open menu"/);
+  });
+
+  it("renders no menu until it is opened", () => {
+    expect(renderToStaticMarkup(<Navbar />)).not.toContain('id="mobile-menu"');
+  });
+
+  it("lists every link in the open menu, inside the phone-only wrapper, and the button offers to close it", () => {
+    const html = renderToStaticMarkup(<Navbar initialOpen />);
+    expect(html).toMatch(/<div class="hidden max-\[760px\]:block">[\s\S]*id="mobile-menu"[\s\S]*<\/nav><\/div><\/header>/);
+    const menu = html.slice(html.indexOf('id="mobile-menu"'));
+    for (const { href } of NAV_LINKS) expect(menu).toContain(`href="${href}"`);
+    expect(html).toMatch(/<button[^>]*aria-expanded="true"[^>]*aria-label="Close menu"/);
+  });
+
   it("starts with no bottom line", () => {
     const html = renderToStaticMarkup(<Navbar />);
     expect(html).toContain("border-transparent");
