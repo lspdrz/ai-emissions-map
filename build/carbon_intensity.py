@@ -1,6 +1,7 @@
 """A route's carbon intensity: full SCI, (E x I) + M per 1,000 output tokens, with its parts kept separately.
 
-E and M come from EcoLogits for the parameter counts in the model's record; I is each resolved grid's intensity
+E and M come from EcoLogits for the parameter counts in the model's record, with the route's PUE (build/score.py:
+every candidate's published PUE, or the fallback range); I is each resolved grid's intensity
 (build/grid_emissions.py: Ember's yearly value for its subdivision or country), for the grids the route's location
 resolves to. Every value is computed as a Range and stored as {low, high}, rounded to 6 places.
 """
@@ -8,11 +9,12 @@ resolves to. Every value is computed as a Range and stored as {low, high}, round
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import Literal
 
 from ecologits.impacts.llm import compute_llm_impacts
 from ecologits.utils.range_value import RangeValue
 
-from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS, PUE
+from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS
 from build.schemas.carbon_intensity import CarbonIntensity, Interval
 from build.schemas.grid import GridIntensity
 from build.schemas.model import Model
@@ -30,11 +32,11 @@ def _bounds(value) -> tuple[float, float]:
     return float(value), float(value)
 
 
-def ecologits_estimate(model: Model) -> tuple[Range, Range]:
+def ecologits_estimate(model: Model, pue: Range) -> tuple[Range, Range]:
     """(energy in Wh, embodied gCO2e) per 1,000 output tokens for the parameter counts in this model's record, from
-    the pinned EcoLogits, with one PUE range for all routes and its own generation-speed estimate (no latency input).
+    the pinned EcoLogits, with the route's PUE and EcoLogits' own generation-speed estimate (no latency input).
     Tests replace it with their own E and M (monkeypatch)."""
-    pue = RangeValue(min=PUE[0], max=PUE[1])
+    datacenter_pue = RangeValue(min=pue.low, max=pue.high)
     energies: list[float] = []
     embodied: list[float] = []
     active_low, active_high = _bounds(model["active_b"])
@@ -48,7 +50,7 @@ def ecologits_estimate(model: Model) -> tuple[Range, Range]:
             if_electricity_mix_pe=0.0,
             if_electricity_mix_gwp=0.0,  # grid emissions are computed from the Ember table, not here
             if_electricity_mix_wue=0.0,
-            datacenter_pue=pue,
+            datacenter_pue=datacenter_pue,
             datacenter_wue=0.0,
         )
         energies.extend(v * 1000 for v in _bounds(impacts.energy.value))  # kWh -> Wh
@@ -61,11 +63,17 @@ def _interval(r: Range) -> Interval:
     return {"low": round(r.low, 6), "high": round(r.high, 6)}
 
 
-def carbon_intensity(model: Model, grids: Mapping[str, GridIntensity]) -> CarbonIntensity:
-    """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts and its grids, as its
+def carbon_intensity(
+    model: Model,
+    grids: Mapping[str, GridIntensity],
+    pue: Range,
+    pue_source: Literal["published", "fallback"],
+) -> CarbonIntensity:
+    """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts, its grids and its PUE, as its
     carbon_intensity: field stores it. `model` is the record of the model the route serves; `grids` the intensity of
-    each grid its location resolves to, by grid name (none when the location is undisclosed)."""
-    energy, embodied = ecologits_estimate(model)
+    each grid its location resolves to, by grid name (none when the location is undisclosed); `pue` the PUE its energy
+    is computed with, and where it comes from."""
+    energy, embodied = ecologits_estimate(model, pue)
     if not grids:
         return CarbonIntensity(
             grids=[],
@@ -74,6 +82,8 @@ def carbon_intensity(model: Model, grids: Mapping[str, GridIntensity]) -> Carbon
             grid_intensity_g_per_kwh=None,
             sci_g=None,
             band=None,
+            pue=_interval(pue),
+            pue_source=pue_source,
         )
     names = sorted(grids)
     values = [grids[g]["g_per_kwh"] for g in names]
@@ -86,4 +96,6 @@ def carbon_intensity(model: Model, grids: Mapping[str, GridIntensity]) -> Carbon
         grid_intensity_g_per_kwh=_interval(intensity),
         sci_g=_interval(sci),
         band=list(band_span(sci, CARBON_BAND_UPPER)),
+        pue=_interval(pue),
+        pue_source=pue_source,
     )

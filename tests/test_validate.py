@@ -38,7 +38,7 @@ def test_a_valid_corpus_has_no_errors():
         ],
         models=[make_model(name="m-70b")],
     )
-    assert validate_sources(corpus, cloud_regions={("cloudx", "eu-de"): ["DE"]}) == []
+    assert validate_sources(corpus, cloud_regions={("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == []
 
 
 def test_stray_files_are_reported():
@@ -161,7 +161,7 @@ def test_a_grid_failing_its_schema_is_not_reported_missing():
         ],
         models=[make_model(name="m-70b")],
     )
-    assert validate_sources(corpus, cloud_regions={("cloudx", "eu-de"): ["DE"]}) == [
+    assert validate_sources(corpus, cloud_regions={("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == [
         "grids/de.yaml: country: String should match pattern '^[A-Z]{2}$'"
     ]
 
@@ -347,12 +347,15 @@ def test_a_cloud_candidate_resolves_to_the_grid_files_of_its_zones():
         "acme-m-70b": make_route(name="acme-m-70b", location=make_location(candidates=["cloud:azure:northeurope"]))
     }
     grids = {"fi": make_grid(name="fi", country="FI", zone="FI"), "ie": make_grid(name="ie", country="IE", zone="IE")}
-    assert check_candidates(routes, grids, {("azure", "northeurope"): ["FI", "IE"]}) == ([], {"fi", "ie"})
+    assert check_candidates(routes, grids, {("azure", "northeurope"): {"zones": ["FI", "IE"], "pue": None}}) == (
+        [],
+        {"fi", "ie"},
+    )
 
 
 def test_a_cloud_candidate_needs_its_region_in_the_cloud_region_data():
     routes = {"acme-m-70b": make_route(name="acme-m-70b", location=make_location(candidates=["cloud:cloudx:eu-fr"]))}
-    assert check_candidates(routes, {}, {("cloudx", "eu-de"): ["DE"]}) == (
+    assert check_candidates(routes, {}, {("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == (
         ["routes/acme-m-70b.yaml: cloud region cloudx:eu-fr is not in the cloud-region data"],
         set(),
     )
@@ -360,7 +363,7 @@ def test_a_cloud_candidate_needs_its_region_in_the_cloud_region_data():
 
 def test_a_cloud_candidates_zone_needs_a_grid_file():
     routes = {"acme-m-70b": make_route(name="acme-m-70b", location=make_location(candidates=["cloud:cloudx:eu-de"]))}
-    assert check_candidates(routes, {}, {("cloudx", "eu-de"): ["DE"]}) == (
+    assert check_candidates(routes, {}, {("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == (
         [
             "routes/acme-m-70b.yaml: cloud region cloudx:eu-de maps to zone 'DE', which has no grid file; "
             "add one (docs/workflows/add-grid.md)"

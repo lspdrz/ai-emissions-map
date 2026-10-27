@@ -17,6 +17,8 @@ A thin wrapper. The procedure lives in the workflow; this file does not restate 
 - Read every source yourself and quote it exactly in `shows`, in double quotes; never quote from
   memory.
 - Needs a grid or a model that does not exist yet → `add-grid` / `add-model` first.
+- Names facilities → look for each one's PUE measured over twelve months (workflow step 5); a design figure, best
+  month or fleet average goes in the comments, not in `pue:`.
 
 ## Scripts to run
 ```bash

@@ -6,12 +6,35 @@ from typing import Annotated, NotRequired, TypedDict
 from pydantic import AfterValidator, Field, with_config
 
 from build.schemas.carbon_intensity import CarbonIntensity
-from build.schemas.common import RECORD, NonEmptyStr, Slug
+from build.schemas.common import RECORD, IsoDate, NonEmptyStr, Slug
 from build.schemas.disclosure_rating import DisclosureRating
 from build.schemas.evidence import Evidence, has_primary
 
 
 Candidate = Annotated[str, Field(pattern=r"^(grid:[a-z0-9]+(-[a-z0-9]+)*|cloud:[a-z0-9-]+:[A-Za-z0-9-]+)$")]
+
+
+@with_config(RECORD)
+class FacilityPue(TypedDict):
+    """A facility's Power Usage Effectiveness, as its operator or the provider publishes it: measured over a year,
+    never a design figure, a best month or an average across facilities."""
+
+    value: Annotated[float, Field(ge=1, description="Total facility energy over IT energy, over twelve months")]
+    period_end: Annotated[IsoDate, Field(description="The last day of the twelve months the value covers")]
+    evidence: Annotated[list[Evidence], Field(min_length=1)]
+
+
+@with_config(RECORD)
+class Facility(TypedDict):
+    """A building the evidence names, and its published PUE when there is one."""
+
+    name: Annotated[str, Field(min_length=1, description="The building, in words (e.g. 'Example Geneva 1, Geneva')")]
+    pue: NotRequired[
+        Annotated[
+            FacilityPue,
+            Field(description="Its published PUE; the route uses it only when every candidate has one"),
+        ]
+    ]
 
 
 @with_config(RECORD)
@@ -28,10 +51,8 @@ class Location(TypedDict):
     ]
     facilities: NotRequired[
         Annotated[
-            list[NonEmptyStr],
-            Field(
-                min_length=1, description="The buildings the evidence names, in words (e.g. 'Example Geneva 1, Geneva')"
-            ),
+            list[Facility],
+            Field(min_length=1, description="The buildings the evidence names"),
         ]
     ]
     candidates: Annotated[
@@ -49,10 +70,13 @@ def _established_by_its_evidence(location: Location) -> Location:
         raise ValueError("facilities need the grid they draw from as a candidate")
     if (location["candidates"] or location.get("facilities")) and not has_primary(location["evidence"]):
         raise ValueError("candidates and facilities need at least one primary source")
+    for facility in location.get("facilities", []):
+        if "pue" in facility and not has_primary(facility["pue"]["evidence"]):
+            raise ValueError(f"{facility['name']!r}: its PUE needs at least one primary source")
     return location
 
 
-# Location with its rules that span fields: a disclosed location rests on primary evidence.
+# Location with its rules that span fields: a disclosed location, and a facility's PUE, rest on primary evidence.
 CheckedLocation = Annotated[Location, AfterValidator(_established_by_its_evidence)]
 
 

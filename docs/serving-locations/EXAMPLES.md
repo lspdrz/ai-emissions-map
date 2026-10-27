@@ -16,7 +16,7 @@ to find a grid. The [README](README.md) explains the format; the
 ## 1. One facility
 
 A small provider serves one model from the data center it runs itself. One route, the default, in one named
-facility.
+facility, with the facility's PUE over the last calendar year.
 
 ```json
 {
@@ -42,7 +42,8 @@ facility.
                   "ownership": "owned",
                   "city": "Lausanne",
                   "country": "CH",
-                  "grid_zone": "CH"
+                  "grid_zone": "CH",
+                  "pue": { "value": 1.15, "period_end": "2025-12-31" }
                 }
               ]
             }
@@ -57,6 +58,8 @@ facility.
 | Route (`name`) | Rating | Why |
 |---|---|---|
 | `standard` (default) | **A** | The one location names its facility, operator and city |
+
+Its energy is computed with the facility's PUE, 1.15, since its one location has one.
 
 ## 2. Several facilities, and a choice of one
 

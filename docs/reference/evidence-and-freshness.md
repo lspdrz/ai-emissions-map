@@ -16,6 +16,20 @@ claim is corrected.
 - A developer's statement about where it serves a model establishes nothing about where another
   provider serves the same weights.
 
+## A facility's PUE
+
+A facility's PUE rests on primary sources only: the organization's own publications (its serving-locations file
+included) or the facility operator's documents about that building. A third party's figure is never sufficient.
+
+- **It counts** when it is the facility's total energy over its IT energy, measured over twelve months: a calendar
+  year's figure, or the trailing twelve months a live dashboard shows. `period_end` records the last day of those
+  twelve months.
+- **It does not count** when it is a design or target figure, a single month (a "best month"), a real-time reading,
+  an average across several of the organization's facilities, or an upper bound ("less than 1.1"). Record such a
+  figure in the route's comments, not in the facility's `pue:`.
+- **A cloud region's PUE** is not curated: it comes from the cloud provider's own reports, as the Green Software
+  Foundation normalizes them in `sources/snapshots/cloud_regions.csv`.
+
 ## An evidence entry
 
 ```yaml

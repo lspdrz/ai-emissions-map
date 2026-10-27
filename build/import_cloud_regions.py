@@ -2,7 +2,7 @@
 
 Reads Cloud_Region_Metadata.csv from https://github.com/Green-Software-Foundation/real-time-cloud at a pinned commit,
 downloaded by hand from the URL below (sources/snapshots/README.md), keeps each AWS, Azure and Google Cloud region's
-grid zones, and writes the table every cloud: candidate resolves through, with a .provenance.json beside it. It keeps a
+grid zones and its published PUE, and writes the table every cloud: candidate resolves through, with a .provenance.json beside it. It keeps a
 copy of the download in sources/snapshots/files/gsf_files/, under its file name, replacing the previous one; git holds
 the earlier ones.
 
@@ -27,7 +27,7 @@ FILE_NAME = "Cloud_Region_Metadata.csv"
 RAW_URL = "https://raw.githubusercontent.com/Green-Software-Foundation/real-time-cloud/{commit}/" + FILE_NAME
 # The providers kept, under the vendor names cloud: candidates use.
 VENDORS = {"Amazon Web Services": "aws", "Microsoft Azure": "azure", "Google Cloud": "gcp"}
-COLUMNS = ("vendor", "region", "zone", "year", "location")
+COLUMNS = ("vendor", "region", "zone", "year", "location", "pue", "pue_year")
 # Where the download is kept.
 DOWNLOAD_COPY = SNAPSHOT_SOURCE_DIR / "gsf_files" / FILE_NAME
 
@@ -35,7 +35,8 @@ DOWNLOAD_COPY = SNAPSHOT_SOURCE_DIR / "gsf_files" / FILE_NAME
 def region_rows(metadata_csv: Path) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     """The table's rows and the regions left out, each with its reason. Each region keeps the zones it lists in the
     most recent year that has an em-zone-id, one row per zone (a region drawing on several zones gives its routes a
-    range). Rows and skipped regions are sorted by provider (its full name, as the source spells it) and region, and a
+    range), and its power-usage-effectiveness in the most recent year that has one, on each of its rows (empty when
+    no year has one). Rows and skipped regions are sorted by provider (its full name, as the source spells it) and region, and a
     region's zones by code."""
     with metadata_csv.open(encoding="utf-8-sig", newline="") as fh:
         records = list(csv.DictReader(fh))
@@ -54,6 +55,9 @@ def region_rows(metadata_csv: Path) -> tuple[list[dict[str, str]], list[dict[str
             continue
         year = max(int(r["year"]) for r in zoned)
         zones = {r["em-zone-id"]: r["location"] for r in zoned if int(r["year"]) == year}
+        with_pue = [r for r in entries if r["power-usage-effectiveness"]]
+        pue_year = max((int(r["year"]) for r in with_pue), default=None)
+        pue = next((r["power-usage-effectiveness"] for r in with_pue if int(r["year"]) == pue_year), "")
         for zone in sorted(zones):
             rows.append(
                 {
@@ -62,6 +66,8 @@ def region_rows(metadata_csv: Path) -> tuple[list[dict[str, str]], list[dict[str
                     "zone": zone,
                     "year": str(year),
                     "location": zones[zone],
+                    "pue": pue,
+                    "pue_year": "" if pue_year is None else str(pue_year),
                 }
             )
     return rows, skipped
@@ -83,7 +89,7 @@ def import_cloud_regions(root: Path, metadata_csv: Path, commit: str, today: dat
     writer.writerows([row[c] for c in COLUMNS] for row in rows)
     download = metadata_csv.read_bytes()
     provenance = {
-        "source": "Green Software Foundation real-time-cloud, Cloud_Region_Metadata.csv (em-zone-id)",
+        "source": "Green Software Foundation real-time-cloud, Cloud_Region_Metadata.csv (em-zone-id, power-usage-effectiveness)",
         "repository": REPOSITORY,
         "commit": commit,
         "url": RAW_URL.format(commit=commit),

@@ -41,6 +41,22 @@ reason for keeping data-center locations private.
 Publish one file per organization, covering every service and model you want rated. A model the file leaves out is
 rated from your other publications, as it would be without a file.
 
+## Adding your facilities' PUE
+
+A location that names its `facility` can also give its **PUE** (Power Usage Effectiveness): the building's total
+energy divided by the energy of its computing equipment, measured over twelve months, with the last day of that
+period:
+
+```json
+{ "facility": "Example Geneva 1", "operator": "Example AI", "city": "Geneva", "country": "CH", "grid_zone": "CH",
+  "pue": { "value": 1.15, "period_end": "2025-12-31" } }
+```
+
+The map computes each route's energy with the PUE of the buildings it runs in when every location on the route has
+one, and with a range of 1.1 to 1.6 otherwise. Give a value measured over a full year (a calendar year, or the
+trailing twelve months), never a design target, a single month or an average across your facilities. The PUE
+changes the carbon intensity, not the rating.
+
 ## Publishing it
 
 1. **Write the file.** The smallest useful file names one service and one model, served by default from one facility:

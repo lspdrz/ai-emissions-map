@@ -7,10 +7,11 @@ You are recording where an organization serves a model. The organization must al
 
 ## Inputs you need
 - The organization's slug, and the slug of the record in `sources/models/` for the model it **actually** serves.
-- The organization's own pages that say where it serves that model.
+- The organization's own pages that say where it serves that model, and, for any facility they name, the
+  pages that give its PUE.
 
 ## Files this changes
-1. `sources/routes/<org>-<model>.yaml`, new (with a qualifier for each location a customer can choose, step 5).
+1. `sources/routes/<org>-<model>.yaml`, new (with a qualifier for each location a customer can choose, step 6).
 2. A new grid ([`add-grid.md`](add-grid.md)) or model ([`add-model.md`](add-model.md)), when the route
    needs one.
 
@@ -27,10 +28,32 @@ You are recording where an organization serves a model. The organization must al
 4. **Choose the candidates** per [`../reference/location-disclosure.md`](../reference/location-disclosure.md):
    the grids the route may draw from, as `cloud:<vendor>:<region>` (it must be in
    `sources/snapshots/cloud_regions.csv`) or `grid:<slug>` (a file in `sources/grids/`). When the primary
-   evidence names the buildings, list them in `facilities:`, in words, and give the grid they draw from as the
-   candidate. Nobody writes the route's rating: `score` generates it from the candidates, their grids, the
+   evidence names the buildings, list each in `facilities:` by its `name`, in words, and give the grid they draw
+   from as the candidate. Nobody writes the route's rating: `score` generates it from the candidates, their grids, the
    facilities and the evidence.
-5. **Write the route**, named `<org>-<model>` with the model part made into a slug per
+5. **Record each named facility's PUE**, when the route lists `facilities:`. Look, most authoritative first, in the
+   organization's serving-locations file (a location's `pue`), then in the organization's and the facility
+   operator's own pages (efficiency or sustainability pages, a live PUE dashboard's trailing twelve months). Record
+   it on the facility as `pue:`:
+   ```yaml
+     facilities:
+     - name: "Example Zurich 1, Zurich"
+       pue:
+         value: 1.18
+         period_end: "2026-09-30"
+         evidence:
+         - url: https://example.com/datacenters/zurich-1
+           shows: 'Zurich 1 efficiency page: "PUE 1.18 over the last 12 months"'
+           accessed: "2026-10-11"
+           kind: primary
+   ```
+   `period_end` is the last day of the twelve months the value covers (a calendar year's is its 31 December). Only
+   a value measured over twelve months counts
+   ([`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-facilitys-pue)); record
+   nothing for a facility without one. A cloud region's PUE is not researched: `score` reads it from
+   `sources/snapshots/cloud_regions.csv`. `score` uses the published PUE only when every candidate has one, and the
+   fallback range (1.1–1.6) otherwise.
+6. **Write the route**, named `<org>-<model>` with the model part made into a slug per
    [`../reference/identity.md`](../reference/identity.md#routes) (`example-host` serving
    `example-lab/Example-Coder-13B-hf` is `example-host-example-coder-13b-hf`):
    ```yaml
@@ -38,7 +61,8 @@ You are recording where an organization serves a model. The organization must al
    org: example-ai
    model: example-70b
    location:
-     facilities: ["Example Zurich 1, Zurich"]
+     facilities:
+     - name: "Example Zurich 1, Zurich"
      candidates: ["grid:ch"]
      evidence:
      - url: https://example.com/docs/regions
@@ -70,7 +94,7 @@ that no longer matches `sources/`. If `score` reports a zone or grid with no gri
 ## Expected PR contents
 The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_intensity:` fields `score` wrote,
 the organization's `disclosure_rating:`, and `web/data/data.json`. One short note per route on the evidence that
-settled its candidates.
+settled its candidates, and, for a route with facilities, on the PUE found for each or why there is none.
 
 ## Stop and escalate when
 - Only the press says where it runs: record no candidates, and do not add any on press evidence.

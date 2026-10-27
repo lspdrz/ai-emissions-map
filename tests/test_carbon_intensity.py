@@ -15,8 +15,8 @@ from tests.builders.model import make_model
 
 def test_a_route_on_one_grid_has_a_carbon_intensity(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (energy, embodied))
-    r = carbon_intensity(make_model(), {"ch": make_grid_intensity(30.0)})
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue: (energy, embodied))
+    r = carbon_intensity(make_model(), {"ch": make_grid_intensity(30.0)}, Range(1.1, 1.6), "fallback")
     assert r["grids"] == ["ch"]
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6}
     assert r["embodied_g"] == {"low": 0.05, "high": 0.06}
@@ -28,19 +28,34 @@ def test_a_route_on_one_grid_has_a_carbon_intensity(monkeypatch):
 
 def test_several_grids_give_a_range(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (energy, embodied))
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue: (energy, embodied))
     de, fr = make_grid_intensity(330.0, geography="DE"), make_grid_intensity(40.0, geography="FR")
-    r = carbon_intensity(make_model(), {"de": de, "fr": fr})
+    r = carbon_intensity(make_model(), {"de": de, "fr": fr}, Range(1.1, 1.6), "fallback")
     assert r["grids"] == ["de", "fr"]
     # 0.5 Wh x 40 g/kWh (FR) / 1000 + 0.05 .. 0.6 Wh x 330 g/kWh (DE) / 1000 + 0.06
     assert r["sci_g"] == {"low": 0.07, "high": 0.258}
     assert r["band"] == [2, 3]
 
 
+def test_the_routes_pue_is_used_and_stored_with_its_source(monkeypatch):
+    used = []
+
+    def estimate(model, pue):
+        used.append(pue)
+        return Range(0.5, 0.6), Range(0.05, 0.06)
+
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", estimate)
+    r = carbon_intensity(
+        make_model(), {"fr": make_grid_intensity(40.0, geography="FR")}, Range.point(1.18), "published"
+    )
+    assert used == [Range.point(1.18)]
+    assert (r["pue"], r["pue_source"]) == ({"low": 1.18, "high": 1.18}, "published")
+
+
 def test_no_grids_no_carbon_intensity_but_energy_reported(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (energy, embodied))
-    r = carbon_intensity(make_model(), {})
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue: (energy, embodied))
+    r = carbon_intensity(make_model(), {}, Range(1.1, 1.6), "fallback")
     assert r["grids"] == []
     assert r["sci_g"] is None and r["band"] is None and r["grid_intensity_g_per_kwh"] is None
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6} and r["embodied_g"] == {"low": 0.05, "high": 0.06}
@@ -59,6 +74,20 @@ def test_ecologits_estimate_converts_kwh_to_wh_and_kg_to_g(monkeypatch):
         )
 
     monkeypatch.setattr("build.carbon_intensity.compute_llm_impacts", fake_impacts)
-    energy, embodied = ecologits_estimate(make_model(active_b=70, total_b=70))
+    energy, embodied = ecologits_estimate(make_model(active_b=70, total_b=70), Range(1.1, 1.6))
     assert (energy.low, energy.high) == (pytest.approx(0.5), pytest.approx(0.6))  # Wh
     assert (embodied.low, embodied.high) == (pytest.approx(0.05), pytest.approx(0.05))  # g
+
+
+def test_ecologits_estimate_passes_the_pue_to_ecologits(monkeypatch):
+    passed = []
+
+    def fake_impacts(**arguments):
+        passed.append(arguments["datacenter_pue"])
+        return SimpleNamespace(
+            energy=SimpleNamespace(value=0.0005), embodied=SimpleNamespace(gwp=SimpleNamespace(value=0.00005))
+        )
+
+    monkeypatch.setattr("build.carbon_intensity.compute_llm_impacts", fake_impacts)
+    ecologits_estimate(make_model(active_b=70, total_b=70), Range(1.18, 1.3))
+    assert [(p.min, p.max) for p in passed] == [(1.18, 1.3), (1.18, 1.3)]  # once per end of the parameter range

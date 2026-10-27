@@ -22,13 +22,13 @@ SCI = ((E × I) + M) per R
 
 where E is the energy consumed, I is the grid intensity of the electricity, M is the embodied emissions of the hardware allocated to the work, and R is the functional unit (1,000 output tokens). The carbon intensity is the full SCI, in grams of CO₂-equivalent per 1,000 output tokens, always shown with its **operational part** (E × I) and its **embodied part** (M).
 
-**Energy (E)** is the electricity needed to generate 1,000 output tokens. It depends on the model alone, so a model has the same E on every route that serves it. E is estimated with EcoLogits from three inputs:
+**Energy (E)** is the electricity needed to generate 1,000 output tokens. It is estimated with EcoLogits from three inputs:
 
 - **The model's size**, its active and total parameter counts. These come from the developer's own publications (model card, published weights, technical report) wherever the developer releases them, and otherwise from EcoLogits' estimate, cited from its catalog. A size known only as a range is evaluated at both ends.
 - **Generation speed**, which sets how long a request occupies the server. EcoLogits estimates it from the model's size; no measured speed or latency is used.
-- **Power usage effectiveness (PUE)**, a data center's total energy divided by that of its computing equipment: about 1.1 in efficient large facilities, about 1.6 on average, and above 2 in older ones. Every route uses the same range, 1.1–1.6, which spans efficient to average facilities. Using a single value would bias every carbon intensity.
+- **Power usage effectiveness (PUE)**, a data center's total energy divided by that of its computing equipment: about 1.1 in efficient large facilities, about 1.6 on average, and above 2 in older ones. PUE is a property of the building, so a route uses the published PUE of the buildings when available. The value must be measured over twelve months. A design figure, a best month, an average across a provider's facilities or an upper bound does not count. Where a candidate has no published PUE, the route uses a fallback range of 1.1–1.6, which spans efficient to average facilities.
 
-Providers' own hardware, serving configurations and published energy figures are not used, so that every carbon intensity comes from one consistent pipeline.
+Apart from PUE, providers' own hardware, serving configurations and published energy figures are not used, so that every carbon intensity comes from one consistent pipeline.
 
 **Grid intensity (I)** is the emissions of the electricity a route draws from the grid it is connected to, in grams of CO₂e per kWh. A grid is the finest area that a facility can draw electricity from. If a facility runs on its own generation, then it is a grid of its own.
 
@@ -84,7 +84,7 @@ Anyone, the organization included, may submit corrections or new location disclo
 
 ### Versions
 
-Each release states its methodology version, its grid data (Ember, and the year) and its EcoLogits version. Every change in a carbon intensity or rating between releases comes from new evidence, new input data (a refreshed Ember snapshot or a new EcoLogits release) or a change of method. The band edges, the rating scale and the fixed PUE range are deliberate choices, reviewed when the evidence changes materially.
+Each release states its methodology version, its grid data (Ember, and the year) and its EcoLogits version. Every change in a carbon intensity or rating between releases comes from new evidence, new input data (a refreshed Ember snapshot or a new EcoLogits release) or a change of method. The band edges, the rating scale and the fallback PUE range are deliberate choices, reviewed when the evidence changes materially.
 
 ### Presentation
 
@@ -96,7 +96,7 @@ Every carbon intensity is labeled as a life-cycle estimate from EcoLogits and Em
 - Locations are established from public documents, not observed in providers' operations.
 - The carbon intensity is an estimate built on two sources: EcoLogits' models for energy and embodied emissions, and Ember's data for grid intensity.
 - EcoLogits assumes NVIDIA H100-class hardware and estimates generation speed from parameter counts, so real deployments may differ several-fold.
-- The fixed PUE range reflects no particular building: efficient operators get no credit, and very inefficient facilities are underestimated.
+- A route whose buildings publish no PUE uses the fallback range, which reflects no particular building: efficient operators that publish nothing get no credit, and very inefficient facilities are underestimated. A published PUE is the building's average over a year, not that of the hardware serving the model.
 - Providers' actual hardware, efficiency and energy figures are not reflected.
 - Closed models' sizes are EcoLogits' estimates.
 - Embodied emissions rest on life-cycle data for one class of server and a fixed three-year lifetime, and carry no uncertainty beyond that of the model's parameter counts.

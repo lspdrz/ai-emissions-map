@@ -4,7 +4,7 @@ from pydantic import TypeAdapter, ValidationError
 from build.schemas.route import CheckedLocation, CheckedRoute
 from tests.builders.broken import changed
 from tests.builders.evidence import make_evidence
-from tests.builders.location import make_location
+from tests.builders.location import make_facility, make_facility_pue, make_location
 from tests.builders.route import make_route
 
 _LOCATION = TypeAdapter(CheckedLocation)
@@ -22,7 +22,7 @@ def test_candidates_need_a_primary_source():
 
 
 def test_facilities_need_the_grid_they_draw_from_as_a_candidate():
-    location = make_location(candidates=["grid:ch"], facilities=["Acme 1, Geneva"])
+    location = make_location(candidates=["grid:ch"], facilities=[make_facility("Acme 1, Geneva")])
     without_grid = changed(location, "candidates", to=[])
     with pytest.raises(ValidationError, match="facilities need the grid they draw from as a candidate"):
         _LOCATION.validate_python(without_grid)
@@ -31,6 +31,28 @@ def test_facilities_need_the_grid_they_draw_from_as_a_candidate():
 def test_an_undisclosed_location_needs_no_primary_source():
     location = {"candidates": [], "evidence": [make_evidence(kind="corroborating")]}
     assert _LOCATION.validate_python(location) == location
+
+
+# A facility's PUE: measured over a year, on a primary source.
+
+
+def test_a_named_facility_can_have_its_pue():
+    location = make_location(candidates=["grid:ch"], facilities=[make_facility("Acme 1, Geneva", make_facility_pue())])
+    assert _LOCATION.validate_python(location) == location
+
+
+def test_a_pue_needs_a_primary_source():
+    location = make_location(candidates=["grid:ch"], facilities=[make_facility("Acme 1, Geneva", make_facility_pue())])
+    press_only = changed(location, "facilities", 0, "pue", "evidence", to=[make_evidence(kind="corroborating")])
+    with pytest.raises(ValidationError, match="'Acme 1, Geneva': its PUE needs at least one primary source"):
+        _LOCATION.validate_python(press_only)
+
+
+def test_a_pue_is_at_least_one():
+    location = make_location(candidates=["grid:ch"], facilities=[make_facility("Acme 1, Geneva", make_facility_pue())])
+    below_one = changed(location, "facilities", 0, "pue", "value", to=0.9)
+    with pytest.raises(ValidationError, match="greater than or equal to 1"):
+        _LOCATION.validate_python(below_one)
 
 
 # A route: the model it serves.

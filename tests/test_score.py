@@ -3,12 +3,13 @@ from typing import Any
 import yaml
 
 from build.schemas.score import RouteScore
-from build.score import GENERATED_COMMENT, org_text, route_grids, route_text, score, score_organizations
+from build.types import CloudRegion
+from build.score import GENERATED_COMMENT, org_text, route_grids, route_pue, route_text, score, score_organizations
 from build.utils.range import Range
 from tests.builders.corpus import make_corpus
 from tests.builders.files import write_corpus, write_source
 from tests.builders.grid import make_grid
-from tests.builders.location import make_location
+from tests.builders.location import make_facility, make_facility_pue, make_location
 from tests.builders.model import make_model
 from tests.builders.organization import make_organization
 from tests.builders.route import make_route
@@ -51,25 +52,82 @@ def test_a_grid_candidate_resolves_to_its_grid_file():
 def test_a_cloud_candidate_resolves_to_the_grid_file_claiming_its_zone():
     route = make_route(location=make_location(candidates=["cloud:cloudx:eu-de"]))
     ch, de = make_grid(name="ch", country="CH", zone="CH"), make_grid(name="de", country="DE", zone="DE")
-    assert route_grids(route, {"ch": ch, "de": de}, {("cloudx", "eu-de"): ["DE"]}) == {"de": de}
+    assert route_grids(route, {"ch": ch, "de": de}, {("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == {"de": de}
 
 
 def test_a_cloud_region_spanning_two_zones_resolves_to_both_grid_files():
     route = make_route(location=make_location(candidates=["cloud:azure:northeurope"]))
     fi, ie = make_grid(name="fi", country="FI", zone="FI"), make_grid(name="ie", country="IE", zone="IE")
-    assert route_grids(route, {"fi": fi, "ie": ie}, {("azure", "northeurope"): ["FI", "IE"]}) == {"fi": fi, "ie": ie}
+    assert route_grids(
+        route, {"fi": fi, "ie": ie}, {("azure", "northeurope"): {"zones": ["FI", "IE"], "pue": None}}
+    ) == {"fi": fi, "ie": ie}
 
 
 def test_candidates_on_one_grid_resolve_to_it_once():
     route = make_route(location=make_location(candidates=["grid:de", "cloud:cloudx:eu-de"]))
     de = make_grid(name="de", country="DE", zone="DE")
-    assert route_grids(route, {"de": de}, {("cloudx", "eu-de"): ["DE"]}) == {"de": de}
+    assert route_grids(route, {"de": de}, {("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}) == {"de": de}
 
 
 def test_a_routes_grids_are_sorted_by_name():
     route = make_route(location=make_location(candidates=["grid:fr", "grid:de"]))
     de, fr = make_grid(name="de", country="DE", zone="DE"), make_grid(name="fr", country="FR", zone="FR")
     assert list(route_grids(route, {"de": de, "fr": fr}, {})) == ["de", "fr"]
+
+
+# A route's PUE: the published figures when every candidate has one, else the fallback range (config.FALLBACK_PUE).
+
+
+def test_named_facilities_with_their_pue_give_their_range():
+    route = make_route(
+        location=make_location(
+            candidates=["grid:fr"],
+            facilities=[
+                make_facility("Acme 1, Paris", make_facility_pue(1.18)),
+                make_facility("Acme 2, Paris", make_facility_pue(1.3)),
+            ],
+        )
+    )
+    assert route_pue(route, {}) == (Range(1.18, 1.3), "published")
+
+
+def test_a_named_facility_without_a_pue_leaves_the_route_on_the_range():
+    route = make_route(
+        location=make_location(
+            candidates=["grid:fr"],
+            facilities=[make_facility("Acme 1, Paris", make_facility_pue(1.18)), make_facility("Acme 2, Paris")],
+        )
+    )
+    assert route_pue(route, {}) == (Range(1.1, 1.6), "fallback")
+
+
+def test_cloud_regions_with_their_pue_give_their_range():
+    route = make_route(location=make_location(candidates=["cloud:gcp:europe-west4", "cloud:gcp:europe-west1"]))
+    regions: dict[tuple[str, str], CloudRegion] = {
+        ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
+        ("gcp", "europe-west1"): {"zones": ["BE"], "pue": 1.09},
+    }
+    assert route_pue(route, regions) == (Range(1.08, 1.09), "published")
+
+
+def test_a_cloud_region_without_a_pue_leaves_the_route_on_the_range():
+    route = make_route(location=make_location(candidates=["cloud:gcp:europe-west4", "cloud:gcp:europe-west3"]))
+    regions: dict[tuple[str, str], CloudRegion] = {
+        ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
+        ("gcp", "europe-west3"): {"zones": ["DE"], "pue": None},
+    }
+    assert route_pue(route, regions) == (Range(1.1, 1.6), "fallback")
+
+
+def test_a_grid_without_named_facilities_leaves_the_route_on_the_range():
+    route = make_route(location=make_location(candidates=["cloud:gcp:europe-west4", "grid:fr"]))
+    regions: dict[tuple[str, str], CloudRegion] = {("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08}}
+    assert route_pue(route, regions) == (Range(1.1, 1.6), "fallback")
+
+
+def test_an_undisclosed_location_is_on_the_range():
+    route = make_route(location=make_location(candidates=[], evidence=[]))
+    assert route_pue(route, {}) == (Range(1.1, 1.6), "fallback")
 
 
 # The fields score writes go below GENERATED_COMMENT, at the end of a file: everything below it is rewritten, nothing
@@ -138,6 +196,8 @@ def test_written_fields_read_back_equal():
             "grids": ["de", "fr"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
+            "pue": {"low": 1.1, "high": 1.6},
+            "pue_source": "fallback",
             "grid_intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
             "sci_g": {"low": 0.07, "high": 0.258},
             "band": [2, 3],
@@ -156,7 +216,9 @@ def _rel(root, paths):
 
 
 def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr(
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+    )
     write_corpus(
         tmp_path,
         make_corpus(
@@ -176,7 +238,9 @@ def test_score_writes_the_files_whose_fields_change(tmp_path, monkeypatch):
 
 
 def test_a_second_run_writes_nothing(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr(
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+    )
     write_corpus(
         tmp_path,
         make_corpus(
@@ -235,8 +299,40 @@ def test_score_resolves_cloud_regions_through_the_committed_table(tmp_path):
     ]
 
 
+def test_score_reads_a_cloud_regions_pue_from_the_committed_table(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+    )
+    write_corpus(
+        tmp_path,
+        make_corpus(
+            organizations=[make_organization(name="acme")],
+            grids=[make_grid(name="nl", country="NL", zone="NL")],
+            routes=[
+                make_route(
+                    name="acme-m-70b",
+                    org="acme",
+                    model="m-70b",
+                    location=make_location(candidates=["cloud:gcp:europe-west4"]),
+                )
+            ],
+            models=[make_model(name="m-70b")],
+        ),
+    )
+    write_source(
+        tmp_path,
+        "snapshots/cloud_regions.csv",
+        "vendor,region,zone,year,location,pue,pue_year\ngcp,europe-west4,NL,2024,Netherlands,1.08,2024\n",
+    )
+    run = score(tmp_path)
+    carbon = run.routes["acme-m-70b"]["carbon_intensity"]
+    assert (run.errors, carbon["pue"], carbon["pue_source"]) == ([], {"low": 1.08, "high": 1.08}, "published")
+
+
 def test_check_mode_lists_what_score_would_write_and_writes_nothing(tmp_path, monkeypatch):
-    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model: (Range.point(0.0), Range.point(0.0)))
+    monkeypatch.setattr(
+        "build.carbon_intensity.ecologits_estimate", lambda model, pue: (Range.point(0.0), Range.point(0.0))
+    )
     write_corpus(
         tmp_path,
         make_corpus(

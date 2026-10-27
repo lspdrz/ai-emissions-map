@@ -4,8 +4,8 @@ from datetime import date
 from build.import_cloud_regions import import_cloud_regions, region_rows
 
 # The Green Software Foundation's Cloud_Region_Metadata.csv, cut down to the columns import_cloud_regions reads. Each
-# test writes its own.
-HEADER = "year,cloud-provider,cloud-region,em-zone-id,location"
+# test writes its own; a row that stops before power-usage-effectiveness has none.
+HEADER = "year,cloud-provider,cloud-region,em-zone-id,location,power-usage-effectiveness"
 COMMIT = "8f99b3bc01ecb342905b80a485573fda9494a052"
 
 
@@ -27,9 +27,33 @@ def test_each_region_keeps_its_zones_in_its_latest_year_with_one(tmp_path):
     )
     assert region_rows(metadata) == (
         [
-            {"vendor": "aws", "region": "eu-central-1", "zone": "DE", "year": "2024", "location": "Europe (Frankfurt)"},
-            {"vendor": "azure", "region": "northeurope", "zone": "FI", "year": "2023", "location": "Finland"},
-            {"vendor": "azure", "region": "northeurope", "zone": "IE", "year": "2023", "location": "Ireland"},
+            {
+                "vendor": "aws",
+                "region": "eu-central-1",
+                "zone": "DE",
+                "year": "2024",
+                "location": "Europe (Frankfurt)",
+                "pue": "",
+                "pue_year": "",
+            },
+            {
+                "vendor": "azure",
+                "region": "northeurope",
+                "zone": "FI",
+                "year": "2023",
+                "location": "Finland",
+                "pue": "",
+                "pue_year": "",
+            },
+            {
+                "vendor": "azure",
+                "region": "northeurope",
+                "zone": "IE",
+                "year": "2023",
+                "location": "Ireland",
+                "pue": "",
+                "pue_year": "",
+            },
         ],
         [],
     )
@@ -41,6 +65,33 @@ def test_rows_are_sorted_by_the_providers_full_name(tmp_path):
         ["2023,Microsoft Azure,westeurope,NL,Netherlands", "2024,Google Cloud,europe-west4,NL,Netherlands"],
     )
     assert [row["vendor"] for row in region_rows(metadata)[0]] == ["gcp", "azure"]
+
+
+def test_each_region_keeps_its_pue_from_its_latest_year_with_one(tmp_path):
+    metadata = _write(
+        tmp_path / "metadata.csv",
+        [
+            "2024,Google Cloud,europe-west4,NL,Netherlands,",  # no PUE in the latest year
+            "2023,Google Cloud,europe-west4,NL,Netherlands,1.08",
+            "2022,Google Cloud,europe-west4,NL,Netherlands,1.09",  # an earlier year
+        ],
+    )
+    [row] = region_rows(metadata)[0]
+    assert (row["year"], row["pue"], row["pue_year"]) == ("2024", "1.08", "2023")
+
+
+def test_a_region_with_no_pue_in_any_year_has_none(tmp_path):
+    metadata = _write(tmp_path / "metadata.csv", ["2024,Google Cloud,europe-west3,DE,Germany,"])
+    [row] = region_rows(metadata)[0]
+    assert (row["pue"], row["pue_year"]) == ("", "")
+
+
+def test_every_zone_of_a_region_has_the_regions_pue(tmp_path):
+    metadata = _write(
+        tmp_path / "metadata.csv",
+        ["2023,Microsoft Azure,northeurope,IE,Ireland,1.19", "2023,Microsoft Azure,northeurope,FI,Finland,1.19"],
+    )
+    assert [(row["zone"], row["pue"]) for row in region_rows(metadata)[0]] == [("FI", "1.19"), ("IE", "1.19")]
 
 
 def test_a_region_without_a_zone_and_another_provider_are_skipped_with_their_reasons(tmp_path):
@@ -63,7 +114,7 @@ def test_import_writes_the_table_its_provenance_and_a_copy_of_the_download(tmp_p
     snapshots = tmp_path / "sources" / "snapshots"
     assert run.errors == [] and len(run.written) == 3
     assert (snapshots / "cloud_regions.csv").read_text() == (
-        "vendor,region,zone,year,location\naws,eu-central-1,DE,2024,Europe (Frankfurt)\n"
+        "vendor,region,zone,year,location,pue,pue_year\naws,eu-central-1,DE,2024,Europe (Frankfurt),,\n"
     )
     assert (snapshots / "files" / "gsf_files" / "Cloud_Region_Metadata.csv").read_bytes() == metadata.read_bytes()
     provenance = json.loads((snapshots / "cloud_regions.provenance.json").read_text())
