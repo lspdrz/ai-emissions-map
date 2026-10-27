@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatBand, formatNumber, formatRange } from "@/features/home/utils/format";
+import { formatBand, formatNumber, formatRange, formatSpread, typeLabel } from "@/features/home/utils/format";
 
 describe("formatNumber", () => {
   it("keeps two significant figures", () => {
@@ -28,5 +28,27 @@ describe("formatBand", () => {
   it("shows one band, or the span a range crosses", () => {
     expect(formatBand([2, 2])).toBe("2");
     expect(formatBand([2, 3])).toBe("2–3");
+  });
+});
+
+describe("formatSpread", () => {
+  it("counts the routes at each rating, A to D, two spaces apart", () => {
+    expect(formatSpread({ D: 1, A: 1, C: 2, B: 1 })).toBe("1×A  1×B  2×C  1×D");
+  });
+
+  it("leaves out ratings with no routes", () => {
+    expect(formatSpread({ C: 6 })).toBe("6×C");
+  });
+});
+
+describe("typeLabel", () => {
+  it("names each type in words", () => {
+    expect(typeLabel("model_lab")).toBe("Model lab");
+    expect(typeLabel("inference_host")).toBe("Inference host");
+    expect(typeLabel("cloud")).toBe("Cloud");
+  });
+
+  it("shows a type it does not know as it is", () => {
+    expect(typeLabel("satellite")).toBe("satellite");
   });
 });

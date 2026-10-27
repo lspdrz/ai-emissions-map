@@ -21,12 +21,12 @@ const HEADER_BUTTON = "flex min-h-8 cursor-pointer flex-col justify-end pb-1.5";
  * Every route, searchable, sortable and paged. The scale comes from all routes (not the page shown) so bars stay put
  * while the reader searches. `initialQuery` lets a test render a search; the page always starts empty.
  */
-export function RoutesSection({ rows, bandUpper, initialQuery = "" }: {
-  rows: RouteRow[]; bandUpper: number[]; initialQuery?: string;
+export function RoutesSection({ routes, bandUpper, initialQuery = "" }: {
+  routes: RouteRow[]; bandUpper: number[]; initialQuery?: string;
 }) {
-  const scale = niceScale(rows.flatMap((r) => (r.score ? [r.score] : [])));
+  const scale = niceScale(routes.flatMap((r) => (r.score ? [r.score] : [])));
   const [state, dispatch] = useReducer(tableReducer, { query: initialQuery, sort: DEFAULT_SORT, page: 0 });
-  const matches = sortRows(filterRows(rows, state.query), state.sort);
+  const matches = sortRows(filterRows(routes, state.query), state.sort);
   const shown = pageOf(matches, state.page);
 
   const arrow = (key: SortKey) => (state.sort.key !== key ? "↕" : state.sort.dir === 1 ? "↑" : "↓");
@@ -34,7 +34,7 @@ export function RoutesSection({ rows, bandUpper, initialQuery = "" }: {
   const sortBy = (key: SortKey) => () => dispatch({ type: "sort", key });
 
   return (
-    <section id="routes" className="flex flex-col gap-8 pt-14 pb-[88px]">
+    <section id="routes" className="page-container flex flex-col gap-8 pt-14 pb-[88px]">
       <div className="flex flex-col gap-3">
         <h2 className="text-[32px] font-medium tracking-[-0.02em]">Routes</h2>
         <p className="text-[17px] leading-[1.55] text-body">

@@ -8,8 +8,8 @@ const upper = [0.03, 0.1, 0.3, 1.0];
 function row(i: number, o: Partial<RouteRow> = {}): RouteRow {
   return { slug: `r${i}`, org: `Org ${i}`, model: `Model ${i}`, label: `Place ${i}`, letter: "C", score: { low: i / 100, high: i / 50 }, ...o };
 }
-function render(rows: RouteRow[], initialQuery?: string) {
-  return renderToStaticMarkup(<RoutesSection rows={rows} bandUpper={upper} initialQuery={initialQuery} />);
+function render(routes: RouteRow[], initialQuery?: string) {
+  return renderToStaticMarkup(<RoutesSection routes={routes} bandUpper={upper} initialQuery={initialQuery} />);
 }
 
 describe("RoutesSection", () => {
@@ -21,8 +21,8 @@ describe("RoutesSection", () => {
   });
 
   it("shows the first 10 routes, cleanest first, with the page label", () => {
-    const rows = Array.from({ length: 23 }, (_, i) => row(23 - i));
-    const html = render(rows);
+    const routes = Array.from({ length: 23 }, (_, i) => row(23 - i));
+    const html = render(routes);
     expect(html).toContain("1–10 of 23 routes");
     expect(html).toContain("Org 1 · Model 1");
     expect(html).toContain("Org 10 · Model 10");

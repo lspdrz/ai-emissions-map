@@ -10,10 +10,22 @@ export interface RouteRow {
   score: Range | null;
 }
 
+/** One organization's card. `letter` and `mean` are null for an organization with no rated routes. */
+export interface OrgCard {
+  slug: string;
+  name: string;
+  type: string;
+  letter: string | null;
+  mean: number | null;
+  routeCount: number;
+  spread: Record<string, number>;
+}
+
 /** What the home page shows, shaped from data.json by getHomeData. */
 export interface HomeData {
   meta: Meta;
   routes: RouteRow[];
+  organizations: OrgCard[];
 }
 
 /** The range chart's log scale: its ends, and the tick values between them (the 1–3 steps). */
