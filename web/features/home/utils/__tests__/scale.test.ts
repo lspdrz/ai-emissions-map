@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { niceScale, position, rangeMarks, shading } from "@/features/home/utils/scale";
+import { niceScale, percent, position, rangeMarks, shading } from "@/features/home/utils/scale";
 
 const upper = [0.03, 0.1, 0.3, 1.0];
 const wide = { min: 0.01, max: 30, ticks: [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30] };
@@ -70,5 +70,12 @@ describe("rangeMarks", () => {
 
   it("keeps a point visible", () => {
     expect(rangeMarks(wide, { low: 0.3, high: 0.3 }).width).toBe(0.4);
+  });
+});
+
+describe("percent", () => {
+  it("writes a CSS percentage with two decimals", () => {
+    expect(percent(2.7850774602681256)).toBe("2.79%");
+    expect(percent(100)).toBe("100.00%");
   });
 });

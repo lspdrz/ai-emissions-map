@@ -11,7 +11,7 @@ export interface RouteRow {
 }
 
 /** What the home page shows, shaped from data.json by getHomeData. */
-export interface Home {
+export interface HomeData {
   meta: Meta;
   routes: RouteRow[];
 }

@@ -27,6 +27,11 @@
 }
 
 @layer base {
+  /* A /#section link lands below the sticky navbar, which publishes its height (app/_components/Navbar.tsx). */
+  html {
+    scroll-padding-top: var(--navbar-height, 0px);
+  }
+
   a {
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;

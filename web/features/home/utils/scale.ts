@@ -55,3 +55,9 @@ export function rangeMarks(scale: Scale, r: Range): { left: number; right: numbe
   const joined = formatNumber(r.low) === formatNumber(r.high) || right - left < JOIN_BELOW;
   return { left, right, width: Math.max(right - left, MIN_WIDTH), joined };
 }
+
+/** A position as a CSS percentage, to two decimals. Inline styles carry it from server HTML to the browser, so it must
+ *  print the same on both: full-precision floats did not, and broke hydration. */
+export function percent(p: number): string {
+  return `${p.toFixed(2)}%`;
+}
