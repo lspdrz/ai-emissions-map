@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { buildData, buildRoute } from "@/lib/data/__tests__/builders";
 import { parseData } from "@/lib/data/parseData";
 
 const fixture = () => JSON.parse(readFileSync(new URL("fixtures/data.json", import.meta.url), "utf8"));
@@ -7,6 +8,10 @@ const fixture = () => JSON.parse(readFileSync(new URL("fixtures/data.json", impo
 describe("parseData", () => {
   it("accepts the current contract", () => {
     expect(parseData(fixture()).routes[0].slug).toBe("acme-m");
+  });
+  it("accepts what the test builders build", () => {
+    const data = buildData({ routes: [buildRoute(), buildRoute({ slug: "other-m", org: "other" })] });
+    expect(parseData(data).organizations.map((o) => o.slug)).toEqual(["acme", "other"]);
   });
   it("rejects another contract version, naming the expected one", () => {
     expect(() => parseData({ ...fixture(), schema: "aem-data/0" })).toThrow(/aem-data\/3/);
