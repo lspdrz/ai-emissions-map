@@ -6,3 +6,12 @@ export function bandOf(x: number, upper: number[]): Band {
   const i = upper.findIndex((edge) => x < edge);
   return (i === -1 ? 5 : i + 1) as Band;
 }
+
+/** Each band's range, for the legend: "< 0.03", "0.03–0.1", …, "≥ 1". */
+export function bandLimits(upper: number[]): string[] {
+  return [
+    `< ${upper[0]}`,
+    ...upper.slice(1).map((edge, i) => `${upper[i]}–${edge}`),
+    `≥ ${upper[upper.length - 1]}`,
+  ];
+}

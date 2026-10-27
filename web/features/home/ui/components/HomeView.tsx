@@ -1,4 +1,5 @@
 import type { HomeData } from "@/features/home/types";
+import { MethodSection } from "@/features/home/ui/components/MethodSection";
 import { OrganizationsSection } from "@/features/home/ui/components/OrganizationsSection";
 import { RoutesSection } from "@/features/home/ui/components/RoutesSection";
 
@@ -15,6 +16,7 @@ export function HomeView({ homeData }: { homeData: HomeData }) {
       </div>
       <RoutesSection routes={routes} bandUpper={meta.band_upper} />
       <OrganizationsSection organizations={organizations} />
+      <MethodSection meta={meta} />
     </main>
   );
 }
