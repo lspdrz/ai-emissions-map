@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatBand, formatNumber, formatRange } from "@/features/overview/utils/format";
+import { formatBand, formatNumber, formatRange } from "@/features/home/utils/format";
 
 describe("formatNumber", () => {
   it("keeps two significant figures", () => {

@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+/* The design's tokens. Band colors are the carbon scale, 1 (lowest) to 5. */
+@theme {
+  --color-ground: #f6f6f6;
+  --color-ink: #111111;
+  --color-body: #3a3a3a;
+  --color-muted: #5c5c5c;
+  --color-rule: #dcdcdc;
+  --color-shade: #eaeaea;
+  --color-hatch: #e4e4e4;
+  --color-accent: #1e6b3c;
+  --color-disabled: #ababab;
+  --color-input: #ffffff;
+
+  --color-band-1: #2e8b4a;
+  --color-band-2: #8db43a;
+  --color-band-3: #e3b521;
+  --color-band-4: #e07b24;
+  --color-band-5: #c8372d;
+}
+
+/* The fonts are self-hosted in app/fonts/ and exposed by layout.tsx as CSS variables. */
+@theme inline {
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  a:hover {
+    color: var(--color-accent);
+  }
+}
+
+/* The page's one column: 1640px wide at most, 32px from each side. A utility rather than a component so the
+   navbar (app/_components) and the features line up without importing each other. */
+@utility page-container {
+  box-sizing: border-box;
+  max-width: 1640px;
+  margin-inline: auto;
+  padding-inline: 32px;
+}
