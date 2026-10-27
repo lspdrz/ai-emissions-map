@@ -9,7 +9,6 @@ from build.score import (
     org_text,
     route_grids,
     route_pue,
-    route_speed,
     route_text,
     score,
     score_organizations,
@@ -99,7 +98,7 @@ def test_named_facilities_with_their_pue_give_their_range():
             ],
         )
     )
-    assert route_pue(route, {}) == (Range(1.18, 1.3), "published")
+    assert route_pue(route, {}) == Range(1.18, 1.3)
 
 
 def test_a_named_facility_without_a_pue_leaves_the_route_on_the_range():
@@ -109,7 +108,7 @@ def test_a_named_facility_without_a_pue_leaves_the_route_on_the_range():
             facilities=[make_facility("Acme 1, Paris", make_facility_pue(1.18)), make_facility("Acme 2, Paris")],
         )
     )
-    assert route_pue(route, {}) == (Range(1.1, 1.6), "fallback")
+    assert route_pue(route, {}) == Range(1.1, 1.6)
 
 
 def test_cloud_regions_with_their_pue_give_their_range():
@@ -118,7 +117,7 @@ def test_cloud_regions_with_their_pue_give_their_range():
         ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
         ("gcp", "europe-west1"): {"zones": ["BE"], "pue": 1.09},
     }
-    assert route_pue(route, regions) == (Range(1.08, 1.09), "published")
+    assert route_pue(route, regions) == Range(1.08, 1.09)
 
 
 def test_a_cloud_region_without_a_pue_leaves_the_route_on_the_range():
@@ -127,35 +126,18 @@ def test_a_cloud_region_without_a_pue_leaves_the_route_on_the_range():
         ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
         ("gcp", "europe-west3"): {"zones": ["DE"], "pue": None},
     }
-    assert route_pue(route, regions) == (Range(1.1, 1.6), "fallback")
+    assert route_pue(route, regions) == Range(1.1, 1.6)
 
 
 def test_a_grid_without_named_facilities_leaves_the_route_on_the_range():
     route = make_route(location=make_location(candidates=["cloud:gcp:europe-west4", "grid:fr"]))
     regions: dict[tuple[str, str], CloudRegion] = {("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08}}
-    assert route_pue(route, regions) == (Range(1.1, 1.6), "fallback")
+    assert route_pue(route, regions) == Range(1.1, 1.6)
 
 
 def test_an_undisclosed_location_is_on_the_range():
     route = make_route(location=make_location(candidates=[], evidence=[]))
-    assert route_pue(route, {}) == (Range(1.1, 1.6), "fallback")
-
-
-# A route's speed: its own measured figure, from the provider (published) or OpenRouter, else EcoLogits' estimate.
-
-
-def test_a_speed_the_provider_publishes_is_published():
-    speed = make_speed(evidence=[make_evidence(kind="primary")])
-    assert route_speed(make_route(speed=speed)) == (speed, "published")
-
-
-def test_a_speed_only_openrouter_shows_is_openrouters():
-    speed = make_speed()
-    assert route_speed(make_route(speed=speed)) == (speed, "openrouter")
-
-
-def test_a_route_without_a_speed_falls_back_to_ecologits_estimate():
-    assert route_speed(make_route()) == (None, "fallback")
+    assert route_pue(route, {}) == Range(1.1, 1.6)
 
 
 # The fields score writes go below GENERATED_COMMENT, at the end of a file: everything below it is rewritten, nothing
@@ -224,10 +206,6 @@ def test_written_fields_read_back_equal():
             "grids": ["de", "fr"],
             "energy_wh": {"low": 0.5, "high": 0.6},
             "embodied_g": {"low": 0.05, "high": 0.06},
-            "pue": {"low": 1.1, "high": 1.6},
-            "pue_source": "fallback",
-            "speed": None,
-            "speed_source": "fallback",
             "grid_intensity_g_per_kwh": {"low": 40.0, "high": 330.0},
             "sci_g": {"low": 0.07, "high": 0.258},
             "band": [2, 3],
@@ -330,9 +308,13 @@ def test_score_resolves_cloud_regions_through_the_committed_table(tmp_path):
 
 
 def test_score_reads_a_cloud_regions_pue_from_the_committed_table(tmp_path, monkeypatch):
-    monkeypatch.setattr(
-        "build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (Range.point(0.0), Range.point(0.0))
-    )
+    used = []
+
+    def estimate(model, pue, speed):
+        used.append(pue)
+        return Range.point(0.0), Range.point(0.0)
+
+    monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", estimate)
     write_corpus(
         tmp_path,
         make_corpus(
@@ -354,9 +336,7 @@ def test_score_reads_a_cloud_regions_pue_from_the_committed_table(tmp_path, monk
         "snapshots/cloud_regions.csv",
         "vendor,region,zone,year,location,pue,pue_year\ngcp,europe-west4,NL,2024,Netherlands,1.08,2024\n",
     )
-    run = score(tmp_path)
-    carbon = run.routes["acme-m-70b"]["carbon_intensity"]
-    assert (run.errors, carbon["pue"], carbon["pue_source"]) == ([], {"low": 1.08, "high": 1.08}, "published")
+    assert (score(tmp_path).errors, used) == ([], [Range.point(1.08)])
 
 
 def test_check_mode_lists_what_score_would_write_and_writes_nothing(tmp_path, monkeypatch):

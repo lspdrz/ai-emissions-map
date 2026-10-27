@@ -9,13 +9,12 @@ resolves to. Every value is computed as a Range and stored as {low, high}, round
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Literal
 
 from ecologits.impacts.llm import compute_llm_impacts
 from ecologits.utils.range_value import RangeValue
 
 from build.constants.config import CARBON_BAND_UPPER, OUTPUT_TOKENS
-from build.schemas.carbon_intensity import CarbonIntensity, GenerationSpeed, Interval
+from build.schemas.carbon_intensity import CarbonIntensity, Interval
 from build.schemas.grid import GridIntensity
 from build.schemas.model import Model
 from build.schemas.route import Speed
@@ -70,22 +69,13 @@ def carbon_intensity(
     model: Model,
     grids: Mapping[str, GridIntensity],
     pue: Range,
-    pue_source: Literal["published", "fallback"],
     speed: Speed | None,
-    speed_source: Literal["published", "openrouter", "fallback"],
 ) -> CarbonIntensity:
-    """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts, its grids and its PUE, as its
+    """A route's carbon intensity, (E x I) + M per 1,000 output tokens, with its parts and its grids, as its
     carbon_intensity: field stores it. `model` is the record of the model the route serves; `grids` the intensity of
     each grid its location resolves to, by grid name (none when the location is undisclosed); `pue` and `speed` the
-    PUE and measured speed its energy and embodied emissions are computed with, and where each comes from."""
+    PUE and measured speed its energy and embodied emissions are computed with (no speed: EcoLogits estimates it)."""
     energy, embodied = ecologits_estimate(model, pue, speed)
-    used_speed = (
-        None
-        if speed is None
-        else GenerationSpeed(
-            tokens_per_second=speed["tokens_per_second"], time_to_first_token_s=speed["time_to_first_token_s"]
-        )
-    )
     if not grids:
         return CarbonIntensity(
             grids=[],
@@ -94,10 +84,6 @@ def carbon_intensity(
             grid_intensity_g_per_kwh=None,
             sci_g=None,
             band=None,
-            pue=_interval(pue),
-            pue_source=pue_source,
-            speed=used_speed,
-            speed_source=speed_source,
         )
     names = sorted(grids)
     values = [grids[g]["g_per_kwh"] for g in names]
@@ -110,8 +96,4 @@ def carbon_intensity(
         grid_intensity_g_per_kwh=_interval(intensity),
         sci_g=_interval(sci),
         band=list(band_span(sci, CARBON_BAND_UPPER)),
-        pue=_interval(pue),
-        pue_source=pue_source,
-        speed=used_speed,
-        speed_source=speed_source,
     )

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Any, cast
 
 import yaml
 
@@ -19,8 +19,7 @@ from build.disclosure_rating import disclosure_rating, organization_rating
 from build.load_sources import load_cloud_regions, load_sources
 from build.schemas.disclosure_rating import Letter
 from build.schemas.grid import Grid
-from build.schemas.route import Route, Speed
-from build.schemas.evidence import has_primary
+from build.schemas.route import Route
 from build.schemas.score import OrgRating, RouteScore
 from build.types import CloudRegion, ScoreRun, Sources
 from build.utils.range import Range
@@ -87,9 +86,7 @@ def route_grids(
     return {name: grids[name] for name in sorted(names)}
 
 
-def route_pue(
-    route: Route, cloud_regions: Mapping[tuple[str, str], CloudRegion]
-) -> tuple[Range, Literal["published", "fallback"]]:
+def route_pue(route: Route, cloud_regions: Mapping[tuple[str, str], CloudRegion]) -> Range:
     """The PUE a route's energy is computed with: the range of its candidates' published PUE when every one has one,
     else the fallback range (config.FALLBACK_PUE). A cloud: candidate's comes from the cloud-region table; a grid:
     candidate has one only through the facilities the location names, each with its own pue:."""
@@ -105,18 +102,8 @@ def route_pue(
             values.append(None)  # a grid with no facility named: nothing says which building's PUE applies
     if values and None not in values:
         known = cast(list[float], values)
-        return Range(min(known), max(known)), "published"
-    return Range(*FALLBACK_PUE), "fallback"
-
-
-def route_speed(route: Route) -> tuple[Speed | None, Literal["published", "openrouter", "fallback"]]:
-    """The measured speed a route's energy and embodied emissions are computed with, and where it comes from: the
-    provider's own figure when a primary source shows it, else OpenRouter's (the one third party that may set it).
-    Without one, EcoLogits estimates the speed from the model's size."""
-    speed = route.get("speed")
-    if speed is None:
-        return None, "fallback"
-    return speed, "published" if has_primary(speed["evidence"]) else "openrouter"
+        return Range(min(known), max(known))
+    return Range(*FALLBACK_PUE)
 
 
 def score_routes(
@@ -125,7 +112,7 @@ def score_routes(
 ) -> dict[str, RouteScore]:
     """The fields score writes for every route: its disclosure letter and its carbon intensity, as they are stored. The
     carbon intensity reads each grid's stored intensity: (validation has checked every grid has one) and the route's
-    PUE and speed (route_pue, route_speed)."""
+    PUE (route_pue) and measured speed, if it has one."""
     route_scores: dict[str, RouteScore] = {}
     for name, route in sorted(data["routes"].items()):
         grids = route_grids(route, data["grids"], cloud_regions)
@@ -135,8 +122,8 @@ def score_routes(
             carbon_intensity=carbon_intensity(
                 data["models"][route["model"]],
                 {g: grid["intensity"] for g, grid in grids.items() if "intensity" in grid},
-                *route_pue(route, cloud_regions),
-                *route_speed(route),
+                route_pue(route, cloud_regions),
+                route.get("speed"),
             ),
         )
     return route_scores

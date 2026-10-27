@@ -17,7 +17,7 @@ from tests.builders.speed import make_speed
 def test_a_route_on_one_grid_has_a_carbon_intensity(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
     monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (energy, embodied))
-    r = carbon_intensity(make_model(), {"ch": make_grid_intensity(30.0)}, Range(1.1, 1.6), "fallback", None, "fallback")
+    r = carbon_intensity(make_model(), {"ch": make_grid_intensity(30.0)}, Range(1.1, 1.6), None)
     assert r["grids"] == ["ch"]
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6}
     assert r["embodied_g"] == {"low": 0.05, "high": 0.06}
@@ -31,14 +31,14 @@ def test_several_grids_give_a_range(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
     monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (energy, embodied))
     de, fr = make_grid_intensity(330.0, geography="DE"), make_grid_intensity(40.0, geography="FR")
-    r = carbon_intensity(make_model(), {"de": de, "fr": fr}, Range(1.1, 1.6), "fallback", None, "fallback")
+    r = carbon_intensity(make_model(), {"de": de, "fr": fr}, Range(1.1, 1.6), None)
     assert r["grids"] == ["de", "fr"]
     # 0.5 Wh x 40 g/kWh (FR) / 1000 + 0.05 .. 0.6 Wh x 330 g/kWh (DE) / 1000 + 0.06
     assert r["sci_g"] == {"low": 0.07, "high": 0.258}
     assert r["band"] == [2, 3]
 
 
-def test_the_routes_pue_is_used_and_stored_with_its_source(monkeypatch):
+def test_the_routes_pue_is_used(monkeypatch):
     used = []
 
     def estimate(model, pue, speed):
@@ -46,19 +46,11 @@ def test_the_routes_pue_is_used_and_stored_with_its_source(monkeypatch):
         return Range(0.5, 0.6), Range(0.05, 0.06)
 
     monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", estimate)
-    r = carbon_intensity(
-        make_model(),
-        {"fr": make_grid_intensity(40.0, geography="FR")},
-        Range.point(1.18),
-        "published",
-        None,
-        "fallback",
-    )
+    carbon_intensity(make_model(), {"fr": make_grid_intensity(40.0, geography="FR")}, Range.point(1.18), None)
     assert used == [Range.point(1.18)]
-    assert (r["pue"], r["pue_source"]) == ({"low": 1.18, "high": 1.18}, "published")
 
 
-def test_the_routes_speed_is_used_and_stored_with_its_source(monkeypatch):
+def test_the_routes_speed_is_used(monkeypatch):
     used = []
 
     def estimate(model, pue, speed):
@@ -67,17 +59,14 @@ def test_the_routes_speed_is_used_and_stored_with_its_source(monkeypatch):
 
     monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", estimate)
     speed = make_speed(tokens_per_second=70.0, time_to_first_token_s=3.8)
-    r = carbon_intensity(
-        make_model(), {"ch": make_grid_intensity(30.0)}, Range(1.1, 1.6), "fallback", speed, "openrouter"
-    )
+    carbon_intensity(make_model(), {"ch": make_grid_intensity(30.0)}, Range(1.1, 1.6), speed)
     assert used == [speed]
-    assert (r["speed"], r["speed_source"]) == ({"tokens_per_second": 70.0, "time_to_first_token_s": 3.8}, "openrouter")
 
 
 def test_no_grids_no_carbon_intensity_but_energy_reported(monkeypatch):
     energy, embodied = Range(0.5, 0.6), Range(0.05, 0.06)  # E in Wh, M in gCO2e, per 1,000 output tokens
     monkeypatch.setattr("build.carbon_intensity.ecologits_estimate", lambda model, pue, speed: (energy, embodied))
-    r = carbon_intensity(make_model(), {}, Range(1.1, 1.6), "fallback", None, "fallback")
+    r = carbon_intensity(make_model(), {}, Range(1.1, 1.6), None)
     assert r["grids"] == []
     assert r["sci_g"] is None and r["band"] is None and r["grid_intensity_g_per_kwh"] is None
     assert r["energy_wh"] == {"low": 0.5, "high": 0.6} and r["embodied_g"] == {"low": 0.05, "high": 0.06}
