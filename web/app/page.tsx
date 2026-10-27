@@ -1,5 +1,5 @@
-import { Overview } from "@/features/overview/ui";
+import { Home } from "@/features/home/ui";
 
-export default function Home() {
-  return <Overview />;
+export default function HomePage() {
+  return <Home />;
 }
