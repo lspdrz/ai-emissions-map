@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Footer } from "@/app/_components/Footer";
 import { Navbar } from "@/app/_components/Navbar";
 import "@/app/globals.css";
 import { loadData } from "@/lib/data/loadData";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-screen bg-ground font-sans text-ink">
         <Navbar />
         {children}
+        <Footer meta={loadData().meta} />
       </body>
     </html>
   );
