@@ -57,7 +57,8 @@ You are recording where an organization serves a model. The organization must al
 6. **Record the route's speed**: how fast its service generates, as `speed:` on the route, beside `location:`.
    Look first for the provider's own published figures for that service, then at OpenRouter's providers page for
    the model, read as [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-routes-speed)
-   says (the providers table's P50 row for that provider and region):
+   says (the providers table's P50 row for that provider and region, or the provider's default row when its
+   region has none):
    ```yaml
    speed:
      tokens_per_second: 70

@@ -48,8 +48,13 @@ A route's `speed:` is its service's measured `tokens_per_second` and `time_to_fi
   hover) names its region, such as "Region: EU in-region"; a row without a badge is the provider's default
   endpoint. Quote the provider, the badge and the two figures, such as
   `'Providers table, P50: "Google Vertex" (Region: EU in-region) "2.69 s" "98 tps"'`.
-- **No row for the route's service** (a regional option OpenRouter does not list separately): record nothing,
-  and EcoLogits estimates the speed. Another service's figure is never borrowed.
+- **A regional option OpenRouter does not list** (the provider's EU or US endpoint has no badged row): use the
+  same provider's default row, the one without a region badge, for the same model and service tier, and say in
+  the quote that no regional row is listed, such as
+  `'Providers table, P50: "Google Vertex" (no region badge; no EU in-region row is listed) "1.36 s" "119 tps"'`.
+  Never another provider's row, another tier's (Flex, Priority) or another service's (Google AI Studio for Agent
+  Platform).
+- **No row for the provider at all:** record nothing, and EcoLogits estimates the speed.
 - **The figures move.** A refresh reads them again and updates the values, the quote and `accessed`.
 
 ## An evidence entry
