@@ -53,7 +53,7 @@ period:
 ```
 
 The map computes each route's energy with the PUE of the buildings it runs in when every location on the route has
-one, and with a range of 1.1 to 1.6 otherwise. Give a value measured over a full year (a calendar year, or the
+one, and with a range of 1.09 to 1.54 otherwise. Give a value measured over a full year (a calendar year, or the
 trailing twelve months), never a design target, a single month or an average across your facilities. The PUE
 changes the carbon intensity, not the rating.
 

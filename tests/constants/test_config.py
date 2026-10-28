@@ -22,7 +22,7 @@ def test_the_disclosure_points():
 
 
 def test_the_fallback_pue_range():
-    assert config.FALLBACK_PUE == (1.1, 1.6)
+    assert config.FALLBACK_PUE == (1.09, 1.54)
 
 
 def test_the_functional_unit_is_1000_output_tokens():

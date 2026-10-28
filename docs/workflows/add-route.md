@@ -53,7 +53,7 @@ You are recording where an organization serves a model. The organization must al
    ([`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-facilitys-pue)); record
    nothing for a facility without one. A cloud region's PUE is not researched: `score` reads it from
    `sources/snapshots/cloud_regions.csv`. `score` uses the published PUE only when every candidate has one, and the
-   fallback range (1.1–1.6) otherwise.
+   fallback range (1.09–1.54) otherwise.
 6. **Record the route's speed**: how fast its service generates, as `speed:` on the route, beside `location:`.
    Look first for the provider's own published figures for that service, then at OpenRouter's providers page for
    the model, read as [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-routes-speed)

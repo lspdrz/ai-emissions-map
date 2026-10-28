@@ -108,7 +108,7 @@ def test_a_named_facility_without_a_pue_leaves_the_route_on_the_range():
             facilities=[make_facility("Acme 1, Paris", make_facility_pue(1.18)), make_facility("Acme 2, Paris")],
         )
     )
-    assert route_pue(route, {}) == Range(1.1, 1.6)
+    assert route_pue(route, {}) == Range(1.09, 1.54)
 
 
 def test_cloud_regions_with_their_pue_give_their_range():
@@ -126,18 +126,18 @@ def test_a_cloud_region_without_a_pue_leaves_the_route_on_the_range():
         ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
         ("gcp", "europe-west3"): {"zones": ["DE"], "pue": None},
     }
-    assert route_pue(route, regions) == Range(1.1, 1.6)
+    assert route_pue(route, regions) == Range(1.09, 1.54)
 
 
 def test_a_grid_without_named_facilities_leaves_the_route_on_the_range():
     route = make_route(location=make_location(candidates=["cloud:gcp:europe-west4", "grid:fr"]))
     regions: dict[tuple[str, str], CloudRegion] = {("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08}}
-    assert route_pue(route, regions) == Range(1.1, 1.6)
+    assert route_pue(route, regions) == Range(1.09, 1.54)
 
 
 def test_an_undisclosed_location_is_on_the_range():
     route = make_route(location=make_location(candidates=[], evidence=[]))
-    assert route_pue(route, {}) == Range(1.1, 1.6)
+    assert route_pue(route, {}) == Range(1.09, 1.54)
 
 
 # The fields score writes go below GENERATED_COMMENT, at the end of a file: everything below it is rewritten, nothing

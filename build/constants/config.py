@@ -22,9 +22,10 @@ DISCLOSURE_POINTS: dict[Literal["A", "B", "C", "D"], int] = {"A": 3, "B": 2, "C"
 
 # Data-center overhead (Power Usage Effectiveness), applied by EcoLogits as its final step:
 # request energy = PUE x IT energy. A route uses its candidates' published PUE when every candidate has one
-# (build/score.py, route_pue); otherwise this range, from efficient hyperscale (~1.1) to the industry average
-# (~1.56, Uptime Institute), so a route without a published PUE is not biased optimistic.
-FALLBACK_PUE: tuple[float, float] = (1.1, 1.6)
+# (build/score.py, route_pue); otherwise this range, from efficient hyperscale (Google's fleet: 1.09 in 2025,
+# https://www.datacenters.google/efficiency) to the industry average (a weighted average of 1.54 in 2025, Uptime
+# Institute Global Data Center Survey 2025, p. 7, n=681), so a route without a published PUE is not biased optimistic.
+FALLBACK_PUE: tuple[float, float] = (1.09, 1.54)
 
 # Functional unit: every route's carbon intensity is expressed per this many output tokens.
 OUTPUT_TOKENS = 1000

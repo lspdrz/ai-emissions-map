@@ -20,13 +20,13 @@
       "year": 2025
     },
     "grid_intensity_spread": null,
-    "inputs_sha": "d4748216cd5ea3fc7f4a1f8409680d9635611e1e2db6092cad362191641b0d5e",
+    "inputs_sha": "ff7f368de19d82740272481f29babc2be4f6326529215524ec162d24f0e915fe",
     "methodology_version": "0.4.0",
     "pue": [
-      1.1,
-      1.6
+      1.09,
+      1.54
     ],
-    "release_date": "2026-10-27"
+    "release_date": "2026-10-28"
   },
   "models": [],
   "organizations": [],
