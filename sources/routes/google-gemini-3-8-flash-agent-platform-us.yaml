@@ -18,6 +18,14 @@ location:
     shows: 'Deployments and endpoints: "Multi-region endpoints let you ensure that machine learning processing of Customer Data by the service stays within a specific jurisdictional boundary, such as the United States or the European Union."'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 78
+  time_to_first_token_s: 3.77
+  evidence:
+  - url: https://openrouter.ai/google/gemini-3.8-flash/providers
+    shows: 'Providers table, P50: "Google Vertex" (Region: US in-region) "3.77 s" "78 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The Agent Platform's US multi-region endpoint (aiplatform.us.rep.googleapis.com). Google commits to the United States
   without naming a region, so the candidates are every Google Cloud region there in sources/snapshots/cloud_regions.csv.
@@ -38,17 +46,17 @@ carbon_intensity:
   - us-nw-pace
   - us-tex-erco
   energy_wh:
-    low: 4.954389
-    high: 13.228471
+    low: 3.279991
+    high: 8.141705
   embodied_g:
-    low: 0.470445
-    high: 0.912183
+    low: 0.086409
+    high: 0.086409
   grid_intensity_g_per_kwh:
     low: 189.264
     high: 619.811
   sci_g:
-    low: 1.408133
-    high: 9.111335
+    low: 0.707193
+    high: 5.132727
   band:
-  - 5
+  - 4
   - 5

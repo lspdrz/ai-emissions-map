@@ -27,6 +27,14 @@ location:
     shows: 'Google model endpoint locations, Global tab: "Gemini 3.6 Flash (gemini-3.6-flash)"; no regional endpoint lists the model'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 119
+  time_to_first_token_s: 1.36
+  evidence:
+  - url: https://openrouter.ai/google/gemini-3.6-flash/providers
+    shows: 'Providers table, P50: "Google Vertex" (no region badge) "1.36 s" "119 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The Agent Platform's global endpoint (formerly Vertex AI). Google lists no regions for Gemini 3.6 Flash and says a
   global request may be processed in any Google Cloud location, so the candidates are every Google Cloud region in
@@ -80,17 +88,17 @@ carbon_intensity:
   - us-tex-erco
   - za
   energy_wh:
-    low: 4.954389
-    high: 13.228471
+    low: 3.124958
+    high: 7.922667
   embodied_g:
-    low: 0.470445
-    high: 0.912183
+    low: 0.050851
+    high: 0.050851
   grid_intensity_g_per_kwh:
     low: 39.278
     high: 705.326
   sci_g:
-    low: 0.665044
-    high: 10.242567
+    low: 0.173593
+    high: 5.638914
   band:
-  - 4
+  - 3
   - 5

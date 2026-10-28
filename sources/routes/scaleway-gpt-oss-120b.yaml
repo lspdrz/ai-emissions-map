@@ -12,6 +12,18 @@ location:
   label: OPCORE DC5, Paris
   facilities:
   - name: "OPCORE DC5 (PAR2), Paris"
+    pue:
+      value: 1.18
+      period_end: "2026-10-28"
+      evidence:
+      - url: https://github.com/scaleway/docs-content/blob/daf3f27919d6b7249a27f632cc746dae3766f6a2/pages/environmental-footprint/additional-content/calculation-values-reference.mdx
+        shows: 'Calculation values reference, "Datacenter PUE/WUE", Sources: "[FR-PAR-2](https://pue.dc5.opcore.eu/en/)"'
+        accessed: "2026-10-28"
+        kind: primary
+      - url: https://pue.dc5.opcore.eu/en/
+        shows: 'OPCORE PUE dashboard, Annualized Numbers: "The numbers to the right indicate the trailing 12-month PUE at PAR5 Datacenter. This is the datacenter PUE according to ISO/IEC standards." "PUE 1.18 TTM"'
+        accessed: "2026-10-28"
+        kind: primary
   candidates: ["grid:fr"]
   evidence:
   - url: https://www.scaleway.com/en/docs/generative-apis/faq.md
@@ -53,8 +65,8 @@ carbon_intensity:
   grids:
   - fr
   energy_wh:
-    low: 0.311136
-    high: 0.439587
+    low: 0.336826
+    high: 0.336826
   embodied_g:
     low: 0.027928
     high: 0.027928
@@ -62,8 +74,8 @@ carbon_intensity:
     low: 41.224
     high: 41.224
   sci_g:
-    low: 0.040754
-    high: 0.04605
+    low: 0.041814
+    high: 0.041814
   band:
   - 2
   - 2

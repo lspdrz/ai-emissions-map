@@ -19,6 +19,14 @@ location:
     shows: 'Data residency, Google models table: "Gemini 3.8 Flash (gemini-3.8-flash)" is marked supported for "US multi-region" and "EU multi-region" only'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 68
+  time_to_first_token_s: 2.96
+  evidence:
+  - url: https://openrouter.ai/google/gemini-3.8-flash/providers
+    shows: 'Providers table, P50: "Google Vertex" (no region badge; no EU in-region row is listed) "2.96 s" "68 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The Agent Platform's EU multi-region endpoint (aiplatform.eu.rep.googleapis.com). Google commits to EU member states
   without naming a region, so the candidates are every Google Cloud region in an EU member state in
@@ -40,17 +48,17 @@ carbon_intensity:
   - nl
   - pl
   energy_wh:
-    low: 4.954389
-    high: 13.228471
+    low: 3.304411
+    high: 8.176207
   embodied_g:
-    low: 0.470445
-    high: 0.912183
+    low: 0.09201
+    high: 0.09201
   grid_intensity_g_per_kwh:
     low: 41.224
     high: 590.814
   sci_g:
-    low: 0.674685
-    high: 8.727749
+    low: 0.228231
+    high: 4.922627
   band:
-  - 4
+  - 3
   - 5

@@ -32,6 +32,14 @@ location:
     shows: 'Help center, "Where do you store my data or my Organization''s data?": "By default, your data is hosted in the European Union."'
     accessed: "2026-10-22"
     kind: primary
+speed:
+  tokens_per_second: 97
+  time_to_first_token_s: 0.63
+  evidence:
+  - url: https://openrouter.ai/mistralai/mistral-medium-3-5/providers
+    shows: 'Providers table, P50: "Mistral" (no region badge; Privacy: Logs, the standard endpoint) "0.63 s" "97 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The global endpoint, api.mistral.ai, used unless the customer sends requests to a regional one. Mistral makes no
   commitment to where it runs, so the candidates are every place Mistral's subprocessor list says its models run:
@@ -55,17 +63,17 @@ carbon_intensity:
   - 'no'
   - se
   energy_wh:
-    low: 0.852955
-    high: 1.205093
+    low: 0.525538
+    high: 0.742503
   embodied_g:
-    low: 0.082218
-    high: 0.082218
+    low: 0.007122
+    high: 0.007122
   grid_intensity_g_per_kwh:
     low: 28.05
     high: 153.459
   sci_g:
-    low: 0.106143
-    high: 0.26715
+    low: 0.021863
+    high: 0.121066
   band:
-  - 3
+  - 1
   - 3

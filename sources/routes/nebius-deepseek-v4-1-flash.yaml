@@ -29,6 +29,14 @@ location:
     shows: 'Token Factory sub-processors (effective September 23, 2026), each for "Cloud infrastructure supporting Token Factory model processing": Nebius Inc., "United States"; Nebius B.V., "France, Iceland, Finland, United Kingdom"; Nebius Israel Ltd., "Israel"; RunPod Inc., "Iceland"; BoostRun, LLC, "United States"; Shadeform, Inc., "United States"; Axe Compute Inc., "Canada"'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 145
+  time_to_first_token_s: 0.66
+  evidence:
+  - url: https://openrouter.ai/deepseek/deepseek-v4.1-flash/providers
+    shows: 'Providers table, P50: "Nebius Token Factory" (no region badge) "0.66 s" "145 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   Token Factory's public (serverless) endpoint, which OpenRouter also uses. The catalog lists the model in us-north1
   (Woodbury, Minnesota), but Nebius says a public endpoint's location can change at any time without notice, so the
@@ -57,17 +65,17 @@ carbon_intensity:
   - us-cent-swpp
   - us-midw-miso
   energy_wh:
-    low: 2.87352
-    high: 4.059836
+    low: 1.903037
+    high: 2.688694
   embodied_g:
-    low: 0.261945
-    high: 0.261945
+    low: 0.039357
+    high: 0.039357
   grid_intensity_g_per_kwh:
     low: 27.756
     high: 674.293
   sci_g:
-    low: 0.341702
-    high: 2.999464
+    low: 0.092178
+    high: 1.852324
   band:
-  - 4
+  - 2
   - 5

@@ -10,6 +10,14 @@ location:
     shows: 'Data residency, inference_geo "global": "Default. Inference may run in any available geography for optimal performance and availability."'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 75
+  time_to_first_token_s: 3.41
+  evidence:
+  - url: https://openrouter.ai/anthropic/claude-opus-5.5/providers
+    shows: 'Providers table, P50: "Anthropic" (no region badge) "3.41 s" "75 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The Claude API's default routing (inference_geo "global"). Anthropic does not list the geographies, regions or
   facilities it may use, so no candidates are recorded. Claude on Amazon Bedrock, Google Cloud and Microsoft Foundry
@@ -23,11 +31,11 @@ disclosure_rating:
 carbon_intensity:
   grids: []
   energy_wh:
-    low: 4.778044
-    high: 13.228471
+    low: 3.184155
+    high: 8.146608
   embodied_g:
-    low: 0.452776
-    high: 0.912183
+    low: 0.087205
+    high: 0.087205
   grid_intensity_g_per_kwh: null
   sci_g: null
   band: null

@@ -28,6 +28,14 @@ location:
     shows: 'Getdeploying lists 26 Together AI locations, with no source given (updated Oct. 19, 2026); in North America, 14 US cities, among them "Dallas TX (us-south-1)" and "Des Moines IA (us-central-2)", and two in Canada, "Montreal (ca-central-1)" and "Prince George (ca-west-1)". Together does not publish the list itself'
     accessed: "2026-10-22"
     kind: corroborating
+speed:
+  tokens_per_second: 241
+  time_to_first_token_s: 0.21
+  evidence:
+  - url: https://openrouter.ai/deepseek/deepseek-v4.1-flash/providers
+    shows: 'Providers table, P50: "Together" (no region badge) "0.21 s" "241 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   Together AI's serverless endpoint. Together says it hosts DeepSeek models in its North America data centers but
   names none, so the route draws on the United States and Canada as a whole, as the maintainer decided; Mexico is not
@@ -44,17 +52,17 @@ carbon_intensity:
   - ca
   - us
   energy_wh:
-    low: 2.87352
-    high: 4.059836
+    low: 1.830434
+    high: 2.586118
   embodied_g:
-    low: 0.261945
-    high: 0.261945
+    low: 0.022705
+    high: 0.022705
   grid_intensity_g_per_kwh:
     low: 191.587
     high: 384.403
   sci_g:
-    low: 0.812474
-    high: 1.822558
+    low: 0.373392
+    high: 1.016817
   band:
   - 4
   - 5

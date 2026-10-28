@@ -13,6 +13,14 @@ location:
     shows: 'Data residency, model availability: "The inference_geo parameter is supported on Claude 4.6 and later models."'
     accessed: "2026-10-21"
     kind: primary
+speed:
+  tokens_per_second: 75
+  time_to_first_token_s: 3.41
+  evidence:
+  - url: https://openrouter.ai/anthropic/claude-opus-5.5/providers
+    shows: 'Providers table, P50: "Anthropic" (no region badge; no US in-region row is listed) "3.41 s" "75 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The Claude API with inference_geo "us", which the customer sets per request or as a workspace default. Anthropic
   commits to the United States without naming a region or facility, so the route draws on the United States as a
@@ -27,17 +35,17 @@ carbon_intensity:
   grids:
   - us
   energy_wh:
-    low: 4.778044
-    high: 13.228471
+    low: 3.184155
+    high: 8.146608
   embodied_g:
-    low: 0.452776
-    high: 0.912183
+    low: 0.087205
+    high: 0.087205
   grid_intensity_g_per_kwh:
     low: 384.403
     high: 384.403
   sci_g:
-    low: 2.28947
-    high: 5.997247
+    low: 1.311204
+    high: 3.218785
   band:
   - 5
   - 5

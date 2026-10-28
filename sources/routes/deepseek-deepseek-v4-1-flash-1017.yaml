@@ -28,6 +28,14 @@ location:
     shows: 'Baxtel, 31 July 2026, citing Bloomberg: "DeepSeek is reportedly planning to build a 1GW data center"; "The facility is expected to be located in the city of Ulanqab"; "DeepSeek aims to have the data center partially operational by the end of 2027 or early 2028." Planned, not serving.'
     accessed: "2026-10-21"
     kind: corroborating
+speed:
+  tokens_per_second: 100
+  time_to_first_token_s: 1.17
+  evidence:
+  - url: https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017/providers
+    shows: 'Providers table, P50: "DeepSeek" (no region badge) "1.17 s" "100 tps"'
+    accessed: "2026-10-28"
+    kind: corroborating
 comments: >-
   The DeepSeek API (deepseek-flash). DeepSeek's privacy policy, which its Open Platform terms apply to API users, says
   it processes users' Personal Data, prompts included, in the People's Republic of China; it names no province or
@@ -43,17 +51,17 @@ carbon_intensity:
   grids:
   - cn
   energy_wh:
-    low: 2.87352
-    high: 4.059836
+    low: 1.985092
+    high: 2.804625
   embodied_g:
-    low: 0.261945
-    high: 0.261945
+    low: 0.058177
+    high: 0.058177
   grid_intensity_g_per_kwh:
     low: 528.278
     high: 528.278
   sci_g:
-    low: 1.779962
-    high: 2.406667
+    low: 1.106857
+    high: 1.539799
   band:
   - 5
   - 5
