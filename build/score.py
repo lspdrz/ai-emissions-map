@@ -13,6 +13,7 @@ from typing import Any, cast
 import yaml
 
 from build.carbon_intensity import carbon_intensity
+from build.constants.config import FALLBACK_PUE
 from build.constants.snapshots import CLOUD_REGIONS_FILE
 from build.disclosure_rating import disclosure_rating, organization_rating
 from build.load_sources import load_cloud_regions, load_sources
@@ -20,7 +21,8 @@ from build.schemas.disclosure_rating import Letter
 from build.schemas.grid import Grid
 from build.schemas.route import Route
 from build.schemas.score import OrgRating, RouteScore
-from build.types import ScoreRun, Sources
+from build.types import CloudRegion, ScoreRun, Sources
+from build.utils.range import Range
 from build.validate import validate_sources
 
 
@@ -55,7 +57,7 @@ def org_text(file_text: str, org_rating: OrgRating) -> str:
 
 def checked_sources(
     root: Path,
-) -> tuple[list[str], Sources, dict[tuple[str, str], list[str]]]:
+) -> tuple[list[str], Sources, dict[tuple[str, str], CloudRegion]]:
     """sources/ and the cloud-region table, read and checked against each other."""
     data = load_sources(root)
     cloud_path = root / CLOUD_REGIONS_FILE
@@ -67,7 +69,7 @@ def checked_sources(
 def route_grids(
     route: Route,
     grids: Mapping[str, Grid],
-    cloud_regions: Mapping[tuple[str, str], list[str]],
+    cloud_regions: Mapping[tuple[str, str], CloudRegion],
 ) -> dict[str, Grid]:
     """The grid files a route's candidates resolve to, sorted by name: a grid: candidate names its file, a cloud:
     candidate resolves through the cloud-region table to its zones and each zone to the grid file that claims it.
@@ -80,16 +82,37 @@ def route_grids(
             names.add(rest)
         else:
             vendor, _, region = rest.partition(":")
-            names |= {zones[zone] for zone in cloud_regions[(vendor, region)]}
+            names |= {zones[zone] for zone in cloud_regions[(vendor, region)]["zones"]}
     return {name: grids[name] for name in sorted(names)}
+
+
+def route_pue(route: Route, cloud_regions: Mapping[tuple[str, str], CloudRegion]) -> Range:
+    """The PUE a route's energy is computed with: the range of its candidates' published PUE when every one has one,
+    else the fallback range (config.FALLBACK_PUE). A cloud: candidate's comes from the cloud-region table; a grid:
+    candidate has one only through the facilities the location names, each with its own pue:."""
+    location = route["location"]
+    facilities = location.get("facilities", [])
+    values: list[float | None] = [f["pue"]["value"] if "pue" in f else None for f in facilities]
+    for candidate in location["candidates"]:
+        kind, _, rest = candidate.partition(":")
+        if kind == "cloud":
+            vendor, _, region = rest.partition(":")
+            values.append(cloud_regions[(vendor, region)]["pue"])
+        elif not facilities:
+            values.append(None)  # a grid with no facility named: nothing says which building's PUE applies
+    if values and None not in values:
+        known = cast(list[float], values)
+        return Range(min(known), max(known))
+    return Range(*FALLBACK_PUE)
 
 
 def score_routes(
     data: Sources,
-    cloud_regions: Mapping[tuple[str, str], list[str]],
+    cloud_regions: Mapping[tuple[str, str], CloudRegion],
 ) -> dict[str, RouteScore]:
     """The fields score writes for every route: its disclosure letter and its carbon intensity, as they are stored. The
-    carbon intensity reads each grid's stored intensity: (validation has checked every grid has one)."""
+    carbon intensity reads each grid's stored intensity: (validation has checked every grid has one) and the route's
+    PUE (route_pue) and measured speed, if it has one."""
     route_scores: dict[str, RouteScore] = {}
     for name, route in sorted(data["routes"].items()):
         grids = route_grids(route, data["grids"], cloud_regions)
@@ -99,6 +122,8 @@ def score_routes(
             carbon_intensity=carbon_intensity(
                 data["models"][route["model"]],
                 {g: grid["intensity"] for g, grid in grids.items() if "intensity" in grid},
+                route_pue(route, cloud_regions),
+                route.get("speed"),
             ),
         )
     return route_scores

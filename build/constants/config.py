@@ -10,7 +10,7 @@ from typing import Literal
 # The repository root: sources/, docs/ and web/ are found from here.
 ROOT = Path(__file__).resolve().parents[2]
 
-METHODOLOGY_VERSION = "0.3.0"
+METHODOLOGY_VERSION = "0.4.0"
 
 # Absolute carbon bands, gCO2e per 1k output tokens: band n when below CARBON_BAND_UPPER[n-1], else 5.
 CARBON_BAND_UPPER: tuple[float, ...] = (0.03, 0.1, 0.3, 1.0)
@@ -21,15 +21,11 @@ CARBON_BAND_UPPER: tuple[float, ...] = (0.03, 0.1, 0.3, 1.0)
 DISCLOSURE_POINTS: dict[Literal["A", "B", "C", "D"], int] = {"A": 3, "B": 2, "C": 1, "D": 0}
 
 # Data-center overhead (Power Usage Effectiveness), applied by EcoLogits as its final step:
-# request energy = PUE x IT energy. v1 uses ONE range for every route, from efficient hyperscale
-# (~1.1) to the industry average (~1.56, Uptime Institute), so carbon intensities are not biased optimistic
-# and only the grid differs between providers.
-#
-# TODO(v2, MAJOR, #10): use each facility's published PUE where one exists (e.g. a facility that publishes
-# 1.09), falling back to this range otherwise. PUE is a property of the building, like the
-# grid zone, and varies from ~1.08 to 2.0+ in practice; a fixed range ignores real efficiency
-# differences between operators.
-PUE: tuple[float, float] = (1.1, 1.6)
+# request energy = PUE x IT energy. A route uses its candidates' published PUE when every candidate has one
+# (build/score.py, route_pue); otherwise this range, from efficient hyperscale (Google's fleet: 1.09 in 2025,
+# https://www.datacenters.google/efficiency) to the industry average (a weighted average of 1.54 in 2025, Uptime
+# Institute Global Data Center Survey 2025, p. 7, n=681), so a route without a published PUE is not biased optimistic.
+FALLBACK_PUE: tuple[float, float] = (1.09, 1.54)
 
 # Functional unit: every route's carbon intensity is expressed per this many output tokens.
 OUTPUT_TOKENS = 1000

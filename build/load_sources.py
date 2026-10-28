@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 
 from build.constants.snapshots import CLOUD_REGIONS_FILE, GRID_INTENSITY_FILE
+from build.types import CloudRegion
 
 # The sources/ folders that hold records, in the order they are read and checked.
 SOURCE_DIRS = ("organizations", "grids", "routes", "models")
@@ -36,13 +37,17 @@ def load_sources(root: Path) -> dict:
     return data
 
 
-def load_cloud_regions(path: Path) -> dict[tuple[str, str], list[str]]:
-    """(vendor, region) -> its grid zones, sorted. A region drawing on several zones has one row per zone."""
-    regions: dict[tuple[str, str], list[str]] = {}
+def load_cloud_regions(path: Path) -> dict[tuple[str, str], CloudRegion]:
+    """(vendor, region) -> its grid zones, sorted, and its published PUE. A region drawing on several zones has one
+    row per zone, each with the region's PUE; a region without one, or a table without the pue column, has None."""
+    regions: dict[tuple[str, str], CloudRegion] = {}
     with path.open(encoding="utf-8", newline="") as fh:
         for row in csv.DictReader(fh):
-            regions.setdefault((row["vendor"], row["region"]), []).append(row["zone"])
-    return {key: sorted(set(zones)) for key, zones in regions.items()}
+            region = regions.setdefault((row["vendor"], row["region"]), CloudRegion(zones=[], pue=None))
+            region["zones"].append(row["zone"])
+            if row.get("pue"):
+                region["pue"] = float(row["pue"])
+    return {key: CloudRegion(zones=sorted(set(r["zones"])), pue=r["pue"]) for key, r in regions.items()}
 
 
 def load_grid_intensities(path: Path) -> dict[str, dict[int, float]]:

@@ -104,32 +104,58 @@ def test_files_outside_the_records_folders_are_not_read(tmp_path):
     }
 
 
-# load_cloud_regions: the cloud-region table, each (vendor, region) to its zones.
+# load_cloud_regions: the cloud-region table, each (vendor, region) to its zones and its PUE.
 
 
 def test_each_region_maps_to_its_zone(tmp_path):
     path = tmp_path / "cloud_regions.csv"
     path.write_text("vendor,region,zone\ncloudx,eu-de,DE\ncloudx,eu-fr,FR\n")
-    assert load_cloud_regions(path) == {("cloudx", "eu-de"): ["DE"], ("cloudx", "eu-fr"): ["FR"]}
+    assert load_cloud_regions(path) == {
+        ("cloudx", "eu-de"): {"zones": ["DE"], "pue": None},
+        ("cloudx", "eu-fr"): {"zones": ["FR"], "pue": None},
+    }
 
 
 def test_a_region_on_several_rows_maps_to_each_of_their_zones(tmp_path):
     path = tmp_path / "cloud_regions.csv"
     path.write_text("vendor,region,zone\nazure,northeurope,FI\nazure,northeurope,IE\n")
-    assert load_cloud_regions(path) == {("azure", "northeurope"): ["FI", "IE"]}
+    assert load_cloud_regions(path) == {("azure", "northeurope"): {"zones": ["FI", "IE"], "pue": None}}
 
 
 def test_a_regions_zones_are_sorted(tmp_path):
     path = tmp_path / "cloud_regions.csv"
     rows = "".join(f"cloudx,eu,{zone}\n" for zone in ("SE", "PL", "NL", "IE", "FI", "DE"))  # six, so no order is luck
     path.write_text("vendor,region,zone\n" + rows)
-    assert load_cloud_regions(path) == {("cloudx", "eu"): ["DE", "FI", "IE", "NL", "PL", "SE"]}
+    assert load_cloud_regions(path) == {("cloudx", "eu"): {"zones": ["DE", "FI", "IE", "NL", "PL", "SE"], "pue": None}}
 
 
 def test_a_repeated_row_counts_once(tmp_path):
     path = tmp_path / "cloud_regions.csv"
     path.write_text("vendor,region,zone\ncloudx,eu-de,DE\ncloudx,eu-de,DE\n")
-    assert load_cloud_regions(path) == {("cloudx", "eu-de"): ["DE"]}
+    assert load_cloud_regions(path) == {("cloudx", "eu-de"): {"zones": ["DE"], "pue": None}}
+
+
+def test_a_regions_pue_is_read_with_its_zones(tmp_path):
+    path = tmp_path / "cloud_regions.csv"
+    path.write_text(
+        "vendor,region,zone,year,location,pue,pue_year\n"
+        "gcp,europe-west4,NL,2024,Netherlands,1.08,2024\n"
+        "gcp,europe-west3,DE,2024,Germany,,\n"
+    )
+    assert load_cloud_regions(path) == {
+        ("gcp", "europe-west3"): {"zones": ["DE"], "pue": None},
+        ("gcp", "europe-west4"): {"zones": ["NL"], "pue": 1.08},
+    }
+
+
+def test_a_region_on_several_rows_has_one_pue(tmp_path):
+    path = tmp_path / "cloud_regions.csv"
+    path.write_text(
+        "vendor,region,zone,year,location,pue,pue_year\n"
+        "azure,northeurope,FI,2023,Finland,1.19,2023\n"
+        "azure,northeurope,IE,2023,Ireland,1.19,2023\n"
+    )
+    assert load_cloud_regions(path) == {("azure", "northeurope"): {"zones": ["FI", "IE"], "pue": 1.19}}
 
 
 # load_grid_intensities: Ember's table, each geography to its intensity per year.

@@ -7,8 +7,9 @@ Guidance for coding agents and people working in this repository.
 The AI Emissions Map gives every AI serving route (an organization serving a model, by default or in
 a region the customer chooses) a **carbon intensity**, and every organization a **location disclosure rating** (A–D).
 The carbon intensity is the full Software Carbon Intensity per 1,000 output tokens: energy and embodied emissions
-from EcoLogits, and grid intensity from Ember's yearly data for the country (or US state or Chinese province) of the route's location. Locations are the only thing curators
-research; everything else is calculated. The rules are in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)
+from EcoLogits, and grid intensity from Ember's yearly data for the country (or US state or Chinese province) of the route's location. Locations, the
+published PUE of the facilities they name and each route's measured speed are the only things curators research;
+everything else is calculated. The rules are in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md)
 and [`docs/reference/`](docs/reference/).
 
 ## Start here

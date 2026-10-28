@@ -35,7 +35,7 @@ Each candidate resolves to one or more grid files in `sources/grids/`:
 | `cloud:<vendor>:<region>` | `sources/snapshots/cloud_regions.csv` (`vendor` is `aws`, `azure` or `gcp`) to its zone codes, then to the grid files whose `zone:` is that code. A region may span several zones, and the route's carbon intensity is then a range across them |
 
 Two candidates on the same grid count as one grid. A route whose evidence names its buildings lists them in
-`location.facilities`, in words, and gives the grid they draw from as its candidate: the public grid's zone, or
+`location.facilities`, each by its `name` in words, and gives the grid they draw from as its candidate: the public grid's zone, or
 the facility's on-site grid.
 
 ## Providers that may run anywhere in their network
@@ -78,6 +78,9 @@ the file as primary evidence, like any other page.
 - **Each of its `locations` is a candidate on that route:** a `facility` is named in `location.facilities` with
   the grid it draws from, a `region` becomes a `cloud:` candidate, and a `grid_zone` a `grid:` candidate. The
   route's rating then follows [the ladder](#a-routes-rating).
+- **A facility's `pue`** becomes the `pue:` of that facility in `location.facilities`, with its `value` and
+  `period_end`, citing the file
+  ([`evidence-and-freshness.md`](evidence-and-freshness.md#a-facilitys-pue)).
 - **A model the file leaves out** is rated from the organization's other publications, like any model without a
   file.
 - **The file stands like any source:** it is read again when the organization is refreshed, and until a

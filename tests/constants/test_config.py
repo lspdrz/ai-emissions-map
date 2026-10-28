@@ -10,7 +10,7 @@ def test_the_root_is_the_repository():
 
 
 def test_the_methodology_version():
-    assert config.METHODOLOGY_VERSION == "0.3.0"
+    assert config.METHODOLOGY_VERSION == "0.4.0"
 
 
 def test_the_carbon_band_edges():
@@ -21,8 +21,8 @@ def test_the_disclosure_points():
     assert config.DISCLOSURE_POINTS == {"A": 3, "B": 2, "C": 1, "D": 0}
 
 
-def test_the_pue_range():
-    assert config.PUE == (1.1, 1.6)
+def test_the_fallback_pue_range():
+    assert config.FALLBACK_PUE == (1.09, 1.54)
 
 
 def test_the_functional_unit_is_1000_output_tokens():

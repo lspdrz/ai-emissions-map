@@ -14,7 +14,7 @@ from datetime import date
 from importlib.metadata import version
 from typing import Any
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, FALLBACK_PUE
 
 
 SCHEMA = "aem-data/4"
@@ -203,7 +203,7 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
             "release_date": release_date.isoformat(),
             "methodology_version": METHODOLOGY_VERSION,
             "ecologits_version": version("ecologits"),
-            "pue": list(PUE),
+            "pue": list(FALLBACK_PUE),
             "band_upper": list(CARBON_BAND_UPPER),
             "draft": DRAFT,
             "grid": {"source": "Ember", "year": GRID_YEAR},
