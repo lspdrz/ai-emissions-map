@@ -57,14 +57,14 @@ You are recording where an organization serves a model. The organization must al
 6. **Record the route's speed**: how fast its service generates, as `speed:` on the route, beside `location:`.
    Look first for the provider's own published figures for that service, then at OpenRouter's providers page for
    the model, read as [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md#a-routes-speed)
-   says (the one-week average for that provider and region):
+   says (the providers table's P50 row for that provider and region):
    ```yaml
    speed:
      tokens_per_second: 70
      time_to_first_token_s: 3.8
      evidence:
      - url: https://openrouter.ai/example-lab/example-70b/providers
-       shows: 'Performance, 1 week: "Example AI Avg 70 tok/s", "Example AI Avg 3.8 s"'
+       shows: 'Providers table, P50: "Example AI" (no region badge) "3.8 s" "70 tps"'
        accessed: "2026-10-11"
        kind: corroborating
    ```

@@ -38,11 +38,17 @@ A route's `speed:` is its service's measured `tokens_per_second` and `time_to_fi
 - **From the provider**, primary: its own published figures for that service.
 - **Otherwise from OpenRouter**, corroborating: the one third party whose figure may set a speed, measured on its
   own traffic (validation refuses any other third-party site). Read the model's providers page,
-  `https://openrouter.ai/<model>/providers`, in a browser (it renders in JavaScript), and quote the Performance
-  chart's **one-week average** for the provider and, where it shows one, the region of the route (such as "Google
-  Vertex (EU)"): `Throughput` as `tokens_per_second` and `Latency` as `time_to_first_token_s`. Not the providers
-  table, whose P50 is a rolling five-minute window, and not `E2E latency`, the whole request.
-- **No endpoint for the route's service** (a regional option OpenRouter does not list separately): record nothing,
+  `https://openrouter.ai/<model>/providers`, in a browser (it renders in JavaScript), and quote the **providers
+  table's row** for the route's endpoint, in its default P50 view: the median request over the last 30 minutes.
+  Its `Latency` is the time to first token and its `Throughput` the output tokens per second, as OpenRouter's
+  [endpoints API](https://openrouter.ai/docs/api/api-reference/endpoints/list-all-endpoints-for-a-model.md)
+  defines the same figures. Not the Performance charts, which name only their top three providers, and not
+  `E2E latency`, the whole request.
+- **The row is the provider's and the route's region.** A regional endpoint carries a badge whose label (shown on
+  hover) names its region, such as "Region: EU in-region"; a row without a badge is the provider's default
+  endpoint. Quote the provider, the badge and the two figures, such as
+  `'Providers table, P50: "Google Vertex" (Region: EU in-region) "2.69 s" "98 tps"'`.
+- **No row for the route's service** (a regional option OpenRouter does not list separately): record nothing,
   and EcoLogits estimates the speed. Another service's figure is never borrowed.
 - **The figures move.** A refresh reads them again and updates the values, the quote and `accessed`.
 
