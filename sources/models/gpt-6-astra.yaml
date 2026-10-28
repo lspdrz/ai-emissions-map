@@ -1,0 +1,12 @@
+name: gpt-6-astra
+display_name: GPT-6 Astra
+architecture: moe
+active_b: { min: 150, max: 500 }
+total_b: 1500
+evidence:
+- url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
+  shows: 'EcoLogits catalogue, "gpt-6-astra": architecture "moe", parameters "total": 1500, "active": {"min": 150, "max": 500}; warnings "model-arch-not-released", "model-arch-multimodal"'
+  accessed: "2026-10-22"
+  kind: corroborating
+comments: >-
+  EcoLogits marks GPT-6 Astra's architecture as not released by OpenAI: these counts are its estimate.

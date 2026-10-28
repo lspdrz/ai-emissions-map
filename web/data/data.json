@@ -7,10 +7,10 @@
       1.0
     ],
     "counts": {
-      "grids": 45,
-      "models": 13,
-      "organizations": 9,
-      "routes": 23
+      "grids": 47,
+      "models": 16,
+      "organizations": 10,
+      "routes": 32
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -20,7 +20,7 @@
       "year": 2025
     },
     "grid_intensity_spread": 25,
-    "inputs_sha": "cf30545aeed0ba0ed8351a2e7c1a563e13b82b7c628d013a0ca18a1c7b1ee55d",
+    "inputs_sha": "ea3fd4df5ab00dd1ce076b8f571da18822796ec1226bff12b55fe7a90f70ec1f",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
@@ -93,6 +93,36 @@
       "display_name": "Gemini 3.8 Flash",
       "slug": "gemini-3-8-flash",
       "total_b": 750
+    },
+    {
+      "active_b": {
+        "max": 112,
+        "min": 38
+      },
+      "architecture": "moe",
+      "display_name": "GPT-6.1 Sol",
+      "slug": "gpt-6-1-sol",
+      "total_b": 375
+    },
+    {
+      "active_b": {
+        "max": 500,
+        "min": 150
+      },
+      "architecture": "moe",
+      "display_name": "GPT-6 Astra",
+      "slug": "gpt-6-astra",
+      "total_b": 1500
+    },
+    {
+      "active_b": {
+        "max": 11,
+        "min": 3.8
+      },
+      "architecture": "moe",
+      "display_name": "GPT-6 Luna",
+      "slug": "gpt-6-luna",
+      "total_b": 38
     },
     {
       "active_b": 5.1,
@@ -483,6 +513,89 @@
       ],
       "slug": "nebius",
       "type": "inference_host"
+    },
+    {
+      "country": "US",
+      "description": "OpenAI serves its API from a global geography by default, without saying where. Customers approved for data residency can keep inference in the United States or in Europe (EEA and Switzerland); OpenAI names no regions or facilities for either, only the countries where its cloud-infrastructure sub-processors process customer data.",
+      "display_name": "OpenAI",
+      "evidence": [
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "Contact our sales team to see if you're eligible for using data residency controls.",
+            "you can select regional processing for an individual request by using the prefixed domain with an API key from a project having Global geography.",
+            "If you select a region that supports regional processing, as specifically identified below, the services will perform inference for your Customer Content in the selected region as well.",
+            "Europe (EEA + Switzerland)",
+            "eu.api.openai.com",
+            ", regional processing ",
+            "/v1/responses",
+            "United States, Europe (EEA + Switzerland), United Arab Emirates",
+            "gpt-6.1-sol",
+            "United Arab Emirates: `gpt-5.5-pro-2026-04-23`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11`",
+            "GPT-6.1 Sol supports only US and EU data residency.",
+            "GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing.",
+            "United States",
+            "us.api.openai.com",
+            "gpt-6-astra",
+            "gpt-6-luna"
+          ],
+          "routes": [
+            "openai-gpt-6-1-sol",
+            "openai-gpt-6-1-sol-eu",
+            "openai-gpt-6-1-sol-us",
+            "openai-gpt-6-astra",
+            "openai-gpt-6-astra-eu",
+            "openai-gpt-6-astra-us",
+            "openai-gpt-6-luna",
+            "openai-gpt-6-luna-eu",
+            "openai-gpt-6-luna-us"
+          ],
+          "url": "https://developers.openai.com/api/docs/guides/your-data"
+        },
+        {
+          "accessed": "2026-10-22",
+          "quotes": [
+            "OpenAI engages the following entities to provide processing activities for Customer Data (as defined in the OpenAI Data Processing Agreement).",
+            "Microsoft Corporation",
+            "Cloud infrastructure",
+            "Netherlands",
+            "Switzerland",
+            "CoreWeave, Inc.",
+            "Oracle Cloud Infrastructure",
+            "Google Cloud Platform",
+            " (each API, "
+          ],
+          "routes": [
+            "openai-gpt-6-1-sol-eu",
+            "openai-gpt-6-astra-eu",
+            "openai-gpt-6-luna-eu"
+          ],
+          "url": "https://openai.com/policies/sub-processor-list/"
+        }
+      ],
+      "homepage": "https://openai.com",
+      "rating": {
+        "letter": "C",
+        "mean": 0.666667,
+        "spread": {
+          "C": 6,
+          "D": 3
+        },
+        "summary": "C (6 routes at C, 3 routes at D)"
+      },
+      "routes": [
+        "openai-gpt-6-1-sol",
+        "openai-gpt-6-1-sol-eu",
+        "openai-gpt-6-1-sol-us",
+        "openai-gpt-6-astra",
+        "openai-gpt-6-astra-eu",
+        "openai-gpt-6-astra-us",
+        "openai-gpt-6-luna",
+        "openai-gpt-6-luna-eu",
+        "openai-gpt-6-luna-us"
+      ],
+      "slug": "openai",
+      "type": "model_lab"
     },
     {
       "country": "US",
@@ -1230,6 +1343,249 @@
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "nebius-deepseek-v4-1-flash"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.3006,
+        "low": 0.169845
+      },
+      "energy": {
+        "high": 4.421736,
+        "low": 1.824719
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Global geography",
+      "letter": "D",
+      "model": "gpt-6-1-sol",
+      "org": "openai",
+      "sci": null,
+      "served_as": null,
+      "slug": "openai-gpt-6-1-sol"
+    },
+    {
+      "band": [
+        3,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.3006,
+        "low": 0.169845
+      },
+      "energy": {
+        "high": 4.421736,
+        "low": 1.824719
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 28.05
+      },
+      "label": "Europe, EEA and Switzerland (13 countries)",
+      "letter": "C",
+      "model": "gpt-6-1-sol",
+      "org": "openai",
+      "sci": {
+        "high": 2.913023,
+        "low": 0.221029
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-1-sol-eu"
+    },
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.3006,
+        "low": 0.169845
+      },
+      "energy": {
+        "high": 4.421736,
+        "low": 1.824719
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "gpt-6-1-sol",
+      "org": "openai",
+      "sci": {
+        "high": 2.000328,
+        "low": 0.871273
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-1-sol-us"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 3.944705,
+        "low": 1.470975
+      },
+      "energy": {
+        "high": 56.354667,
+        "low": 15.199122
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Global geography",
+      "letter": "D",
+      "model": "gpt-6-astra",
+      "org": "openai",
+      "sci": null,
+      "served_as": null,
+      "slug": "openai-gpt-6-astra"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 3.944705,
+        "low": 1.470975
+      },
+      "energy": {
+        "high": 56.354667,
+        "low": 15.199122
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 28.05
+      },
+      "label": "Europe, EEA and Switzerland (13 countries)",
+      "letter": "C",
+      "model": "gpt-6-astra",
+      "org": "openai",
+      "sci": {
+        "high": 37.239831,
+        "low": 1.897311
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-astra-eu"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 3.944705,
+        "low": 1.470975
+      },
+      "energy": {
+        "high": 56.354667,
+        "low": 15.199122
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "gpt-6-astra",
+      "org": "openai",
+      "sci": {
+        "high": 25.607608,
+        "low": 7.313563
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-astra-us"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.015267,
+        "low": 0.013677
+      },
+      "energy": {
+        "high": 0.238168,
+        "low": 0.152702
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Global geography",
+      "letter": "D",
+      "model": "gpt-6-luna",
+      "org": "openai",
+      "sci": null,
+      "served_as": null,
+      "slug": "openai-gpt-6-luna"
+    },
+    {
+      "band": [
+        1,
+        3
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.015267,
+        "low": 0.013677
+      },
+      "energy": {
+        "high": 0.238168,
+        "low": 0.152702
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 28.05
+      },
+      "label": "Europe, EEA and Switzerland (13 countries)",
+      "letter": "C",
+      "model": "gpt-6-luna",
+      "org": "openai",
+      "sci": {
+        "high": 0.15598,
+        "low": 0.01796
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-luna-eu"
+    },
+    {
+      "band": [
+        2,
+        3
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.015267,
+        "low": 0.013677
+      },
+      "energy": {
+        "high": 0.238168,
+        "low": 0.152702
+      },
+      "gap": "The grid is not determined: several are possible.",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "gpt-6-luna",
+      "org": "openai",
+      "sci": {
+        "high": 0.10682,
+        "low": 0.072376
+      },
+      "served_as": null,
+      "slug": "openai-gpt-6-luna-us"
     },
     {
       "band": [
