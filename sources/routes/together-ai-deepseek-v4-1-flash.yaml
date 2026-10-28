@@ -44,8 +44,8 @@ carbon_intensity:
   - ca
   - us
   energy_wh:
-    low: 2.899883
-    high: 4.218011
+    low: 2.87352
+    high: 4.059836
   embodied_g:
     low: 0.261945
     high: 0.261945
@@ -53,8 +53,8 @@ carbon_intensity:
     low: 191.587
     high: 384.403
   sci_g:
-    low: 0.817525
-    high: 1.883361
+    low: 0.812474
+    high: 1.822558
   band:
   - 4
   - 5

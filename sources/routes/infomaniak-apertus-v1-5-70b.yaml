@@ -27,8 +27,8 @@ carbon_intensity:
   grids:
   - ch
   energy_wh:
-    low: 0.602735
-    high: 0.876705
+    low: 0.597256
+    high: 0.843829
   embodied_g:
     low: 0.056597
     high: 0.056597
@@ -36,8 +36,8 @@ carbon_intensity:
     low: 39.278
     high: 39.278
   sci_g:
-    low: 0.080271
-    high: 0.091032
+    low: 0.080056
+    high: 0.089741
   band:
   - 2
   - 2

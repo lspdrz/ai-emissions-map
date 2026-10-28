@@ -10,7 +10,8 @@ served_model_evidence:
 default: true
 location:
   label: OPCORE DC5, Paris
-  facilities: ["OPCORE DC5 (PAR2), Paris"]
+  facilities:
+  - name: "OPCORE DC5 (PAR2), Paris"
   candidates: ["grid:fr"]
   evidence:
   - url: https://www.scaleway.com/en/docs/generative-apis/faq.md
@@ -52,8 +53,8 @@ carbon_intensity:
   grids:
   - fr
   energy_wh:
-    low: 0.313991
-    high: 0.456713
+    low: 0.311136
+    high: 0.439587
   embodied_g:
     low: 0.027928
     high: 0.027928
@@ -61,8 +62,8 @@ carbon_intensity:
     low: 41.224
     high: 41.224
   sci_g:
-    low: 0.040872
-    high: 0.046756
+    low: 0.040754
+    high: 0.04605
   band:
   - 2
   - 2

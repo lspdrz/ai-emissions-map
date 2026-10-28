@@ -1,5 +1,5 @@
 {
-  "source": "Green Software Foundation real-time-cloud, Cloud_Region_Metadata.csv (em-zone-id)",
+  "source": "Green Software Foundation real-time-cloud, Cloud_Region_Metadata.csv (em-zone-id, power-usage-effectiveness)",
   "repository": "https://github.com/Green-Software-Foundation/real-time-cloud",
   "commit": "8f99b3bc01ecb342905b80a485573fda9494a052",
   "url": "https://raw.githubusercontent.com/Green-Software-Foundation/real-time-cloud/8f99b3bc01ecb342905b80a485573fda9494a052/Cloud_Region_Metadata.csv",

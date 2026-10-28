@@ -45,8 +45,8 @@ carbon_intensity:
   - fi
   - pl
   energy_wh:
-    low: 0.08506
-    high: 0.123724
+    low: 0.084287
+    high: 0.119084
   embodied_g:
     low: 0.007634
     high: 0.007634
@@ -54,8 +54,8 @@ carbon_intensity:
     low: 57.182
     high: 590.814
   sci_g:
-    low: 0.012498
-    high: 0.080731
+    low: 0.012453
+    high: 0.07799
   band:
   - 1
   - 2

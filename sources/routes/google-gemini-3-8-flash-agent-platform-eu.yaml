@@ -40,8 +40,8 @@ carbon_intensity:
   - nl
   - pl
   energy_wh:
-    low: 4.999842
-    high: 13.743866
+    low: 4.954389
+    high: 13.228471
   embodied_g:
     low: 0.470445
     high: 0.912183
@@ -49,8 +49,8 @@ carbon_intensity:
     low: 41.224
     high: 590.814
   sci_g:
-    low: 0.676559
-    high: 9.032251
+    low: 0.674685
+    high: 8.727749
   band:
   - 4
   - 5

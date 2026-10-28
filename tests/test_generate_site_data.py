@@ -3,7 +3,7 @@ from importlib.metadata import version
 
 import pytest
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, PUE
+from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, FALLBACK_PUE
 from build.generate_site_data import (
     SCHEMA,
     build_data,
@@ -311,7 +311,7 @@ def test_meta_states_the_release_date_and_the_configured_method():
         "release_date": "2026-10-08",
         "methodology_version": METHODOLOGY_VERSION,
         "ecologits_version": version("ecologits"),
-        "pue": list(PUE),
+        "pue": list(FALLBACK_PUE),
         "band_upper": list(CARBON_BAND_UPPER),
         "draft": DRAFT,
         "grid": {"source": "Ember", "year": GRID_YEAR},

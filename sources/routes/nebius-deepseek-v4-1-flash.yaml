@@ -57,8 +57,8 @@ carbon_intensity:
   - us-cent-swpp
   - us-midw-miso
   energy_wh:
-    low: 2.899883
-    high: 4.218011
+    low: 2.87352
+    high: 4.059836
   embodied_g:
     low: 0.261945
     high: 0.261945
@@ -66,8 +66,8 @@ carbon_intensity:
     low: 27.756
     high: 674.293
   sci_g:
-    low: 0.342434
-    high: 3.10612
+    low: 0.341702
+    high: 2.999464
   band:
   - 4
   - 5

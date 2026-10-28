@@ -1,96 +1,96 @@
-vendor,region,zone,year,location
-aws,af-south-1,ZA,2024,Africa (Cape Town)
-aws,ap-east-1,HK,2023,Asia Pacific (Hong Kong)
-aws,ap-northeast-1,JP-TK,2024,Asia Pacific (Tokyo)
-aws,ap-northeast-2,KR,2023,Asia Pacific (Seoul)
-aws,ap-northeast-3,JP-KN,2023,Asia Pacific (Osaka)
-aws,ap-south-1,IN-WE,2024,Asia Pacific (Mumbai)
-aws,ap-south-2,IN-SO,2024,Asia Pacific (Hyderabad)
-aws,ap-southeast-1,SG,2024,Asia Pacific (Singapore)
-aws,ap-southeast-2,AU-NSW,2024,Asia Pacific (Sydney)
-aws,ap-southeast-3,ID,2024,Asia Pacific (Jakarta)
-aws,ap-southeast-4,AU-VIC,2024,Asia Pacific (Melbourne)
-aws,ca-central-1,CA-QC,2024,Canada (Central)
-aws,eu-central-1,DE,2024,Europe (Frankfurt)
-aws,eu-central-2,CH,2023,Europe (Zurich)
-aws,eu-north-1,SE,2024,Europe (Stockholm)
-aws,eu-south-1,IT-NO,2023,Europe (Milan)
-aws,eu-south-2,ES,2024,Europe (Spain)
-aws,eu-west-1,IE,2024,Europe (Ireland)
-aws,eu-west-2,GB,2023,Europe (London)
-aws,eu-west-3,FR,2023,Europe (Paris)
-aws,il-central-1,IL,2023,Israel (Tel Aviv)
-aws,me-central-1,AE,2024,Middle East (UAE)
-aws,me-south-1,BH,2024,Middle East (Bahrain)
-aws,sa-east-1,BR-CS,2024,South America (São Paulo)
-aws,us-east-1,US-MIDA-PJM,2024,US East (N. Virginia)
-aws,us-east-2,US-MIDA-PJM,2024,US East (Ohio)
-aws,us-gov-east-1,US-MIDA-PJM,2023,GovCloud (US East)
-aws,us-gov-west-1,US-NW-BPAT,2023,GovCloud (US West)
-aws,us-west-1,US-CAL-CISO,2024,US West (N. California)
-aws,us-west-2,US-NW-BPAT,2024,US West (Oregon)
-gcp,africa-south1,ZA,2024,Johannesburg
-gcp,asia-east1,TW,2024,Taiwan
-gcp,asia-east2,HK,2024,Hong Kong
-gcp,asia-northeast1,JP-TK,2024,Tokyo
-gcp,asia-northeast2,JP-KN,2024,Osaka
-gcp,asia-northeast3,KR,2024,Seoul
-gcp,asia-south1,IN-WE,2024,Mumbai
-gcp,asia-south2,IN-NO,2024,Delhi
-gcp,asia-southeast1,SG,2024,Singapore
-gcp,asia-southeast2,ID,2024,Jakarta
-gcp,australia-southeast1,AU-NSW,2024,Sydney
-gcp,australia-southeast2,AU-VIC,2024,Melbourne
-gcp,europe-central2,PL,2024,Warsaw
-gcp,europe-north1,FI,2024,Finland
-gcp,europe-southwest1,ES,2024,Madrid
-gcp,europe-west1,BE,2024,Belgium
-gcp,europe-west12,IT-NO,2024,Turin
-gcp,europe-west2,GB,2024,London
-gcp,europe-west3,DE,2024,Frankfurt
-gcp,europe-west4,NL,2024,Eemshaven
-gcp,europe-west6,CH,2024,Zürich
-gcp,europe-west8,IT-NO,2024,Milan
-gcp,europe-west9,FR,2024,Paris
-gcp,me-central1,AE,2024,Doha
-gcp,me-central2,SA,2024,Dammam
-gcp,me-west1,IL,2024,Tel Aviv
-gcp,northamerica-northeast1,CA-QC,2024,Montréal
-gcp,northamerica-northeast2,CA-ON,2024,Toronto
-gcp,southamerica-east1,BR-CS,2024,Sāo Paulo
-gcp,southamerica-west1,CL-SEN,2024,Santiago
-gcp,us-central1,US-MIDW-MISO,2024,Iowa
-gcp,us-east1,US-CAR-SC,2024,South Carolina
-gcp,us-east4,US-MIDA-PJM,2024,Northern Virginia
-gcp,us-east5,US-MIDA-PJM,2024,Columbus
-gcp,us-south1,US-TEX-ERCO,2024,Dallas
-gcp,us-west1,US-NW-BPAT,2024,Oregon
-gcp,us-west2,US-CAL-CISO,2024,Los Angeles
-gcp,us-west3,US-NW-PACE,2024,Salt Lake City
-gcp,us-west4,US-NW-NEVP,2024,Las Vegas
-azure,asiapacific,ID,2023,Indonesia
-azure,australiaeast,AU-NSW,2023,Australia East
-azure,australiasoutheast,AU-VIC,2023,Australia Southeast
-azure,austriaeast,AT,2023,Austria East
-azure,brazilsouth,BR-CS,2023,Brazil
-azure,centralus,US-MIDW-MISO,2023,Iowa: Central US
-azure,denmarkeast,DK-DK2,2023,Denmark
-azure,eastus,US-MIDA-PJM,2023,Virginia: East US
-azure,eastus2,US-MIDA-PJM,2023,Virginia: East US 2
-azure,eastus3,US-SE-SOCO,2023,Georgia: East US 3
-azure,greececentral,GR,2023,Greece Central
-azure,indiasouthcentral,IN-SO,2023,India South Central
-azure,italynorth,IT-NO,2023,Italy North
-azure,mexicocentral,MX,2023,Mexico Central
-azure,newzealandnorth,NZ,2023,New Zealand
-azure,northcentralus,US-MIDW-MISO,2023,Illinois: North Central US
-azure,northeurope,FI,2023,Finland
-azure,northeurope,IE,2023,Ireland
-azure,polandcentral,PL,2023,Poland Central
-azure,southcentralus,US-TEX-ERCO,2023,Texas: South Central US
-azure,southeastasia,SG,2023,Singapore
-azure,spaincentral,ES,2023,Spain Central
-azure,swedencentral,SE,2023,Sweden
-azure,taiwannorth,TW,2023,Taiwan
-azure,westeurope,NL,2023,Netherlands
-azure,westus,US-NW-BPAT,2023,Washington: West US
+vendor,region,zone,year,location,pue,pue_year
+aws,af-south-1,ZA,2024,Africa (Cape Town),1.24,2024
+aws,ap-east-1,HK,2023,Asia Pacific (Hong Kong),,
+aws,ap-northeast-1,JP-TK,2024,Asia Pacific (Tokyo),1.27,2024
+aws,ap-northeast-2,KR,2023,Asia Pacific (Seoul),,
+aws,ap-northeast-3,JP-KN,2023,Asia Pacific (Osaka),,
+aws,ap-south-1,IN-WE,2024,Asia Pacific (Mumbai),1.42,2024
+aws,ap-south-2,IN-SO,2024,Asia Pacific (Hyderabad),1.46,2024
+aws,ap-southeast-1,SG,2024,Asia Pacific (Singapore),1.32,2024
+aws,ap-southeast-2,AU-NSW,2024,Asia Pacific (Sydney),1.16,2024
+aws,ap-southeast-3,ID,2024,Asia Pacific (Jakarta),1.4,2024
+aws,ap-southeast-4,AU-VIC,2024,Asia Pacific (Melbourne),1.07,2024
+aws,ca-central-1,CA-QC,2024,Canada (Central),1.19,2024
+aws,eu-central-1,DE,2024,Europe (Frankfurt),1.35,2024
+aws,eu-central-2,CH,2023,Europe (Zurich),,
+aws,eu-north-1,SE,2024,Europe (Stockholm),1.1,2024
+aws,eu-south-1,IT-NO,2023,Europe (Milan),,
+aws,eu-south-2,ES,2024,Europe (Spain),1.09,2024
+aws,eu-west-1,IE,2024,Europe (Ireland),1.11,2024
+aws,eu-west-2,GB,2023,Europe (London),,
+aws,eu-west-3,FR,2023,Europe (Paris),,
+aws,il-central-1,IL,2023,Israel (Tel Aviv),,
+aws,me-central-1,AE,2024,Middle East (UAE),1.27,2024
+aws,me-south-1,BH,2024,Middle East (Bahrain),1.33,2024
+aws,sa-east-1,BR-CS,2024,South America (São Paulo),1.17,2024
+aws,us-east-1,US-MIDA-PJM,2024,US East (N. Virginia),1.15,2024
+aws,us-east-2,US-MIDA-PJM,2024,US East (Ohio),1.13,2024
+aws,us-gov-east-1,US-MIDA-PJM,2023,GovCloud (US East),,
+aws,us-gov-west-1,US-NW-BPAT,2023,GovCloud (US West),,
+aws,us-west-1,US-CAL-CISO,2024,US West (N. California),1.18,2024
+aws,us-west-2,US-NW-BPAT,2024,US West (Oregon),1.12,2024
+gcp,africa-south1,ZA,2024,Johannesburg,,
+gcp,asia-east1,TW,2024,Taiwan,1.12,2024
+gcp,asia-east2,HK,2024,Hong Kong,,
+gcp,asia-northeast1,JP-TK,2024,Tokyo,,
+gcp,asia-northeast2,JP-KN,2024,Osaka,,
+gcp,asia-northeast3,KR,2024,Seoul,,
+gcp,asia-south1,IN-WE,2024,Mumbai,,
+gcp,asia-south2,IN-NO,2024,Delhi,,
+gcp,asia-southeast1,SG,2024,Singapore,1.16,2024
+gcp,asia-southeast2,ID,2024,Jakarta,,
+gcp,australia-southeast1,AU-NSW,2024,Sydney,,
+gcp,australia-southeast2,AU-VIC,2024,Melbourne,,
+gcp,europe-central2,PL,2024,Warsaw,,
+gcp,europe-north1,FI,2024,Finland,1.09,2024
+gcp,europe-southwest1,ES,2024,Madrid,,
+gcp,europe-west1,BE,2024,Belgium,1.09,2024
+gcp,europe-west12,IT-NO,2024,Turin,,
+gcp,europe-west2,GB,2024,London,,
+gcp,europe-west3,DE,2024,Frankfurt,,
+gcp,europe-west4,NL,2024,Eemshaven,1.07,2024
+gcp,europe-west6,CH,2024,Zürich,,
+gcp,europe-west8,IT-NO,2024,Milan,,
+gcp,europe-west9,FR,2024,Paris,,
+gcp,me-central1,AE,2024,Doha,,
+gcp,me-central2,SA,2024,Dammam,,
+gcp,me-west1,IL,2024,Tel Aviv,,
+gcp,northamerica-northeast1,CA-QC,2024,Montréal,,
+gcp,northamerica-northeast2,CA-ON,2024,Toronto,,
+gcp,southamerica-east1,BR-CS,2024,Sāo Paulo,,
+gcp,southamerica-west1,CL-SEN,2024,Santiago,1.12,2024
+gcp,us-central1,US-MIDW-MISO,2024,Iowa,1.1,2024
+gcp,us-east1,US-CAR-SC,2024,South Carolina,1.1,2024
+gcp,us-east4,US-MIDA-PJM,2024,Northern Virginia,1.09,2024
+gcp,us-east5,US-MIDA-PJM,2024,Columbus,1.09,2024
+gcp,us-south1,US-TEX-ERCO,2024,Dallas,1.12,2024
+gcp,us-west1,US-NW-BPAT,2024,Oregon,1.07,2024
+gcp,us-west2,US-CAL-CISO,2024,Los Angeles,,
+gcp,us-west3,US-NW-PACE,2024,Salt Lake City,,
+gcp,us-west4,US-NW-NEVP,2024,Las Vegas,1.08,2024
+azure,asiapacific,ID,2023,Indonesia,1.32,2022
+azure,australiaeast,AU-NSW,2023,Australia East,1.12,2022
+azure,australiasoutheast,AU-VIC,2023,Australia Southeast,1.12,2022
+azure,austriaeast,AT,2023,Austria East,1.12,2022
+azure,brazilsouth,BR-CS,2023,Brazil,1.12,2022
+azure,centralus,US-MIDW-MISO,2023,Iowa: Central US,1.16,2023
+azure,denmarkeast,DK-DK2,2023,Denmark,1.16,2022
+azure,eastus,US-MIDA-PJM,2023,Virginia: East US,1.14,2023
+azure,eastus2,US-MIDA-PJM,2023,Virginia: East US 2,1.14,2023
+azure,eastus3,US-SE-SOCO,2023,Georgia: East US 3,1.12,2022
+azure,greececentral,GR,2023,Greece Central,1.12,2022
+azure,indiasouthcentral,IN-SO,2023,India South Central,1.43,2022
+azure,italynorth,IT-NO,2023,Italy North,1.12,2022
+azure,mexicocentral,MX,2023,Mexico Central,1.12,2022
+azure,newzealandnorth,NZ,2023,New Zealand,1.12,2022
+azure,northcentralus,US-MIDW-MISO,2023,Illinois: North Central US,1.35,2023
+azure,northeurope,FI,2023,Finland,1.19,2023
+azure,northeurope,IE,2023,Ireland,1.19,2023
+azure,polandcentral,PL,2023,Poland Central,1.12,2022
+azure,southcentralus,US-TEX-ERCO,2023,Texas: South Central US,1.28,2023
+azure,southeastasia,SG,2023,Singapore,1.34,2023
+azure,spaincentral,ES,2023,Spain Central,1.12,2022
+azure,swedencentral,SE,2023,Sweden,1.16,2023
+azure,taiwannorth,TW,2023,Taiwan,1.2,2022
+azure,westeurope,NL,2023,Netherlands,1.14,2023
+azure,westus,US-NW-BPAT,2023,Washington: West US,1.15,2023

@@ -1,7 +1,7 @@
 from build.disclosure_rating import disclosure_rating, organization_rating
 from tests.builders.evidence import make_evidence
 from tests.builders.grid import make_grid
-from tests.builders.location import make_location
+from tests.builders.location import make_facility, make_location
 
 
 # A route's rating: how precisely its location's primary evidence determines where its electricity comes from. A named
@@ -10,12 +10,15 @@ from tests.builders.location import make_location
 
 
 def test_a_route_naming_its_facilities_is_a():
-    location = make_location(candidates=["grid:ch"], facilities=["Acme 1, Geneva"])
+    location = make_location(candidates=["grid:ch"], facilities=[make_facility("Acme 1, Geneva")])
     assert disclosure_rating(location, {"ch": make_grid()}) == {"letter": "A", "gap": None}
 
 
 def test_a_route_naming_its_facilities_is_a_whatever_its_grids():
-    location = make_location(candidates=["grid:ch", "grid:de"], facilities=["Acme 1, Geneva", "Acme 2, Frankfurt"])
+    location = make_location(
+        candidates=["grid:ch", "grid:de"],
+        facilities=[make_facility("Acme 1, Geneva"), make_facility("Acme 2, Frankfurt")],
+    )
     grids = {"ch": make_grid(), "de": make_grid(name="de", country="DE", zone="DE")}
     assert disclosure_rating(location, grids) == {"letter": "A", "gap": None}
 

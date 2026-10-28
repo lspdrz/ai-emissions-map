@@ -20,13 +20,13 @@
       "year": 2025
     },
     "grid_intensity_spread": 25,
-    "inputs_sha": "cd95bbdf00845dd4e17cdd5e421edae2b5264ce7ad1facc613dbbae56a41495e",
-    "methodology_version": "0.3.0",
+    "inputs_sha": "5e67d656165f28b842dfea86883014687cecf60c40560678297b2664ca48a4b4",
+    "methodology_version": "0.4.0",
     "pue": [
-      1.1,
-      1.6
+      1.09,
+      1.54
     ],
-    "release_date": "2026-10-25"
+    "release_date": "2026-10-28"
   },
   "models": [
     {
@@ -828,8 +828,8 @@
         "low": 0.452776
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.821879
+        "high": 13.228471,
+        "low": 4.778044
       },
       "gap": "Location not disclosed by the provider.",
       "grid_intensity": null,
@@ -852,8 +852,8 @@
         "low": 0.452776
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.821879
+        "high": 13.228471,
+        "low": 4.778044
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -865,8 +865,8 @@
       "model": "claude-opus-5-5",
       "org": "anthropic",
       "sci": {
-        "high": 6.195366,
-        "low": 2.30632
+        "high": 5.997247,
+        "low": 2.28947
       },
       "served_as": null,
       "slug": "anthropic-claude-opus-5-5-us"
@@ -882,8 +882,8 @@
         "low": 0.261945
       },
       "energy": {
-        "high": 4.218011,
-        "low": 2.899883
+        "high": 4.059836,
+        "low": 2.87352
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -895,8 +895,8 @@
       "model": "deepseek-v4-1-flash-1017",
       "org": "deepseek",
       "sci": {
-        "high": 2.490228,
-        "low": 1.793889
+        "high": 2.406667,
+        "low": 1.779962
       },
       "served_as": "deepseek-flash",
       "slug": "deepseek-deepseek-v4-1-flash-1017"
@@ -912,8 +912,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -925,8 +925,8 @@
       "model": "gemini-3-6-flash",
       "org": "google",
       "sci": {
-        "high": 9.032251,
-        "low": 0.676559
+        "high": 8.727749,
+        "low": 0.674685
       },
       "served_as": null,
       "slug": "google-gemini-3-6-flash-agent-platform-eu"
@@ -942,8 +942,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -955,8 +955,8 @@
       "model": "gemini-3-6-flash",
       "org": "google",
       "sci": {
-        "high": 10.606089,
-        "low": 0.666829
+        "high": 10.242567,
+        "low": 0.665044
       },
       "served_as": null,
       "slug": "google-gemini-3-6-flash-agent-platform-global"
@@ -972,8 +972,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -985,8 +985,8 @@
       "model": "gemini-3-6-flash",
       "org": "google",
       "sci": {
-        "high": 9.430782,
-        "low": 1.416735
+        "high": 9.111335,
+        "low": 1.408133
       },
       "served_as": null,
       "slug": "google-gemini-3-6-flash-agent-platform-us"
@@ -1002,8 +1002,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1015,8 +1015,8 @@
       "model": "gemini-3-8-flash",
       "org": "google",
       "sci": {
-        "high": 9.032251,
-        "low": 0.676559
+        "high": 8.727749,
+        "low": 0.674685
       },
       "served_as": null,
       "slug": "google-gemini-3-8-flash-agent-platform-eu"
@@ -1032,8 +1032,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1045,8 +1045,8 @@
       "model": "gemini-3-8-flash",
       "org": "google",
       "sci": {
-        "high": 10.606089,
-        "low": 0.666829
+        "high": 10.242567,
+        "low": 0.665044
       },
       "served_as": null,
       "slug": "google-gemini-3-8-flash-agent-platform-global"
@@ -1062,8 +1062,8 @@
         "low": 0.470445
       },
       "energy": {
-        "high": 13.743866,
-        "low": 4.999842
+        "high": 13.228471,
+        "low": 4.954389
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1075,8 +1075,8 @@
       "model": "gemini-3-8-flash",
       "org": "google",
       "sci": {
-        "high": 9.430782,
-        "low": 1.416735
+        "high": 9.111335,
+        "low": 1.408133
       },
       "served_as": null,
       "slug": "google-gemini-3-8-flash-agent-platform-us"
@@ -1092,8 +1092,8 @@
         "low": 0.056597
       },
       "energy": {
-        "high": 0.876705,
-        "low": 0.602735
+        "high": 0.843829,
+        "low": 0.597256
       },
       "gap": "The grid is disclosed, not the facility.",
       "grid_intensity": {
@@ -1105,8 +1105,8 @@
       "model": "apertus-v1-5-70b",
       "org": "infomaniak",
       "sci": {
-        "high": 0.091032,
-        "low": 0.080271
+        "high": 0.089741,
+        "low": 0.080056
       },
       "served_as": "swiss-ai/Apertus-v1.5-70B",
       "slug": "infomaniak-apertus-v1-5-70b"
@@ -1122,8 +1122,8 @@
         "low": 0.343225
       },
       "energy": {
-        "high": 5.408743,
-        "low": 3.718511
+        "high": 5.205915,
+        "low": 3.684706
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1135,8 +1135,8 @@
       "model": "mistral-large-3-675b-instruct-2512",
       "org": "mistral-ai",
       "sci": {
-        "high": 1.173245,
-        "low": 0.447529
+        "high": 1.142119,
+        "low": 0.446581
       },
       "served_as": "mistral-large-2512",
       "slug": "mistral-ai-mistral-large-3-675b-instruct-2512"
@@ -1152,8 +1152,8 @@
         "low": 0.082218
       },
       "energy": {
-        "high": 1.252045,
-        "low": 0.860781
+        "high": 1.205093,
+        "low": 0.852955
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1165,8 +1165,8 @@
       "model": "mistral-medium-3-5-128b",
       "org": "mistral-ai",
       "sci": {
-        "high": 0.274355,
-        "low": 0.106363
+        "high": 0.26715,
+        "low": 0.106143
       },
       "served_as": "mistral-medium-3-5",
       "slug": "mistral-ai-mistral-medium-3-5-128b"
@@ -1174,7 +1174,7 @@
     {
       "band": [
         2,
-        3
+        2
       ],
       "default": true,
       "embodied": {
@@ -1182,8 +1182,8 @@
         "low": 0.028547
       },
       "energy": {
-        "high": 0.465773,
-        "low": 0.320219
+        "high": 0.448307,
+        "low": 0.317308
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1195,8 +1195,8 @@
       "model": "mistral-small-4-119b-2603",
       "org": "mistral-ai",
       "sci": {
-        "high": 0.100024,
-        "low": 0.037529
+        "high": 0.097343,
+        "low": 0.037447
       },
       "served_as": "mistral-small-2603",
       "slug": "mistral-ai-mistral-small-4-119b-2603"
@@ -1212,8 +1212,8 @@
         "low": 0.261945
       },
       "energy": {
-        "high": 4.218011,
-        "low": 2.899883
+        "high": 4.059836,
+        "low": 2.87352
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1225,8 +1225,8 @@
       "model": "deepseek-v4-1-flash",
       "org": "nebius",
       "sci": {
-        "high": 3.10612,
-        "low": 0.342434
+        "high": 2.999464,
+        "low": 0.341702
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "nebius-deepseek-v4-1-flash"
@@ -1242,8 +1242,8 @@
         "low": 0.021767
       },
       "energy": {
-        "high": 0.342673,
-        "low": 0.235588
+        "high": 0.329823,
+        "low": 0.233446
       },
       "gap": "The grid is disclosed, not the facility.",
       "grid_intensity": {
@@ -1255,8 +1255,8 @@
       "model": "alia-40b-instruct",
       "org": "public-ai",
       "sci": {
-        "high": 0.074354,
-        "low": 0.05792
+        "high": 0.072382,
+        "low": 0.057592
       },
       "served_as": "BSC-LT/ALIA-40b-instruct",
       "slug": "public-ai-alia-40b-instruct"
@@ -1272,8 +1272,8 @@
         "low": 0.056597
       },
       "energy": {
-        "high": 0.876705,
-        "low": 0.602735
+        "high": 0.843829,
+        "low": 0.597256
       },
       "gap": null,
       "grid_intensity": {
@@ -1285,8 +1285,8 @@
       "model": "apertus-v1-5-70b",
       "org": "public-ai",
       "sci": {
-        "high": 0.091032,
-        "low": 0.080271
+        "high": 0.089741,
+        "low": 0.080056
       },
       "served_as": "swiss-ai/apertus-v1.5-70b",
       "slug": "public-ai-apertus-v1-5-70b"
@@ -1302,8 +1302,8 @@
         "low": 0.007634
       },
       "energy": {
-        "high": 0.123724,
-        "low": 0.08506
+        "high": 0.119084,
+        "low": 0.084287
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1315,8 +1315,8 @@
       "model": "bielik-11b-v3-0-instruct",
       "org": "public-ai",
       "sci": {
-        "high": 0.080731,
-        "low": 0.012498
+        "high": 0.07799,
+        "low": 0.012453
       },
       "served_as": "speakleash/Bielik-11B-v3.0-Instruct",
       "slug": "public-ai-bielik-11b-v3-0-instruct"
@@ -1329,8 +1329,8 @@
         "low": 0.009953
       },
       "energy": {
-        "high": 0.157698,
-        "low": 0.108418
+        "high": 0.151785,
+        "low": 0.107432
       },
       "gap": "Location not disclosed by the provider.",
       "grid_intensity": null,
@@ -1353,8 +1353,8 @@
         "low": 0.261945
       },
       "energy": {
-        "high": 4.218011,
-        "low": 2.899883
+        "high": 4.059836,
+        "low": 2.87352
       },
       "gap": null,
       "grid_intensity": {
@@ -1366,8 +1366,8 @@
       "model": "deepseek-v4-1-flash",
       "org": "scaleway",
       "sci": {
-        "high": 0.435828,
-        "low": 0.38149
+        "high": 0.429308,
+        "low": 0.380403
       },
       "served_as": "deepseek-v4.1-flash",
       "slug": "scaleway-deepseek-v4-1-flash"
@@ -1383,8 +1383,8 @@
         "low": 0.027928
       },
       "energy": {
-        "high": 0.456713,
-        "low": 0.313991
+        "high": 0.439587,
+        "low": 0.311136
       },
       "gap": null,
       "grid_intensity": {
@@ -1396,8 +1396,8 @@
       "model": "gpt-oss-120b",
       "org": "scaleway",
       "sci": {
-        "high": 0.046756,
-        "low": 0.040872
+        "high": 0.04605,
+        "low": 0.040754
       },
       "served_as": "gpt-oss-120b",
       "slug": "scaleway-gpt-oss-120b"
@@ -1413,8 +1413,8 @@
         "low": 0.082218
       },
       "energy": {
-        "high": 1.252045,
-        "low": 0.860781
+        "high": 1.205093,
+        "low": 0.852955
       },
       "gap": null,
       "grid_intensity": {
@@ -1426,8 +1426,8 @@
       "model": "mistral-medium-3-5-128b",
       "org": "scaleway",
       "sci": {
-        "high": 0.133832,
-        "low": 0.117703
+        "high": 0.131896,
+        "low": 0.11738
       },
       "served_as": "mistral-medium-3.5-128b",
       "slug": "scaleway-mistral-medium-3-5-128b"
@@ -1443,8 +1443,8 @@
         "low": 0.261945
       },
       "energy": {
-        "high": 4.218011,
-        "low": 2.899883
+        "high": 4.059836,
+        "low": 2.87352
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1456,8 +1456,8 @@
       "model": "deepseek-v4-1-flash",
       "org": "together-ai",
       "sci": {
-        "high": 1.883361,
-        "low": 0.817525
+        "high": 1.822558,
+        "low": 0.812474
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
       "slug": "together-ai-deepseek-v4-1-flash"
@@ -1473,8 +1473,8 @@
         "low": 0.261945
       },
       "energy": {
-        "high": 4.218011,
-        "low": 2.899883
+        "high": 4.059836,
+        "low": 2.87352
       },
       "gap": "The grid is not determined: several are possible.",
       "grid_intensity": {
@@ -1486,8 +1486,8 @@
       "model": "deepseek-v4-1-flash-1017",
       "org": "together-ai",
       "sci": {
-        "high": 1.883361,
-        "low": 0.817525
+        "high": 1.822558,
+        "low": 0.812474
       },
       "served_as": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
       "slug": "together-ai-deepseek-v4-1-flash-1017"

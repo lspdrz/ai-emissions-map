@@ -38,8 +38,8 @@ carbon_intensity:
   - us-nw-pace
   - us-tex-erco
   energy_wh:
-    low: 4.999842
-    high: 13.743866
+    low: 4.954389
+    high: 13.228471
   embodied_g:
     low: 0.470445
     high: 0.912183
@@ -47,8 +47,8 @@ carbon_intensity:
     low: 189.264
     high: 619.811
   sci_g:
-    low: 1.416735
-    high: 9.430782
+    low: 1.408133
+    high: 9.111335
   band:
   - 5
   - 5

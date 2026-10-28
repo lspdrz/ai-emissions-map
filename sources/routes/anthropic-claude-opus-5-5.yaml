@@ -23,8 +23,8 @@ disclosure_rating:
 carbon_intensity:
   grids: []
   energy_wh:
-    low: 4.821879
-    high: 13.743866
+    low: 4.778044
+    high: 13.228471
   embodied_g:
     low: 0.452776
     high: 0.912183

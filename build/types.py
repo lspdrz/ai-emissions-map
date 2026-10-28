@@ -15,6 +15,14 @@ from build.schemas.route import Route
 from build.schemas.score import OrgRating, RouteScore
 
 
+class CloudRegion(TypedDict):
+    """A cloud region as load_cloud_regions reads it from the cloud-region table: the grid zones it draws on, sorted,
+    and its published PUE (None when it has none)."""
+
+    zones: list[str]
+    pue: float | None
+
+
 class Sources(TypedDict):
     """Everything load_sources returns: each record keyed by its filename stem."""
 

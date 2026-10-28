@@ -80,8 +80,8 @@ carbon_intensity:
   - us-tex-erco
   - za
   energy_wh:
-    low: 4.999842
-    high: 13.743866
+    low: 4.954389
+    high: 13.228471
   embodied_g:
     low: 0.470445
     high: 0.912183
@@ -89,8 +89,8 @@ carbon_intensity:
     low: 39.278
     high: 705.326
   sci_g:
-    low: 0.666829
-    high: 10.606089
+    low: 0.665044
+    high: 10.242567
   band:
   - 4
   - 5

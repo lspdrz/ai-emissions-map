@@ -14,6 +14,7 @@ from build.schemas.grid import CheckedGrid
 from build.schemas.model import Model
 from build.schemas.organization import Organization
 from build.schemas.route import CheckedRoute
+from build.types import CloudRegion
 
 
 # What the records in each sources/ folder must look like (build/schemas/), in SOURCE_DIRS order.
@@ -132,7 +133,7 @@ def check_unused_grids(grids: dict, used: set[str]) -> list[str]:
 
 
 def check_candidates(
-    routes: dict, all_grids: dict, cloud_regions: Mapping[tuple[str, str], list[str]] | None
+    routes: dict, all_grids: dict, cloud_regions: Mapping[tuple[str, str], CloudRegion] | None
 ) -> tuple[list[str], set[str]]:
     """Every route's candidates resolve to grid files that exist (valid or not, so an invalid file is reported only
     once): a grid: candidate to its file, a cloud: candidate through the cloud-region data and its zones (checked only
@@ -159,7 +160,7 @@ def check_candidates(
                 if (vendor, region) not in cloud_regions:
                     errors.append(f"{where}: cloud region {vendor}:{region} is not in the cloud-region data")
                     continue
-                for zone in cloud_regions[(vendor, region)]:
+                for zone in cloud_regions[(vendor, region)]["zones"]:
                     if zone in zones:
                         used.add(zones[zone])
                     else:
@@ -194,11 +195,11 @@ def check_defaults(routes: dict) -> list[str]:
 def validate_sources(
     data: Mapping[str, Any],
     *,
-    cloud_regions: Mapping[tuple[str, str], list[str]] | None = None,
+    cloud_regions: Mapping[tuple[str, str], CloudRegion] | None = None,
 ) -> list[str]:
     """Every problem in the corpus, one message per problem, each naming the file it is in.
 
-    The optional cloud_regions ((vendor, region) -> zone codes, which grid files claim) switches on the check against
+    The optional cloud_regions ((vendor, region) -> its zone codes, which grid files claim, and its PUE) switches on the check against
     outside data: with it, an unused grid file is an error.
     """
     errors = [

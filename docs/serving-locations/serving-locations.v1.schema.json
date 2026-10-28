@@ -174,7 +174,32 @@
                 "minimum": 0,
                 "maximum": 1,
                 "description": "Intended share of this route's traffic. Shown, not used to average"
+              },
+              "pue": {
+                "type": "object",
+                "required": [
+                  "value",
+                  "period_end"
+                ],
+                "additionalProperties": false,
+                "description": "The facility's Power Usage Effectiveness: its total energy over its IT energy, measured over twelve months (ISO/IEC 30134-2). Not a design figure, a single month or an average across facilities. Only for a location that names its facility",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 1
+                  },
+                  "period_end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "description": "The last day of the twelve months the value covers"
+                  }
+                }
               }
+            },
+            "dependentRequired": {
+              "pue": [
+                "facility"
+              ]
             }
           }
         }

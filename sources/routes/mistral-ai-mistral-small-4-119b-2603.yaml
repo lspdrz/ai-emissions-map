@@ -57,8 +57,8 @@ carbon_intensity:
   - 'no'
   - se
   energy_wh:
-    low: 0.320219
-    high: 0.465773
+    low: 0.317308
+    high: 0.448307
   embodied_g:
     low: 0.028547
     high: 0.028547
@@ -66,8 +66,8 @@ carbon_intensity:
     low: 28.05
     high: 153.459
   sci_g:
-    low: 0.037529
-    high: 0.100024
+    low: 0.037447
+    high: 0.097343
   band:
   - 2
-  - 3
+  - 2
