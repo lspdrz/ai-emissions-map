@@ -172,7 +172,9 @@ def test_estimate_lists_every_route_of_the_model_and_no_other(monkeypatch):
     }
 
 
-def test_estimate_lists_routes_lowest_carbon_first_and_those_without_a_grid_last(monkeypatch):
+def test_estimate_lists_routes_by_the_midpoint_of_their_carbon_and_those_without_a_grid_last(monkeypatch):
+    # By midpoint: narrow (0.6), wide (0.8), upper (0.825). Sorting by the low end would put wide first, and by the high
+    # end upper before wide; only the midpoint gives this order. The release lists them the other way round.
     data = make_data(
         schema="aem-data/4",
         meta=make_data_meta(
@@ -200,37 +202,51 @@ def test_estimate_lists_routes_lowest_carbon_first_and_those_without_a_grid_last
                 sci=None,
             ),
             make_data_route(
-                slug="high",
+                slug="upper",
                 org="acme",
                 model="m-70b",
-                label="High",
+                label="Upper",
                 default=False,
                 letter="C",
                 gap=None,
                 served_as=None,
                 energy={"low": 0.6, "high": 0.8},
                 embodied={"low": 0.05, "high": 0.05},
-                grid_intensity={"low": 700.0, "high": 1000.0},
-                sci={"low": 0.5, "high": 0.9},
+                grid_intensity={"low": 750.0, "high": 1200.0},
+                sci={"low": 0.65, "high": 1.0},
             ),
             make_data_route(
-                slug="low",
+                slug="wide",
                 org="acme",
                 model="m-70b",
-                label="Low",
+                label="Wide",
                 default=False,
                 letter="C",
                 gap=None,
                 served_as=None,
                 energy={"low": 0.6, "high": 0.8},
                 embodied={"low": 0.05, "high": 0.05},
-                grid_intensity={"low": 80.0, "high": 1000.0},
-                sci={"low": 0.1, "high": 0.9},
+                grid_intensity={"low": 80.0, "high": 1800.0},
+                sci={"low": 0.1, "high": 1.5},
+            ),
+            make_data_route(
+                slug="narrow",
+                org="acme",
+                model="m-70b",
+                label="Narrow",
+                default=False,
+                letter="C",
+                gap=None,
+                served_as=None,
+                energy={"low": 0.6, "high": 0.8},
+                embodied={"low": 0.05, "high": 0.05},
+                grid_intensity={"low": 750.0, "high": 810.0},
+                sci={"low": 0.5, "high": 0.7},
             ),
         ],
     )
     monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
-    assert [route["route"] for route in estimate("M 70B", 1000)["routes"]] == ["low", "high", "no-grid"]
+    assert [route["route"] for route in estimate("M 70B", 1000)["routes"]] == ["narrow", "wide", "upper", "no-grid"]
 
 
 def test_a_route_without_a_grid_gives_energy_and_no_grams(monkeypatch):
