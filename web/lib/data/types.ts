@@ -22,7 +22,8 @@ export interface Model {
   active_b: Params | null; total_b: Params | null;
 }
 export interface Meta {
-  release_date: string; inputs_sha: string; methodology_version: string; ecologits_version: string; pue: [number, number];
+  release_date: string; inputs_sha: string; methodology_version: string; ecologits_version: string;
+  functional_unit: { output_tokens: number }; pue: [number, number];
   band_upper: number[]; draft: boolean; grid: { source: string; year: number };
   counts: { organizations: number; routes: number; models: number; grids: number };
   grid_intensity_spread: number | null; featured_model: string | null;
