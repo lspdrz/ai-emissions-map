@@ -91,7 +91,7 @@ def test_a_command_with_nothing_to_report_says_so(monkeypatch, capsys, command, 
     "command, about",
     [
         ("score", "check sources/, write the disclosure_rating: and carbon_intensity: fields"),
-        ("release", "validate sources/ and write web/data/data.json; computes nothing"),
+        ("release", "validate sources/ and write data/data.json; computes nothing"),
         ("check-carbon-intensities", "CI gate: every route's stored carbon intensity is what score would write now"),
         (
             "check-disclosure-ratings",
@@ -99,7 +99,7 @@ def test_a_command_with_nothing_to_report_says_so(monkeypatch, capsys, command, 
         ),
         (
             "check-site-data",
-            "CI gate: web/data/data.json is current with what it was built from and keeps to its contract",
+            "CI gate: data/data.json is current with what it was built from and keeps to its contract",
         ),
     ],
 )

@@ -4,7 +4,7 @@
 
 ## What this is
 
-A static Next.js (App Router) site: `next build` exports every page from `data/data.json` (contract
+A static Next.js (App Router) site: `next build` exports every page from `../data/data.json` (contract
 `aem-data/1`), which the Python pipeline writes and commits. No server, no database, no scoring logic here:
 every number comes from `data.json`. Routes: `/` (overview). Deployed on Vercel from `web/`.
 

@@ -1,4 +1,4 @@
-"""The website's data: web/data/data.json, copied from the fields `python -m build score` writes in sources/, under
+"""The website's data: data/data.json, copied from the fields `python -m build score` writes in sources/, under
 its contract.
 
 The data file holds only what the site displays: per-route results (each carbon intensity with its energy E, grid intensity I

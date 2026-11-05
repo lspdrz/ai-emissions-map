@@ -4,7 +4,7 @@ build/schemas/carbon_intensity.py), an organization's `disclosure_rating:`.
 
 Validated with their record, strictly (a whole number is accepted as a float). The CI gates check every stored value
 against what `python -m build score` computes. `python -m build release` copies the routes' and organizations' into
-web/data/data.json."""
+data/data.json."""
 
 from typing import TypedDict
 

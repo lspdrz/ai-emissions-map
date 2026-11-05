@@ -46,7 +46,7 @@ def test_a_release_writes_the_data_file(tmp_path):
         models=[make_model(name="m-70b")],
     )
     write_corpus(tmp_path, corpus)
-    assert release(tmp_path, date(2026, 10, 15)) == ([], [tmp_path / "web" / "data" / "data.json"])
+    assert release(tmp_path, date(2026, 10, 15)) == ([], [tmp_path / "data" / "data.json"])
 
 
 def test_a_release_copies_each_routes_stored_fields(tmp_path):
@@ -79,7 +79,7 @@ def test_a_release_copies_each_routes_stored_fields(tmp_path):
     )
     write_corpus(tmp_path, corpus)
     release(tmp_path, date(2026, 10, 15))
-    [route] = json.loads((tmp_path / "web" / "data" / "data.json").read_text())["routes"]
+    [route] = json.loads((tmp_path / "data" / "data.json").read_text())["routes"]
     assert (route["letter"], route["sci"], route["band"]) == ("B", {"low": 0.065, "high": 0.078}, [2, 2])
 
 
@@ -113,7 +113,7 @@ def test_with_no_previous_data_file_the_release_date_is_the_run_date(tmp_path):
     )
     write_corpus(tmp_path, corpus)
     release(tmp_path, date(2026, 10, 15))
-    assert json.loads((tmp_path / "web" / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
+    assert json.loads((tmp_path / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
 
 
 def test_a_release_records_the_hash_of_its_inputs(tmp_path):
@@ -146,7 +146,7 @@ def test_a_release_records_the_hash_of_its_inputs(tmp_path):
     )
     write_corpus(tmp_path, corpus)
     release(tmp_path, date(2026, 10, 15))
-    data = json.loads((tmp_path / "web" / "data" / "data.json").read_text())
+    data = json.loads((tmp_path / "data" / "data.json").read_text())
     assert data["meta"]["inputs_sha"] == inputs_sha(tmp_path)
 
 
@@ -172,7 +172,7 @@ def test_a_route_without_stored_fields_says_to_run_score(tmp_path):
         ],
         [],
     )
-    assert not (tmp_path / "web" / "data" / "data.json").exists()
+    assert not (tmp_path / "data" / "data.json").exists()
 
 
 def test_invalid_sources_write_nothing(tmp_path):
@@ -210,7 +210,7 @@ def test_invalid_sources_write_nothing(tmp_path):
         ["routes/acme-m-70b.yaml: carbon_intensity: Input should be a valid dictionary"],
         [],
     )
-    assert not (tmp_path / "web" / "data" / "data.json").exists()
+    assert not (tmp_path / "data" / "data.json").exists()
 
 
 def test_a_rerun_on_unchanged_inputs_writes_nothing(tmp_path):
@@ -281,7 +281,7 @@ def test_a_change_the_site_does_not_show_keeps_the_release_date(tmp_path):
     # the site shows, stays the same.
     route.write_text("# a comment\n" + route.read_text())
     release(tmp_path, date(2026, 10, 20))
-    assert json.loads((tmp_path / "web" / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
+    assert json.loads((tmp_path / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
 
 
 def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
@@ -318,8 +318,8 @@ def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
     # A YAML comment: the file's bytes change, so the inputs hash moves, but the record it holds, and so everything
     # the site shows, stays the same.
     route.write_text("# a comment\n" + route.read_text())
-    assert release(tmp_path, date(2026, 10, 20)) == ([], [tmp_path / "web" / "data" / "data.json"])
-    data = json.loads((tmp_path / "web" / "data" / "data.json").read_text())
+    assert release(tmp_path, date(2026, 10, 20)) == ([], [tmp_path / "data" / "data.json"])
+    data = json.loads((tmp_path / "data" / "data.json").read_text())
     assert data["meta"]["inputs_sha"] == inputs_sha(tmp_path)
 
 
@@ -353,13 +353,13 @@ def test_a_change_the_site_shows_moves_the_release_date(tmp_path):
     )
     write_corpus(tmp_path, corpus)
     release(tmp_path, date(2026, 10, 15))
-    assert json.loads((tmp_path / "web" / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
+    assert json.loads((tmp_path / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-15"
     idle = make_organization(
         name="idle", disclosure_rating={"letter": None, "mean": None, "spread": {}, "summary": "Not rated (no routes)"}
     )
     write_source(tmp_path, "organizations/idle.yaml", yaml.safe_dump(dict(idle), sort_keys=False))
     release(tmp_path, date(2026, 10, 20))
-    assert json.loads((tmp_path / "web" / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-20"
+    assert json.loads((tmp_path / "data" / "data.json").read_text())["meta"]["release_date"] == "2026-10-20"
 
 
 def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
@@ -392,7 +392,7 @@ def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
     )
     write_corpus(tmp_path, corpus)
     release(tmp_path, date(2026, 10, 15))
-    data_file = tmp_path / "web" / "data" / "data.json"
+    data_file = tmp_path / "data" / "data.json"
     data_file.write_text("<<<<<<< HEAD\n" + data_file.read_text() + "=======\n{}\n>>>>>>> other\n")
     assert release(tmp_path, date(2026, 10, 20)) == ([], [data_file])
     assert json.loads(data_file.read_text())["meta"]["release_date"] == "2026-10-20"

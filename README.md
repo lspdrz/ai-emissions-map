@@ -10,7 +10,7 @@ The AI Emissions Map estimates the emissions of AI **serving routes** (an organi
   grid, C several possible grids, D undisclosed). An organization's rating is the mean of its routes'.
 
 Every input is curated as YAML in `sources/`, each claim with its evidence; the Python pipeline in `build/` computes
-the carbon intensities and ratings and writes `web/data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.
+the carbon intensities and ratings and writes `data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.
 
 ## Documentation
 
@@ -33,7 +33,7 @@ cd ai-emissions-map
 # The data pipeline
 uv sync                              # install the Python dependencies
 uv run python -m build score         # check sources/, write each route's and organization's scores and ratings
-uv run python -m build release       # validate and write web/data/data.json
+uv run python -m build release       # validate and write data/data.json
 uv run pytest                        # run the tests
 
 # The website
@@ -52,9 +52,9 @@ New organizations, routes, grids and models are added by pull request.
 3. **Cite every claim.** Read each page yourself and quote the passage that supports the claim in `shows`, with
    the date you read it ([`docs/reference/evidence-and-freshness.md`](docs/reference/evidence-and-freshness.md)).
 4. **Regenerate the results:** run `uv run python -m build score`, then `uv run python -m build release`. Never
-   edit the generated `disclosure_rating` and `carbon_intensity` fields or `web/data/data.json` by hand.
+   edit the generated `disclosure_rating` and `carbon_intensity` fields or `data/data.json` by hand.
 5. **Check:** `uv run pytest` passes.
-6. **Commit everything**: your files, the fields that the `score` command wrote and `web/data/data.json`.
+6. **Commit everything**: your files, the fields that the `score` command wrote and `data/data.json`.
 7. **Open a pull request against `main`.** Describe what you added and the evidence for each source.
 
 ## License
