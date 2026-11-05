@@ -43,12 +43,15 @@ sources/snapshots/       imported data, each file with a <stem>.provenance.json
   grid_intensity.csv     country / US state / Chinese province -> yearly grid intensity, from Ember (import-ember)
   files/                 the downloads the two imports read, as downloaded (ember_files/, gsf_files/)
 build/                   Python modules; the command is `python -m build` (see --help)
+tools/                   what can be asked of data/data.json: a response's emissions on every route of its model
+mcp_server/              a read-only MCP server over tools/: `python -m mcp_server` (stdio) or `--http`
 docs/                    methodology, workflows, reference rules, serving-locations/ (the format to publish)
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
 data/                    data.json: the release, written by build and committed; the site reads it
 web/                     the Next.js site
-tests/                   pytest; tests/build/ is laid out like build/; each test builds its data with tests/builders/
-                         (records valid by construction; tests/builders/broken.py to break one)
+tests/                   pytest; tests/build/, tests/tools/ and tests/mcp_server/ are laid out like their packages;
+                         each test builds its data with tests/builders/ (records valid by construction;
+                         tests/builders/broken.py to break one; tests/builders/data.py for data.json's entries)
 ```
 
 ## The `build/` modules
@@ -109,9 +112,34 @@ build/
   `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`, and `types` only `schemas/`;
   `utils/` imports only other `utils/`; every other module may import them, never the
   other way round. Imports are absolute and at the top of the file, with no exceptions.
-- **Types** are checked in CI by `uv run pyright` (standard mode, `build/` and `tests/`).
+- **Types** are checked in CI by `uv run pyright` (standard mode, `build/`, `tools/`, `mcp_server/` and `tests/`).
 - **Formatting** is `uv run ruff format`, 120 columns (`pyproject.toml`); CI fails on any file it would change. The
   VS Code Ruff extension formats to the same width on save.
+
+## `tools/` and the MCP server
+
+```
+tools/
+  estimate_emissions.py  a model + a response's output tokens -> its energy and emissions on every route of the model
+  types.py               the part of data.json that tools/ reads (Published*) and what it returns: never validated
+mcp_server/
+  server.py              the MCP server: the estimate_emissions tool over tools/, served over stdio or HTTP
+  __main__.py            python -m mcp_server, or python -m mcp_server --http (stateless, on $PORT)
+```
+
+- **`tools/` reads only `data/data.json`,** the release `build/` publishes, never `sources/`; it uses the standard
+  library alone, and the functional unit it scales by is `meta.functional_unit`. It reads the file once
+  (`published_data()`, cached); tests replace that function with data built by `tests/builders/data.py`.
+- **An estimate gives every route of the model,** sorted by the midpoint of its carbon range, and never picks one:
+  the model answering rarely knows which route serves it. A route without a grid gets its energy and null grams.
+- **The MCP server is a thin layer:** each tool calls `tools/` and turns its `LookupError` and `ValueError` into
+  `ToolError`, whose message the agent reads. A tool's docstring is its description to the agent, the rules for
+  reporting the figures included. Its one dependency, `mcp`, is the `mcp` dependency group in `pyproject.toml`.
+- **Import rules:** `tools/` imports nothing from `build/`, `mcp_server/` imports `tools/` and never the reverse, and
+  `build/` imports neither (`uv run lint-imports`).
+- **Running it:** `uv run python -m mcp_server` for a local client over stdio, for example
+  `claude mcp add ai-emissions-map -- uv run --directory <repo> python -m mcp_server`. On `main` the release has no
+  routes, so try it on `beta`.
 
 ## The data model in one minute
 
