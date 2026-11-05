@@ -17,6 +17,14 @@ dev = [
     "pytest>=8",
     "ruff>=0.17.0",
 ]
+# The MCP server's one dependency (mcp_server/); the Docker image installs only this group.
+mcp = [
+    "mcp==2.3.0",
+]
+
+[tool.uv]
+# Installed by `uv sync`, CI's included, so pyright and the tests see the MCP server's dependency.
+default-groups = ["dev", "mcp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -30,10 +38,22 @@ norecursedirs = ["*.egg", ".*", "_darcs", "CVS", "dist", "node_modules", "venv",
 #   utils/       imports only other utils/
 #   everything else may import both, never the other way round.
 # tools/ reads data/data.json, which build/ writes; neither imports the other.
+# mcp_server/ serves tools/ over MCP; tools/ never imports it, and build/ imports neither.
 # `uv run lint-imports` checks the contracts below; `uv run ruff check` bans relative imports and
 # imports inside functions (which hide cycles), with no exceptions.
 [tool.importlinter]
-root_packages = ["build", "tools"]
+root_packages = ["build", "tools", "mcp_server"]
+
+[[tool.importlinter.contracts]]
+name = "mcp_server/ serves tools/; tools/ never imports it"
+type = "layers"
+layers = ["mcp_server", "tools"]
+
+[[tool.importlinter.contracts]]
+name = "build/ imports nothing from mcp_server/"
+type = "forbidden"
+source_modules = ["build"]
+forbidden_modules = ["mcp_server"]
 
 [[tool.importlinter.contracts]]
 name = "tools/ reads data.json only: it imports nothing from build/"
@@ -81,7 +101,7 @@ forbidden_modules = ["build.load_sources", "build.validate", "build.score", "bui
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
 
 [tool.pyright]
-include = ["build", "tools", "tests"]
+include = ["build", "tools", "mcp_server", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."
