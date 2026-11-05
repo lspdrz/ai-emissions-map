@@ -29,10 +29,23 @@ norecursedirs = ["*.egg", ".*", "_darcs", "CVS", "dist", "node_modules", "venv",
 #   schemas/     imports nothing from build/ but other schemas/
 #   utils/       imports only other utils/
 #   everything else may import both, never the other way round.
-# `uv run lint-imports` checks the two contracts below; `uv run ruff check` bans relative imports and
+# tools/ reads data/data.json, which build/ writes; neither imports the other.
+# `uv run lint-imports` checks the contracts below; `uv run ruff check` bans relative imports and
 # imports inside functions (which hide cycles), with no exceptions.
 [tool.importlinter]
-root_package = "build"
+root_packages = ["build", "tools"]
+
+[[tool.importlinter.contracts]]
+name = "tools/ reads data.json only: it imports nothing from build/"
+type = "forbidden"
+source_modules = ["tools"]
+forbidden_modules = ["build"]
+
+[[tool.importlinter.contracts]]
+name = "build/ imports nothing from tools/"
+type = "forbidden"
+source_modules = ["build"]
+forbidden_modules = ["tools"]
 
 [[tool.importlinter.contracts]]
 name = "constants/ imports nothing from build/"
@@ -68,7 +81,7 @@ forbidden_modules = ["build.load_sources", "build.validate", "build.score", "bui
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
 
 [tool.pyright]
-include = ["build", "tests"]
+include = ["build", "tools", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."
