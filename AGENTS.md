@@ -47,7 +47,7 @@ docs/                    methodology, workflows, reference rules, serving-locati
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
 data/                    data.json: the release, written by build and committed; the site reads it
 web/                     the Next.js site
-tests/                   pytest, laid out like build/; each test builds its data with tests/builders/
+tests/                   pytest; tests/build/ is laid out like build/; each test builds its data with tests/builders/
                          (records valid by construction; tests/builders/broken.py to break one)
 ```
 

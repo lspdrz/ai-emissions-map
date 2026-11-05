@@ -21,6 +21,8 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+# pytest's default skips any folder named build, which would skip tests/build/: the same list without it.
+norecursedirs = ["*.egg", ".*", "_darcs", "CVS", "dist", "node_modules", "venv", "{arch}"]
 
 # Imports in build/ (checked in CI):
 #   constants/   imports nothing from build/
