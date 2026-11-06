@@ -2,6 +2,7 @@ import asyncio
 
 from mcp import Client
 from mcp.types import CallToolResult, TextContent
+from starlette.testclient import TestClient
 
 from mcp_server import server
 from tests.builders.data import make_data, make_data_meta, make_data_model, make_data_organization, make_data_route
@@ -132,7 +133,7 @@ def test_estimate_emissions_on_an_unknown_model_is_a_tool_error_naming_the_model
     assert "No model on the map matches 'X 9'. Models: M 70B." in content.text
 
 
-# Starting the server: stdio by default, stateless HTTP on Cloud Run's $PORT with --http.
+# Starting the server: stdio by default, stateless HTTP on Cloud Run's $PORT with --http, which refuses GET.
 
 
 def test_main_without_arguments_runs_over_stdio(monkeypatch):
@@ -142,14 +143,32 @@ def test_main_without_arguments_runs_over_stdio(monkeypatch):
     assert calls == [((), {})]
 
 
-def test_main_with_http_runs_stateless_json_on_the_port_given(monkeypatch):
+def test_main_with_http_serves_the_http_app_on_the_port_given(monkeypatch):
     calls = []
-    monkeypatch.setattr(server.mcp, "run", lambda *args, **kwargs: calls.append((args, kwargs)))
+    monkeypatch.setattr("mcp_server.server.uvicorn.run", lambda app, **kwargs: calls.append(kwargs))
     monkeypatch.setenv("PORT", "9999")
     server.main(["--http"])
-    assert calls == [
-        (
-            ("streamable-http",),
-            {"host": "0.0.0.0", "port": 9999, "stateless_http": True, "json_response": True},
-        )
-    ]
+    assert calls == [{"host": "0.0.0.0", "port": 9999}]
+
+
+def test_http_answers_an_mcp_request_statelessly_in_json():
+    initialize = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}},
+    }
+    with TestClient(server.http_app()) as client:
+        response = client.post("/mcp", json=initialize, headers={"Accept": "application/json, text/event-stream"})
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/json"
+    assert "mcp-session-id" not in response.headers
+
+
+def test_http_refuses_a_get_rather_than_holding_it_open():
+    # A browser, crawler or uptime probe sends GET; the SDK would answer it with a stream that never closes, and Cloud
+    # Run bills an instance for as long as a request is open.
+    with TestClient(server.http_app()) as client:
+        response = client.get("/mcp")
+    assert response.status_code == 405
+    assert response.headers["allow"] == "POST"

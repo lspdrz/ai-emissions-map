@@ -8,8 +8,11 @@ instance can answer it, as on Cloud Run.
 import argparse
 import os
 
+import uvicorn
 from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
+from starlette.responses import PlainTextResponse
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from tools.estimate_emissions import estimate
 from tools.types import Estimate
@@ -42,12 +45,29 @@ def estimate_emissions(model: str, output_tokens: int) -> Estimate:
         raise ToolError(str(error)) from error
 
 
+def http_app() -> ASGIApp:
+    """The server over stateless Streamable HTTP, answering in JSON, with GET refused (405)."""
+    app = mcp.streamable_http_app(stateless_http=True, json_response=True, host="0.0.0.0")
+
+    async def refusing_get(scope: Scope, receive: Receive, send: Send) -> None:
+        # The SDK answers GET with a stream for messages the server would start, which a stateless server never
+        # sends, so the stream never closes; Cloud Run bills an instance while a request is open. The protocol allows
+        # a 405 instead. Remove this once the SDK refuses it itself:
+        # https://github.com/modelcontextprotocol/python-sdk/issues/2474
+        if scope["type"] == "http" and scope["method"] == "GET":
+            refusal = PlainTextResponse("Method Not Allowed", status_code=405, headers={"Allow": "POST"})
+            await refusal(scope, receive, send)
+        else:
+            await app(scope, receive, send)
+
+    return refusing_get
+
+
 def main(argv: list[str] | None = None) -> None:
     """Serve over stdio, or with --http over stateless Streamable HTTP on $PORT (default 8000)."""
     parser = argparse.ArgumentParser(prog="python -m mcp_server", description=__doc__)
     parser.add_argument("--http", action="store_true", help="serve over Streamable HTTP instead of stdio")
     if parser.parse_args(argv).http:
-        port = int(os.environ.get("PORT", "8000"))
-        mcp.run("streamable-http", host="0.0.0.0", port=port, stateless_http=True, json_response=True)
+        uvicorn.run(http_app(), host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))
     else:
         mcp.run()
