@@ -1,4 +1,4 @@
-"""The release, python -m build release: validate sources/ and write web/data/data.json from it, with the hash
+"""The release, python -m build release: validate sources/ and write data/data.json from it, with the hash
 of its inputs. It computes nothing: the fields it publishes are written by `python -m build score`.
 
 The hash (meta.inputs_sha) covers everything a published value depends on. The CI gate
@@ -19,7 +19,7 @@ from build.load_sources import SOURCE_DIRS, load_sources
 from build.types import Release, Sources
 from build.validate import check_stored_scores, validate_sources
 
-DATA_FILE = Path("web") / "data" / "data.json"
+DATA_FILE = Path("data") / "data.json"
 # What a release changes in data.json without changing what the site shows.
 _STAMPS = ("release_date", "inputs_sha")
 

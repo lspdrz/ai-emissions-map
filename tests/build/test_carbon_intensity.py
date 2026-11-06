@@ -11,7 +11,7 @@ from tests.builders.speed import make_speed
 
 
 # A route's carbon intensity: (E x I) + M per 1,000 output tokens, with its parts. E and M are set by replacing
-# ecologits_estimate; I is each grid's resolved intensity, as score passes it from the grid files (tests/test_grid_emissions.py).
+# ecologits_estimate; I is each grid's resolved intensity, as score passes it from the grid files (tests/build/test_grid_emissions.py).
 
 
 def test_a_route_on_one_grid_has_a_carbon_intensity(monkeypatch):

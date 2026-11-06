@@ -8,7 +8,7 @@ every PR. The code is [MIT licensed](LICENSE); the license of the dataset has no
 ```bash
 uv sync
 uv run python -m build score     # check sources/ and write the disclosure_rating: and carbon_intensity: fields your change moves
-uv run python -m build release   # write web/data/data.json; commit everything both write
+uv run python -m build release   # write data/data.json; commit everything both write
 uv run pytest
 ```
 

@@ -15,18 +15,21 @@
     "draft": true,
     "ecologits_version": "0.11.2",
     "featured_model": null,
+    "functional_unit": {
+      "output_tokens": 1000
+    },
     "grid": {
       "source": "Ember",
       "year": 2025
     },
     "grid_intensity_spread": null,
-    "inputs_sha": "ff7f368de19d82740272481f29babc2be4f6326529215524ec162d24f0e915fe",
+    "inputs_sha": "136c8da89bad12acd65003bbcc3ce6fc5bd7a5b4b7326149085a61da6ff67832",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
       1.54
     ],
-    "release_date": "2026-10-28"
+    "release_date": "2026-11-05"
   },
   "models": [],
   "organizations": [],

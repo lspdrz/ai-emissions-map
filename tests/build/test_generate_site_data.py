@@ -3,7 +3,14 @@ from importlib.metadata import version
 
 import pytest
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, FALLBACK_PUE
+from build.constants.config import (
+    CARBON_BAND_UPPER,
+    DRAFT,
+    GRID_YEAR,
+    METHODOLOGY_VERSION,
+    FALLBACK_PUE,
+    OUTPUT_TOKENS,
+)
 from build.generate_site_data import (
     SCHEMA,
     build_data,
@@ -37,6 +44,10 @@ def test_data_within_the_contract_has_no_problems():
         ({"meta": {"unknown_field": {}}}, "meta: field 'unknown_field' is not in the contract"),
         ({"meta": {"grid": {"unknown_field": {}}}}, "meta.grid: field 'unknown_field' is not in the contract"),
         ({"meta": {"counts": {"unknown_field": 1}}}, "meta.counts: field 'unknown_field' is not in the contract"),
+        (
+            {"meta": {"functional_unit": {"unknown_field": 1}}},
+            "meta.functional_unit: field 'unknown_field' is not in the contract",
+        ),
         ({"organizations": [{"unknown_field": {}}]}, "organizations[]: field 'unknown_field' is not in the contract"),
         (
             {"organizations": [{"rating": {"unknown_field": {}}}]},
@@ -306,11 +317,21 @@ def test_meta_states_the_release_date_and_the_configured_method():
     meta = build_data(make_corpus(), date(2026, 10, 8))["meta"]
     assert {
         key: meta[key]
-        for key in ("release_date", "methodology_version", "ecologits_version", "pue", "band_upper", "draft", "grid")
+        for key in (
+            "release_date",
+            "methodology_version",
+            "ecologits_version",
+            "functional_unit",
+            "pue",
+            "band_upper",
+            "draft",
+            "grid",
+        )
     } == {
         "release_date": "2026-10-08",
         "methodology_version": METHODOLOGY_VERSION,
         "ecologits_version": version("ecologits"),
+        "functional_unit": {"output_tokens": OUTPUT_TOKENS},
         "pue": list(FALLBACK_PUE),
         "band_upper": list(CARBON_BAND_UPPER),
         "draft": DRAFT,

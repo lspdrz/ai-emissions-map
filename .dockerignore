@@ -1,0 +1,8 @@
+# Everything but what the Dockerfile copies.
+*
+!pyproject.toml
+!uv.lock
+!tools/
+!mcp_server/
+!data/data.json
+**/__pycache__

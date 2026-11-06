@@ -6,7 +6,7 @@ from build.constants import config
 
 
 def test_the_root_is_the_repository():
-    assert config.ROOT == Path(__file__).resolve().parents[2]
+    assert config.ROOT == Path(__file__).resolve().parents[3]
 
 
 def test_the_methodology_version():

@@ -1,6 +1,6 @@
 # The AI Emissions Map website
 
-A static Next.js site. Every number comes from `data/data.json`, which the Python pipeline writes; the
+A static Next.js site. Every number comes from the repository's `data/data.json`, which the Python pipeline writes; the
 website holds no scoring logic. Structure and rules: `.claude/PROJECT.md`.
 
 ## Update the data
@@ -12,7 +12,7 @@ uv run python -m build score
 uv run python -m build release
 ```
 
-This writes `web/data/data.json` when anything it shows or depends on changed; commit it. It holds only what the website displays.
+This writes `data/data.json` when anything it shows or depends on changed; commit it. It holds only what the website displays.
 While the release is a draft (`meta.draft`), every page is `noindex`.
 
 ## Develop

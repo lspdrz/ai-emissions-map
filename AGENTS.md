@@ -43,11 +43,15 @@ sources/snapshots/       imported data, each file with a <stem>.provenance.json
   grid_intensity.csv     country / US state / Chinese province -> yearly grid intensity, from Ember (import-ember)
   files/                 the downloads the two imports read, as downloaded (ember_files/, gsf_files/)
 build/                   Python modules; the command is `python -m build` (see --help)
+tools/                   what can be asked of data/data.json: a response's emissions on every route of its model
+mcp_server/              a read-only MCP server over tools/: `python -m mcp_server` (stdio) or `--http`
 docs/                    methodology, workflows, reference rules, serving-locations/ (the format to publish)
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
-web/                     the Next.js site; web/data/data.json is written by build and committed
-tests/                   pytest, laid out like build/; each test builds its data with tests/builders/
-                         (records valid by construction; tests/builders/broken.py to break one)
+data/                    data.json: the release, written by build and committed; the site reads it
+web/                     the Next.js site
+tests/                   pytest; tests/build/, tests/tools/ and tests/mcp_server/ are laid out like their packages;
+                         each test builds its data with tests/builders/ (records valid by construction;
+                         tests/builders/broken.py to break one; tests/builders/data.py for data.json's entries)
 ```
 
 ## The `build/` modules
@@ -65,12 +69,12 @@ build/
   load_sources.py        reading sources/, the cloud-region table and Ember's grid-intensity table from disk
   validate.py            every check on the records, against each other and the two tables
   score.py               python -m build score: compute the disclosure_rating:/carbon_intensity: fields, write them
-  generate_site_data.py  web/data/data.json: its contract and its content
-  release.py             python -m build release: validate sources/, write web/data/data.json with the hash of its
+  generate_site_data.py  data/data.json: its contract and its content
+  release.py             python -m build release: validate sources/, write data/data.json with the hash of its
                          inputs (meta.inputs_sha); computes nothing
   check_carbon_intensities.py  CI gate: every route's stored carbon intensity is current
   check_disclosure_ratings.py  CI gate: every stored route and organization rating is current
-  check_site_data.py     CI gate: web/data/data.json is current with its inputs and keeps to its contract
+  check_site_data.py     CI gate: data/data.json is current with its inputs and keeps to its contract
   import_ember.py        python -m build import-ember: Ember's downloads -> grid_intensity.csv, then every grid
   import_cloud_regions.py  python -m build import-cloud-regions: the GSF's region metadata -> cloud_regions.csv
   types.py               Sources (what load_sources returns) and the commands' results: not records; never validated
@@ -85,10 +89,10 @@ build/
   Around them: `load_sources` and `validate` (reading and checking `sources/`), `score` (the `score`
   command: resolves each route's grid files, computes and writes each route's `disclosure_rating:` and
   `carbon_intensity:` and each organization's `disclosure_rating:`), `generate_site_data` (the shape of
-  `web/data/data.json`), `release` (the `release` command: validates and publishes, with the hash of what it reads,
+  `data/data.json`), `release` (the `release` command: validates and publishes, with the hash of what it reads,
   computing nothing), `check_carbon_intensities` and `check_disclosure_ratings` (what the CI gates compare:
   every stored carbon intensity and rating against what `score` would write now), `check_site_data` (the CI gate on
-  `web/data/data.json`: its hash and its contract), `grid_emissions` (the `grid-emissions` command: each grid's
+  `data/data.json`: its hash and its contract), `grid_emissions` (the `grid-emissions` command: each grid's
   intensity from Ember's table, its subdivision such as a US state or Chinese province or else its country, written
   into the grid file with `--write`, a CI gate without it), `import_ember` (refreshing Ember's table),
   `import_cloud_regions` (refreshing the cloud-region table), and `__main__` (the eight commands). The
@@ -108,9 +112,34 @@ build/
   `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`, and `types` only `schemas/`;
   `utils/` imports only other `utils/`; every other module may import them, never the
   other way round. Imports are absolute and at the top of the file, with no exceptions.
-- **Types** are checked in CI by `uv run pyright` (standard mode, `build/` and `tests/`).
+- **Types** are checked in CI by `uv run pyright` (standard mode, `build/`, `tools/`, `mcp_server/` and `tests/`).
 - **Formatting** is `uv run ruff format`, 120 columns (`pyproject.toml`); CI fails on any file it would change. The
   VS Code Ruff extension formats to the same width on save.
+
+## `tools/` and the MCP server
+
+```
+tools/
+  estimate_emissions.py  a model + a response's output tokens -> its energy and emissions on every route of the model
+  types.py               the part of data.json that tools/ reads (Published*) and what it returns: never validated
+mcp_server/
+  server.py              the MCP server: the estimate_emissions tool over tools/, served over stdio or HTTP
+  __main__.py            python -m mcp_server, or python -m mcp_server --http (stateless, on $PORT)
+```
+
+- **`tools/` reads only `data/data.json`,** the release `build/` publishes, never `sources/`; it uses the standard
+  library alone, and the functional unit it scales by is `meta.functional_unit`. It reads the file once
+  (`published_data()`, cached); tests replace that function with data built by `tests/builders/data.py`.
+- **An estimate gives every route of the model,** sorted by the midpoint of its carbon range, and never picks one:
+  the model answering rarely knows which route serves it. A route without a grid gets its energy and null grams.
+- **The MCP server is a thin layer:** each tool calls `tools/` and turns its `LookupError` and `ValueError` into
+  `ToolError`, whose message the agent reads. A tool's docstring is its description to the agent, the rules for
+  reporting the figures included. Its one dependency, `mcp`, is the `mcp` dependency group in `pyproject.toml`.
+- **Import rules:** `tools/` imports nothing from `build/`, `mcp_server/` imports `tools/` and never the reverse, and
+  `build/` imports neither (`uv run lint-imports`).
+- **Running it:** `uv run python -m mcp_server` for a local client over stdio, for example
+  `claude mcp add ai-emissions-map -- uv run --directory <repo> python -m mcp_server`. On `main` the release has no
+  routes, so try it on `beta`.
 
 ## The data model in one minute
 
@@ -153,11 +182,11 @@ estimate, with the catalogue at the installed version as the evidence.
   are generated. `score` rewrites everything below that comment, so anything written there by hand is lost.
   Change the facts above them and rerun `score`; `release` copies them as they are. CI recomputes every
   stored value (`python -m build check-carbon-intensities`, `check-disclosure-ratings`) and fails on any that differs.
-- **`web/data/data.json` records `meta.inputs_sha`,** the hash of the records (grid files included),
+- **`data/data.json` records `meta.inputs_sha`,** the hash of the records (grid files included),
   `build/`'s code and the EcoLogits version. CI fails when it no longer matches
   (`python -m build check-site-data`): run the release after changing anything in
   `sources/` or `build/`, code included, and commit what it writes. On a merge conflict
-  in `web/data/data.json`, take either side and run the release again.
+  in `data/data.json`, take either side and run the release again.
 - **Grid intensities are written at curation time, never researched or typed**: a curator writes a grid file's zone,
   country, supply, whether it is subdivided and (in the US or China) its `subdivision`, then runs
   `python -m build grid-emissions --write <slug>`, which writes the `intensity:` field below its own comment: Ember's
@@ -171,7 +200,8 @@ estimate, with the catalogue at the installed version as the evidence.
 - **The site's data file is committed, and holds only what the site displays:** per-route results,
   each carbon intensity with its E, I and M. It is `noindex` while `DRAFT` in `build/constants/config.py` is true.
 - **The website deploys from `web/` only.** Vercel's Root Directory is `web`, and every push
-  deploys. Every data pull request carries its `web/data/data.json` diff and publishes on merge.
+  deploys. The build reads `../data/data.json`, so Vercel's "Include files outside of the Root Directory in the
+  Build Step" must stay on. Every data pull request carries its `data/data.json` diff and publishes on merge.
 - About the cloud-region data's license, committed files say only "see the source repository's
   License.md".
 - Dates are quoted strings in YAML; an unquoted date fails validation.
