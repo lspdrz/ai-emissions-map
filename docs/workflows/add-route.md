@@ -103,14 +103,14 @@ uv run python -m build score
 uv run python -m build release
 ```
 `score` lists the files it wrote: the new route and its organization, each ending with those fields below a
-comment saying they are generated (never edit below it); `release` writes `web/data/data.json`. Both must end
+comment saying they are generated (never edit below it); `release` writes `data/data.json`. Both must end
 without `ERROR:` lines; commit everything they write. CI recomputes every stored carbon intensity and rejects a data file
 that no longer matches `sources/`. If `score` reports a zone or grid with no grid file, follow
 [`add-grid.md`](add-grid.md), then run both again.
 
 ## Expected PR contents
 The route file, any grid (with the `intensity:` `grid-emissions` wrote) or model it needed, the `disclosure_rating:` and `carbon_intensity:` fields `score` wrote,
-the organization's `disclosure_rating:`, and `web/data/data.json`. One short note per route on the evidence that
+the organization's `disclosure_rating:`, and `data/data.json`. One short note per route on the evidence that
 settled its candidates, and, for a route with facilities, on the PUE found for each or why there is none, and on
 where its speed came from or why it has none.
 

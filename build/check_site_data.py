@@ -1,4 +1,4 @@
-"""Gate: the committed web/data/data.json is current with what it was built from, and keeps to its contract.
+"""Gate: the committed data/data.json is current with what it was built from, and keeps to its contract.
 
 Current: its meta.inputs_sha equals the hash of the records, build/'s code and the EcoLogits version now, so a pull
 request that changes any of them without rerunning `python -m build release` fails. Within its contract: every field

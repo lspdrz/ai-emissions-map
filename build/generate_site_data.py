@@ -1,4 +1,4 @@
-"""The website's data: web/data/data.json, copied from the fields `python -m build score` writes in sources/, under
+"""The website's data: data/data.json, copied from the fields `python -m build score` writes in sources/, under
 its contract.
 
 The data file holds only what the site displays: per-route results (each carbon intensity with its energy E, grid intensity I
@@ -14,7 +14,14 @@ from datetime import date
 from importlib.metadata import version
 from typing import Any
 
-from build.constants.config import CARBON_BAND_UPPER, DRAFT, GRID_YEAR, METHODOLOGY_VERSION, FALLBACK_PUE
+from build.constants.config import (
+    CARBON_BAND_UPPER,
+    DRAFT,
+    GRID_YEAR,
+    METHODOLOGY_VERSION,
+    FALLBACK_PUE,
+    OUTPUT_TOKENS,
+)
 
 
 SCHEMA = "aem-data/4"
@@ -32,6 +39,7 @@ ALLOWED_KEYS = {
         "inputs_sha",
         "methodology_version",
         "ecologits_version",
+        "functional_unit",
         "pue",
         "band_upper",
         "draft",
@@ -40,6 +48,7 @@ ALLOWED_KEYS = {
         "grid_intensity_spread",
         "featured_model",
     },
+    "meta.functional_unit": {"output_tokens"},
     "meta.grid": {"source", "year"},
     "meta.counts": {"organizations", "routes", "models", "grids"},
     "organizations[]": {
@@ -87,6 +96,7 @@ def check_contract(data: dict) -> list[str]:
     check(data, "")
     meta = data.get("meta", {})
     check(meta, "meta")
+    check(meta.get("functional_unit"), "meta.functional_unit")
     check(meta.get("grid"), "meta.grid")
     check(meta.get("counts"), "meta.counts")
     for org in data.get("organizations", []):
@@ -203,6 +213,8 @@ def build_data(data: Mapping[str, Any], release_date: date) -> dict:
             "release_date": release_date.isoformat(),
             "methodology_version": METHODOLOGY_VERSION,
             "ecologits_version": version("ecologits"),
+            # Every route's energy, embodied emissions and carbon intensity are per this many output tokens.
+            "functional_unit": {"output_tokens": OUTPUT_TOKENS},
             "pue": list(FALLBACK_PUE),
             "band_upper": list(CARBON_BAND_UPPER),
             "draft": DRAFT,

@@ -47,7 +47,7 @@ record where it serves a model, use [`add-route.md`](add-route.md) afterwards (o
 uv run python -m build score
 uv run python -m build release
 ```
-`score` writes the organization's `disclosure_rating:`; `release` writes `web/data/data.json`. Both must end without `ERROR:` lines; commit everything they write.
+`score` writes the organization's `disclosure_rating:`; `release` writes `data/data.json`. Both must end without `ERROR:` lines; commit everything they write.
 An organization with no routes yet has no rating.
 
 ## Expected PR contents

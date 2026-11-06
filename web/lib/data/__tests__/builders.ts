@@ -27,7 +27,7 @@ export function buildModel(o: Partial<Model> = {}): Model {
 export function buildMeta(o: Partial<Meta> = {}): Meta {
   return {
     release_date: "2026-10-22", inputs_sha: "0".repeat(64), methodology_version: "0.1.0", ecologits_version: "0.11.2",
-    pue: [1.1, 1.6], band_upper: [0.03, 0.1, 0.3, 1.0], draft: true, grid: { source: "Ember", year: 2025 },
+    functional_unit: { output_tokens: 1000 }, pue: [1.1, 1.6], band_upper: [0.03, 0.1, 0.3, 1.0], draft: true, grid: { source: "Ember", year: 2025 },
     counts: { organizations: 0, routes: 0, models: 0, grids: 0 }, grid_intensity_spread: null, featured_model: null, ...o,
   };
 }

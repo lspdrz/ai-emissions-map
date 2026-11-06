@@ -15,18 +15,21 @@
     "draft": true,
     "ecologits_version": "0.11.2",
     "featured_model": "deepseek-v4-1-flash",
+    "functional_unit": {
+      "output_tokens": 1000
+    },
     "grid": {
       "source": "Ember",
       "year": 2025
     },
     "grid_intensity_spread": 25,
-    "inputs_sha": "cf30545aeed0ba0ed8351a2e7c1a563e13b82b7c628d013a0ca18a1c7b1ee55d",
+    "inputs_sha": "1fd77a901d9bc3a7c89297465dd5599870f0bcab738d6ffe549637f8958075ed",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
       1.54
     ],
-    "release_date": "2026-10-28"
+    "release_date": "2026-11-06"
   },
   "models": [
     {

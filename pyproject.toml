@@ -17,20 +17,55 @@ dev = [
     "pytest>=8",
     "ruff>=0.17.0",
 ]
+# The MCP server's one dependency (mcp_server/); the Docker image installs only this group.
+mcp = [
+    "mcp==2.3.0",
+]
+
+[tool.uv]
+# Installed by `uv sync`, CI's included, so pyright and the tests see the MCP server's dependency.
+default-groups = ["dev", "mcp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+# pytest's default skips any folder named build, which would skip tests/build/: the same list without it.
+norecursedirs = ["*.egg", ".*", "_darcs", "CVS", "dist", "node_modules", "venv", "{arch}"]
 
 # Imports in build/ (checked in CI):
 #   constants/   imports nothing from build/
 #   schemas/     imports nothing from build/ but other schemas/
 #   utils/       imports only other utils/
 #   everything else may import both, never the other way round.
-# `uv run lint-imports` checks the two contracts below; `uv run ruff check` bans relative imports and
+# tools/ reads data/data.json, which build/ writes; neither imports the other.
+# mcp_server/ serves tools/ over MCP; tools/ never imports it, and build/ imports neither.
+# `uv run lint-imports` checks the contracts below; `uv run ruff check` bans relative imports and
 # imports inside functions (which hide cycles), with no exceptions.
 [tool.importlinter]
-root_package = "build"
+root_packages = ["build", "tools", "mcp_server"]
+
+[[tool.importlinter.contracts]]
+name = "mcp_server/ serves tools/; tools/ never imports it"
+type = "layers"
+layers = ["mcp_server", "tools"]
+
+[[tool.importlinter.contracts]]
+name = "build/ imports nothing from mcp_server/"
+type = "forbidden"
+source_modules = ["build"]
+forbidden_modules = ["mcp_server"]
+
+[[tool.importlinter.contracts]]
+name = "tools/ reads data.json only: it imports nothing from build/"
+type = "forbidden"
+source_modules = ["tools"]
+forbidden_modules = ["build"]
+
+[[tool.importlinter.contracts]]
+name = "build/ imports nothing from tools/"
+type = "forbidden"
+source_modules = ["build"]
+forbidden_modules = ["tools"]
 
 [[tool.importlinter.contracts]]
 name = "constants/ imports nothing from build/"
@@ -66,7 +101,7 @@ forbidden_modules = ["build.load_sources", "build.validate", "build.score", "bui
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
 
 [tool.pyright]
-include = ["build", "tests"]
+include = ["build", "tools", "mcp_server", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."

@@ -3,13 +3,13 @@
 score   checks sources/ and the cloud-region table, and writes every disclosure_rating: and carbon_intensity: whose
         value changed.
         Run it after changing facts in sources/, and commit what it writes.
-release validates sources/ and writes web/data/data.json from it, with the hash of its inputs. It computes
+release validates sources/ and writes data/data.json from it, with the hash of its inputs. It computes
         nothing. Run it last, and commit what it writes.
 check-carbon-intensities, check-disclosure-ratings
         the CI gates: recompute every stored carbon intensity and rating from the committed files, without writing
         anything, and fail on any that differs from what score would write.
 check-site-data
-        the CI gate on web/data/data.json: fails if it is out of date with what it was built from, or leaves
+        the CI gate on data/data.json: fails if it is out of date with what it was built from, or leaves
         its contract.
 grid-emissions
         compares each grid's stored intensity: with Ember's snapshot (the named grids, or all) and fails on any that
@@ -94,7 +94,7 @@ def main(argv: list[str] | None = None) -> int:
             "nothing changed",
             "check sources/, write the disclosure_rating: and carbon_intensity: fields",
         ),
-        ("release", _release, "nothing changed", "validate sources/ and write web/data/data.json; computes nothing"),
+        ("release", _release, "nothing changed", "validate sources/ and write data/data.json; computes nothing"),
         (
             "check-carbon-intensities",
             _check_carbon_intensities,
@@ -111,7 +111,7 @@ def main(argv: list[str] | None = None) -> int:
             "check-site-data",
             _check_site_data,
             "0 error(s)",
-            "CI gate: web/data/data.json is current with what it was built from and keeps to its contract",
+            "CI gate: data/data.json is current with what it was built from and keeps to its contract",
         ),
         (
             "grid-emissions",

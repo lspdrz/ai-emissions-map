@@ -52,7 +52,7 @@ class GridRun(NamedTuple):
 
 
 class Release(NamedTuple):
-    """What python -m build release returns: its errors, and web/data/data.json if it wrote it."""
+    """What python -m build release returns: its errors, and data/data.json if it wrote it."""
 
     errors: list[str]
     written: list[Path]
