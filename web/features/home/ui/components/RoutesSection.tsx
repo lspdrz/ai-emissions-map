@@ -91,6 +91,8 @@ export function RoutesSection({ routes, bandUpper, initialQuery = "" }: {
                   {r.org} · {r.model}
                 </div>
                 <div className="truncate text-xs text-muted">{r.label}</div>
+                {/* The route's slug, for saving it in a chat app (the Open WebUI filter, an MCP client's instructions). */}
+                <div className="truncate font-mono text-[11px] text-muted select-all">{r.slug}</div>
               </div>
               <div className="flex justify-center">
                 <span className="flex size-[26px] items-center justify-center border border-ink font-mono text-[13px]">{r.letter}</span>
