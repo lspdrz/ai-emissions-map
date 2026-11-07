@@ -114,19 +114,27 @@ def _fake_server(monkeypatch, response: dict[str, Any]) -> list[tuple[str, dict[
 
 
 def _status(events: list[dict[str, Any]]) -> str:
-    [status] = [event for event in events if event["type"] == "status"]
-    assert status["data"]["done"] is True
-    return status["data"]["description"]
+    [status] = _statuses(events)
+    return status
+
+
+def _statuses(events: list[dict[str, Any]]) -> list[str]:
+    """The status lines in order: Open WebUI shows the last, and the others when the line is clicked."""
+    statuses = [event["data"] for event in events if event["type"] == "status"]
+    assert all(status["done"] is True for status in statuses)
+    return [status["description"] for status in statuses]
 
 
 def _source(events: list[dict[str, Any]]) -> str:
     [source] = [event for event in events if event["type"] == "source"]
-    return "\n".join(source["data"]["document"])
+    # One document: Open WebUI heads each document of a source with its own "Content".
+    [document] = source["data"]["document"]
+    return document
 
 
 def test_a_model_with_a_saved_route_gets_that_route(monkeypatch):
     sent = _fake_server(
-        monkeypatch, _tool_result(_route_estimate(co2e_g={"low": 0.1, "high": 0.1}, gap=None, draft=True))
+        monkeypatch, _tool_result(_route_estimate(co2e_g={"low": 0.08, "high": 0.12}, gap=None, draft=True))
     )
     flt = Filter()
     flt.valves.routes = "other-model=globex-m-70b, acme/m-70b=acme-m-70b"
@@ -139,7 +147,17 @@ def test_a_model_with_a_saved_route_gets_that_route(monkeypatch):
         "name": "estimate_route_emissions",
         "arguments": {"route": "acme-m-70b", "output_tokens": 850},
     }
-    assert _status(events) == "0.1 g CO₂e · 0.78 Wh · 850 output tokens · Acme, Acme 1, Geneva (A) · draft"
+    # The status line gives the midpoint of the route's carbon range; the source keeps the range.
+    # The grams last, the midpoint of the route's carbon range; the equivalents before it, shown on a click.
+    assert _statuses(events) == [
+        "≈ 4.7 min of a 10 W LED bulb",
+        "≈ 3.9 % of a phone charge",
+        "≈ 70 cm driven by a petrol car",
+        "0.1 g CO₂e",
+    ]
+    source = _source(events)
+    assert "Acme 1, Geneva (A): 0.08–0.12 g CO₂e, 0.78 Wh" in source
+    assert "The figure on the message is the midpoint of the carbon range." in source
 
 
 def test_a_workspace_model_finds_the_route_saved_for_its_base_model(monkeypatch):
@@ -164,7 +182,14 @@ def test_a_model_without_a_saved_route_gets_every_route_of_the_model(monkeypatch
         "name": "estimate_emissions",
         "arguments": {"model": "acme/m-70b", "output_tokens": 850},
     }
-    assert _status(events) == "0.02–0.5 g CO₂e · 0.4–0.9 Wh · 850 output tokens · 3 routes, none saved for this model"
+    # From the lowest route's midpoint to the highest's; the route without a grid has no carbon figure to add.
+    # Each spans the routes' midpoints, in the unit of the highest.
+    assert _statuses(events) == [
+        "≈ 3.3–4.5 min of a 10 W LED bulb",
+        "≈ 2.8–3.8 % of a phone charge",
+        "≈ 0.18–3.2 m driven by a petrol car",
+        "0.025–0.45 g CO₂e",
+    ]
     source = _source(events)
     assert "No route is saved for this model" in source
     assert "Globex, Not disclosed (D): 0.4–0.9 Wh, no carbon figure: Location not disclosed by the provider." in source
@@ -185,8 +210,9 @@ def test_without_usage_the_tokens_are_estimated_from_the_text_and_said_to_be(mon
     events = _run_outlet(Filter(), body, {"id": "acme/m-70b", "info": {}})
     [(_, payload)] = sent
     assert payload["params"]["arguments"]["output_tokens"] == 100
-    assert "≈100 output tokens (estimated from the text)" in _status(events)
-    assert "hidden reasoning is not counted" in _source(events)
+    source = _source(events)
+    assert "estimated from the reply's text" in source
+    assert "hidden reasoning is not counted" in source
 
 
 def test_without_usage_and_with_estimating_off_nothing_is_shown(monkeypatch):
@@ -205,8 +231,15 @@ def test_a_route_without_a_grid_shows_its_energy_and_why_there_is_no_carbon_figu
     flt.valves.routes = "acme/m-70b=acme-m-70b"
     body = {"messages": [{"role": "assistant", "content": "Hello", "usage": {"completion_tokens": 850}}]}
     events = _run_outlet(flt, body, {"id": "acme/m-70b", "info": {}})
-    assert _status(events) == "0.78 Wh · no carbon figure · 850 output tokens · Acme, Acme 1, Geneva (D)"
-    assert gap in _source(events)
+    # The bulb and the phone come from the energy, which the route has; the car from the carbon, which it has not.
+    assert _statuses(events) == [
+        "≈ 4.7 min of a 10 W LED bulb",
+        "≈ 3.9 % of a phone charge",
+        "No carbon figure for this route",
+    ]
+    source = _source(events)
+    assert "Acme 1, Geneva" in source
+    assert gap in source
 
 
 def test_the_source_names_the_release(monkeypatch):
@@ -227,7 +260,7 @@ def test_status_and_source_can_each_be_turned_off(monkeypatch):
     assert [event["type"] for event in _run_outlet(flt, body, {"id": "acme/m-70b", "info": {}})] == ["source"]
     flt = Filter()
     flt.valves.show_source = False
-    assert [event["type"] for event in _run_outlet(flt, body, {"id": "acme/m-70b", "info": {}})] == ["status"]
+    assert {event["type"] for event in _run_outlet(flt, body, {"id": "acme/m-70b", "info": {}})} == {"status"}
 
 
 def test_a_tool_error_is_shown_as_its_first_sentence(monkeypatch):
@@ -259,5 +292,6 @@ def test_an_api_caller_without_an_emitter_gets_nothing_and_no_request(monkeypatc
     assert sent == []
 
 
-def test_the_filter_is_a_toggle():
-    assert Filter().toggle is True
+def test_the_filter_is_not_a_toggle():
+    # Open WebUI runs a toggle filter only in chats where its chip is switched on: this one runs wherever it is attached.
+    assert not hasattr(Filter(), "toggle")
