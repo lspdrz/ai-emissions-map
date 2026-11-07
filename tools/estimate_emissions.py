@@ -13,6 +13,8 @@ from tools.types import (
     PublishedModel,
     PublishedOrganization,
     PublishedRoute,
+    Release,
+    RouteEstimate,
 )
 
 DATA_FILE = Path(__file__).resolve().parents[1] / "data" / "data.json"
@@ -74,24 +76,50 @@ def find_model(name: str) -> PublishedModel:
     raise LookupError(f"No model on the map matches '{name}'. Models: {models}.")
 
 
+def _check_tokens(output_tokens: int) -> None:
+    if output_tokens < 1:
+        raise ValueError(f"output_tokens must be at least 1, not {output_tokens}.")
+
+
+def _release() -> Release:
+    meta = published_data()["meta"]
+    return {
+        "release_date": meta["release_date"],
+        "methodology_version": meta["methodology_version"],
+        "ecologits_version": meta["ecologits_version"],
+        "draft": meta["draft"],
+    }
+
+
 def estimate(model: str, output_tokens: int) -> Estimate:
     """A response's energy, embodied emissions and carbon on every route of its model, lowest carbon first and routes
     without a grid last."""
-    if output_tokens < 1:
-        raise ValueError(f"output_tokens must be at least 1, not {output_tokens}.")
+    _check_tokens(output_tokens)
     data = published_data()
     found = find_model(model)
     routes = [route for route in data["routes"] if route["model"] == found["slug"]]
     routes.sort(key=lambda route: (route["sci"] is None, _midpoint(route["sci"])))
-    meta = data["meta"]
     return {
         "model": found["display_name"],
         "output_tokens": output_tokens,
         "routes": [_summary(route, output_tokens) for route in routes],
-        "release": {
-            "release_date": meta["release_date"],
-            "methodology_version": meta["methodology_version"],
-            "ecologits_version": meta["ecologits_version"],
-            "draft": meta["draft"],
-        },
+        "release": _release(),
+    }
+
+
+def estimate_route(route: str, output_tokens: int) -> RouteEstimate:
+    """A response's energy, embodied emissions and carbon on the one route the caller names by its slug: the route
+    they know serves them."""
+    _check_tokens(output_tokens)
+    data = published_data()
+    found = next((r for r in data["routes"] if r["slug"] == route), None)
+    if found is None:
+        routes = ", ".join(r["slug"] for r in data["routes"])
+        raise LookupError(f"No route on the map is called '{route}'. Routes: {routes}.")
+    model = next(m for m in data["models"] if m["slug"] == found["model"])
+    return {
+        "model": model["display_name"],
+        "output_tokens": output_tokens,
+        "route": _summary(found, output_tokens),
+        "release": _release(),
     }

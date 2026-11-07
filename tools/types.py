@@ -79,3 +79,10 @@ class Estimate(TypedDict):
     output_tokens: int
     routes: list[RouteSummary]  # every route of the model, scaled to output_tokens
     release: Release
+
+
+class RouteEstimate(TypedDict):
+    model: str
+    output_tokens: int
+    route: RouteSummary  # the one route the caller named, scaled to output_tokens
+    release: Release

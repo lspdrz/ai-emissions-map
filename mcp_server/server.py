@@ -1,4 +1,5 @@
-"""The AI Emissions Map's MCP server: one read-only tool, estimate_emissions, over tools/.
+"""The AI Emissions Map's MCP server: two read-only tools over tools/, estimate_emissions (every route of a model)
+and estimate_route_emissions (the one route the user names).
 
 It runs over stdio for a local client (`python -m mcp_server`), or over Streamable HTTP for a hosted one
 (`python -m mcp_server --http`, on $PORT). HTTP is stateless and answers in JSON: each request stands alone, so any
@@ -14,8 +15,8 @@ from mcp.server.mcpserver.exceptions import ToolError
 from starlette.responses import PlainTextResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from tools.estimate_emissions import estimate
-from tools.types import Estimate
+from tools.estimate_emissions import estimate, estimate_route
+from tools.types import Estimate, RouteEstimate
 
 mcp = MCPServer("ai-emissions-map")
 
@@ -35,13 +36,35 @@ def estimate_emissions(model: str, output_tokens: int) -> Estimate:
     it is null, the map has no grid for the route, and gap says why: give the energy and that reason, never another
     route's figure. Never choose the user's route for them, not even from where they are: providers route requests by
     the customer's settings, not the user's location. Narrow the answer only to what the user tells you. Say that the
-    figures count output tokens only, and that they are a draft while release.draft is true.
+    figures count output tokens only, and that they are a draft while release.draft is true. If the user has named
+    the route that serves them, use estimate_route_emissions instead.
     """
     try:
         return estimate(model, output_tokens)
     except (LookupError, ValueError) as error:
         # An unknown model or a bad token count: the agent reads the message (which lists the models on the map). The
         # SDK hides any other exception's text as a crash.
+        raise ToolError(str(error)) from error
+
+
+@mcp.tool()
+def estimate_route_emissions(route: str, output_tokens: int) -> RouteEstimate:
+    """The energy and carbon footprint of an AI model's response on one route of the AI Emissions Map: the
+    organization that serves the model and where, named by the route's slug, e.g. "scaleway-mistral-medium-3-5-128b".
+
+    Use it instead of estimate_emissions when the user has told you the route that serves them, for example in their
+    instructions; never guess a route. `output_tokens` is the response's output tokens: estimate them if you cannot
+    count them, and include reasoning tokens if you know them.
+
+    Report the route's figures as ranges, with its organization, where it runs and its rating. Energy is in Wh, carbon
+    (co2e_g) and embodied emissions in grams of CO2e. Give a carbon figure only where co2e_g is not null; where it is
+    null, the map has no grid for the route, and gap says why: give the energy and that reason. Say that the figures
+    count output tokens only, and that they are a draft while release.draft is true.
+    """
+    try:
+        return estimate_route(route, output_tokens)
+    except (LookupError, ValueError) as error:
+        # An unknown route or a bad token count: the agent reads the message (which lists the routes on the map).
         raise ToolError(str(error)) from error
 
 
