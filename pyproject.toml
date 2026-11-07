@@ -39,15 +39,22 @@ norecursedirs = ["*.egg", ".*", "_darcs", "CVS", "dist", "node_modules", "venv",
 #   everything else may import both, never the other way round.
 # tools/ reads data/data.json, which build/ writes; neither imports the other.
 # mcp_server/ serves tools/ over MCP; tools/ never imports it, and build/ imports neither.
+# open_webui_plugins/ are pasted into Open WebUI and talk to the MCP server over HTTP: they import nothing from here.
 # `uv run lint-imports` checks the contracts below; `uv run ruff check` bans relative imports and
 # imports inside functions (which hide cycles), with no exceptions.
 [tool.importlinter]
-root_packages = ["build", "tools", "mcp_server"]
+root_packages = ["build", "tools", "mcp_server", "open_webui_plugins"]
 
 [[tool.importlinter.contracts]]
 name = "mcp_server/ serves tools/; tools/ never imports it"
 type = "layers"
 layers = ["mcp_server", "tools"]
+
+[[tool.importlinter.contracts]]
+name = "open_webui_plugins/ stand alone: they import nothing from build/, tools/ or mcp_server/"
+type = "forbidden"
+source_modules = ["open_webui_plugins"]
+forbidden_modules = ["build", "tools", "mcp_server"]
 
 [[tool.importlinter.contracts]]
 name = "build/ imports nothing from mcp_server/"
@@ -101,7 +108,7 @@ forbidden_modules = ["build.load_sources", "build.validate", "build.score", "bui
                      "build.check_disclosure_ratings", "build.check_site_data", "build.__main__"]
 
 [tool.pyright]
-include = ["build", "tools", "mcp_server", "tests"]
+include = ["build", "tools", "mcp_server", "open_webui_plugins", "tests"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
 venvPath = "."

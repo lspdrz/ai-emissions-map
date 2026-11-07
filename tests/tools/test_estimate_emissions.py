@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from tools.estimate_emissions import estimate, published_data
+from tools.estimate_emissions import estimate, estimate_route, published_data
 from tests.builders.data import make_data, make_data_meta, make_data_model, make_data_organization, make_data_route
 
 # Each test builds the whole release it reads, every field stated, and sets it by replacing published_data.
@@ -443,6 +443,153 @@ def test_an_empty_map_says_so(monkeypatch):
     monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
     with pytest.raises(LookupError, match="There are no models on the map yet."):
         estimate("M 70B", 1000)
+
+
+# Estimating a response on the one route the caller names.
+
+
+def test_estimate_route_gives_the_route_it_names_scaled_to_the_tokens(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[
+            make_data_organization(slug="acme", display_name="Acme"),
+            make_data_organization(slug="globex", display_name="Globex"),
+        ],
+        routes=[
+            make_data_route(
+                slug="acme-m-70b",
+                org="acme",
+                model="m-70b",
+                label="Acme 1, Geneva",
+                default=True,
+                letter="A",
+                gap=None,
+                served_as="acme/m-70b",
+                energy={"low": 0.6, "high": 0.8},
+                embodied={"low": 0.05, "high": 0.05},
+                grid_intensity={"low": 50.0, "high": 50.0},
+                sci={"low": 0.08, "high": 0.09},
+            ),
+            make_data_route(
+                slug="globex-m-70b",
+                org="globex",
+                model="m-70b",
+                label="Globex 1, Oslo",
+                default=True,
+                letter="B",
+                gap="The facility is not named.",
+                served_as=None,
+                energy={"low": 0.2, "high": 0.4},
+                embodied={"low": 0.01, "high": 0.01},
+                grid_intensity={"low": 30.0, "high": 30.0},
+                sci={"low": 0.02, "high": 0.03},
+            ),
+        ],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+    assert estimate_route("acme-m-70b", 500) == {
+        "model": "M 70B",
+        "output_tokens": 500,
+        "route": {
+            "route": "acme-m-70b",
+            "organization": "Acme",
+            "where": "Acme 1, Geneva",
+            "rating": "A",
+            "gap": None,
+            "served_as": "acme/m-70b",
+            "energy_wh": {"low": 0.3, "high": 0.4},
+            "embodied_g": {"low": 0.025, "high": 0.025},
+            "co2e_g": {"low": 0.04, "high": 0.045},
+        },
+        "release": {
+            "release_date": "2026-10-28",
+            "methodology_version": "0.4.0",
+            "ecologits_version": "0.11.2",
+            "draft": True,
+        },
+    }
+
+
+def test_estimate_route_on_a_route_without_a_grid_gives_energy_and_no_grams(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[make_data_organization(slug="acme", display_name="Acme")],
+        routes=[
+            make_data_route(
+                slug="acme-m-70b",
+                org="acme",
+                model="m-70b",
+                label="Not disclosed",
+                default=True,
+                letter="D",
+                gap="Location not disclosed by the provider.",
+                served_as=None,
+                energy={"low": 3.0, "high": 8.0},
+                embodied={"low": 0.09, "high": 0.09},
+                grid_intensity=None,
+                sci=None,
+            )
+        ],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+    route = estimate_route("acme-m-70b", 500)["route"]
+    assert route["co2e_g"] is None
+    assert route["embodied_g"] is None
+    assert route["energy_wh"] == {"low": 1.5, "high": 4.0}
+
+
+def test_estimate_route_on_an_unknown_route_is_an_error(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[make_data_organization(slug="acme", display_name="Acme")],
+        routes=[],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+    with pytest.raises(LookupError, match="No route on the map is called 'acme-x'"):
+        estimate_route("acme-x", 1000)
+
+
+def test_estimate_route_with_output_tokens_below_one_is_an_error(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[make_data_organization(slug="acme", display_name="Acme")],
+        routes=[],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+    with pytest.raises(ValueError, match="output_tokens"):
+        estimate_route("acme-m-70b", 0)
 
 
 # Reading the release: data/data.json, once, whatever its schema version.

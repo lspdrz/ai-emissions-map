@@ -43,13 +43,16 @@ sources/snapshots/       imported data, each file with a <stem>.provenance.json
   grid_intensity.csv     country / US state / Chinese province -> yearly grid intensity, from Ember (import-ember)
   files/                 the downloads the two imports read, as downloaded (ember_files/, gsf_files/)
 build/                   Python modules; the command is `python -m build` (see --help)
-tools/                   what can be asked of data/data.json: a response's emissions on every route of its model
+tools/                   what can be asked of data/data.json: a response's emissions on every route of its model,
+                         or on one route
 mcp_server/              a read-only MCP server over tools/: `python -m mcp_server` (stdio) or `--http`
+open_webui_plugins/      Open WebUI plugins over the hosted MCP server: a filter showing each response's footprint
 docs/                    methodology, workflows, reference rules, serving-locations/ (the format to publish)
 skills/                  thin agent skills over docs/workflows/; .claude/skills/ links to them
 data/                    data.json: the release, written by build and committed; the site reads it
 web/                     the Next.js site
-tests/                   pytest; tests/build/, tests/tools/ and tests/mcp_server/ are laid out like their packages;
+tests/                   pytest; tests/build/, tests/tools/, tests/mcp_server/ and tests/open_webui_plugins/ are laid
+                         out like their packages;
                          each test builds its data with tests/builders/ (records valid by construction;
                          tests/builders/broken.py to break one; tests/builders/data.py for data.json's entries)
 ```
@@ -112,19 +115,24 @@ build/
   `uv run lint-imports`): `constants/` and `schemas/` import nothing from `build/`, and `types` only `schemas/`;
   `utils/` imports only other `utils/`; every other module may import them, never the
   other way round. Imports are absolute and at the top of the file, with no exceptions.
-- **Types** are checked in CI by `uv run pyright` (standard mode, `build/`, `tools/`, `mcp_server/` and `tests/`).
+- **Types** are checked in CI by `uv run pyright` (standard mode, `build/`, `tools/`, `mcp_server/`,
+  `open_webui_plugins/` and `tests/`).
 - **Formatting** is `uv run ruff format`, 120 columns (`pyproject.toml`); CI fails on any file it would change. The
   VS Code Ruff extension formats to the same width on save.
 
-## `tools/` and the MCP server
+## `tools/`, the MCP server and the Open WebUI plugins
 
 ```
 tools/
-  estimate_emissions.py  a model + a response's output tokens -> its energy and emissions on every route of the model
+  estimate_emissions.py  a model + a response's output tokens -> its energy and emissions on every route of the model;
+                         a route + the tokens -> the same on that route alone (estimate_route)
   types.py               the part of data.json that tools/ reads (Published*) and what it returns: never validated
 mcp_server/
-  server.py              the MCP server: the estimate_emissions tool over tools/, served over stdio or HTTP
+  server.py              the MCP server: estimate_emissions and estimate_route_emissions over tools/, over stdio or HTTP
   __main__.py            python -m mcp_server, or python -m mcp_server --http (stateless, on $PORT)
+open_webui_plugins/
+  carbon_estimate.py     a filter an Open WebUI admin pastes in: after each response, its footprint on the message
+  README.md              installing each plugin; for the filter, saving each model's route
 ```
 
 - **`tools/` reads only `data/data.json`,** the release `build/` publishes, never `sources/`; it uses the standard
@@ -132,11 +140,18 @@ mcp_server/
   (`published_data()`, cached); tests replace that function with data built by `tests/builders/data.py`.
 - **An estimate gives every route of the model,** sorted by the midpoint of its carbon range, and never picks one:
   the model answering rarely knows which route serves it. A route without a grid gets its energy and null grams.
+  Only a caller who knows its route names one, to `estimate_route()`: a user in their instructions, an admin in the
+  filter's settings.
 - **The MCP server is a thin layer:** each tool calls `tools/` and turns its `LookupError` and `ValueError` into
   `ToolError`, whose message the agent reads. A tool's docstring is its description to the agent, the rules for
   reporting the figures included. Its one dependency, `mcp`, is the `mcp` dependency group in `pyproject.toml`.
 - **Import rules:** `tools/` imports nothing from `build/`, `mcp_server/` imports `tools/` and never the reverse, and
-  `build/` imports neither (`uv run lint-imports`).
+  `build/` imports neither; `open_webui_plugins/` import nothing from the repository (`uv run lint-imports`).
+- **Each Open WebUI plugin stands alone:** one file pasted into Open WebUI, using the standard library and pydantic,
+  that calls the hosted MCP server over HTTP (a stateless `tools/call`). A change to a tool's arguments or output must
+  keep the plugins working, and reaches them only once `beta` redeploys the server.
+- **The carbon estimate filter** reads the output tokens from the provider's usage, or estimates them from the text
+  and says so. Its tests replace `_post`, its one HTTP call.
 - **Running it:** `uv run python -m mcp_server` for a local client over stdio, for example
   `claude mcp add ai-emissions-map -- uv run --directory <repo> python -m mcp_server`. On `main` the release has no
   routes, so try it on `beta`.
