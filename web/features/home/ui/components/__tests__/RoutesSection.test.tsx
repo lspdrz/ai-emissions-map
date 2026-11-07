@@ -56,6 +56,11 @@ describe("RoutesSection", () => {
     expect(html).not.toContain("Org 1 · Model 1");
   });
 
+  it("shows each route's slug, selected whole on a click, for saving the route in a chat app", () => {
+    const html = render([row(1, { slug: "scaleway-mistral-medium-3-5-128b" })]);
+    expect(html).toMatch(/<div[^>]*select-all[^>]*>scaleway-mistral-medium-3-5-128b<\/div>/);
+  });
+
   it("shows the location under the organization and model, and the letter", () => {
     const html = render([row(1, { label: "OPCORE DC5, Paris", letter: "A" })]);
     expect(html).toContain("OPCORE DC5, Paris");

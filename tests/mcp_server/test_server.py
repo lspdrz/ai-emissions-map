@@ -6,7 +6,7 @@ from starlette.testclient import TestClient
 
 from mcp_server import server
 from tests.builders.data import make_data, make_data_meta, make_data_model, make_data_organization, make_data_route
-from tools.estimate_emissions import estimate
+from tools.estimate_emissions import estimate, estimate_route
 
 # Each test builds the release it reads, every field stated, sets it by replacing published_data, and talks to the
 # server through its own in-memory MCP client, as a chat app would.
@@ -131,6 +131,103 @@ def test_estimate_emissions_on_an_unknown_model_is_a_tool_error_naming_the_model
     [content] = result.content
     assert isinstance(content, TextContent)
     assert "No model on the map matches 'X 9'. Models: M 70B." in content.text
+
+
+# estimate_route_emissions: the energy and carbon of a response on the one route the user names.
+
+
+def _call_estimate_route_emissions_tool(route: str, output_tokens: int) -> CallToolResult:
+    """Call estimate_route_emissions as a chat app would: through an in-memory MCP client."""
+
+    async def call_tool():
+        async with Client(server.mcp) as client:
+            return await client.call_tool("estimate_route_emissions", {"route": route, "output_tokens": output_tokens})
+
+    return asyncio.run(call_tool())
+
+
+def test_estimate_route_emissions_is_offered_taking_a_route_and_its_output_tokens():
+    async def list_tools():
+        async with Client(server.mcp, raise_exceptions=True) as client:
+            return (await client.list_tools()).tools
+
+    tool = {tool.name: tool for tool in asyncio.run(list_tools())}["estimate_route_emissions"]
+    assert set(tool.input_schema["properties"]) == {"route", "output_tokens"}
+    assert set(tool.input_schema["required"]) == {"route", "output_tokens"}
+
+
+def test_estimate_route_emissions_returns_the_estimate_as_structured_content(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[make_data_organization(slug="acme", display_name="Acme")],
+        routes=[
+            make_data_route(
+                slug="acme-m-70b",
+                org="acme",
+                model="m-70b",
+                label="Acme 1, Geneva",
+                default=True,
+                letter="A",
+                gap=None,
+                served_as=None,
+                energy={"low": 0.6, "high": 0.8},
+                embodied={"low": 0.05, "high": 0.05},
+                grid_intensity={"low": 30.0, "high": 30.0},
+                sci={"low": 0.068, "high": 0.074},
+            )
+        ],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+
+    result = _call_estimate_route_emissions_tool("acme-m-70b", 500)
+    assert not result.is_error
+    assert result.structured_content == estimate_route("acme-m-70b", 500)
+
+
+def test_estimate_route_emissions_on_an_unknown_route_is_a_tool_error_naming_the_routes(monkeypatch):
+    data = make_data(
+        schema="aem-data/4",
+        meta=make_data_meta(
+            release_date="2026-10-28",
+            methodology_version="0.4.0",
+            ecologits_version="0.11.2",
+            draft=True,
+            functional_unit_tokens=1000,
+        ),
+        models=[make_data_model(slug="m-70b", display_name="M 70B")],
+        organizations=[make_data_organization(slug="acme", display_name="Acme")],
+        routes=[
+            make_data_route(
+                slug="acme-m-70b",
+                org="acme",
+                model="m-70b",
+                label="Acme 1, Geneva",
+                default=True,
+                letter="A",
+                gap=None,
+                served_as=None,
+                energy={"low": 0.6, "high": 0.8},
+                embodied={"low": 0.05, "high": 0.05},
+                grid_intensity={"low": 30.0, "high": 30.0},
+                sci={"low": 0.068, "high": 0.074},
+            )
+        ],
+    )
+    monkeypatch.setattr("tools.estimate_emissions.published_data", lambda: data)
+
+    result = _call_estimate_route_emissions_tool("acme-x", 500)
+    assert result.is_error
+    [content] = result.content
+    assert isinstance(content, TextContent)
+    assert "No route on the map is called 'acme-x'. Routes: acme-m-70b." in content.text
 
 
 # Starting the server: stdio by default, stateless HTTP on Cloud Run's $PORT with --http, which refuses GET.
