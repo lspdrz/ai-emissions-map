@@ -17,8 +17,8 @@ from build.schemas.score import OrgRating
 # What each letter below A lacks, for the site. Proposed wording: the maintainer may rename.
 GAPS: dict[Letter, str | None] = {
     "A": None,
-    "B": "The grid is disclosed, not the facility.",
-    "C": "The grid is not determined: several are possible.",
+    "B": "The grids are disclosed, not the facility.",
+    "C": "The grid is not fully determined: an aggregate zone is used.",
     "D": "Location not disclosed by the provider.",
 }
 
@@ -27,12 +27,15 @@ def _disclosure_letter(location: Location, grids: list[Grid]) -> Letter:
     """How precisely the location's primary evidence determines where its electricity comes from.
     `grids` are the distinct grids its candidates resolve to."""
     if not location["candidates"] or not has_primary(location["evidence"]):
-        return "D"  # nothing disclosed
+        return "D"  # doesn't disclose anything
     if location.get("facilities"):
-        return "A"  # the facilities are named: their own supply can be checked
-    if len(grids) == 1 and not grids[0].get("subdivided"):
-        return "B"  # one grid, not subdivided
-    return "C"  # several grids, or one subdivided grid
+        return "A"  # names facilities
+    if not grids:
+        return "D"
+    # If any resolved grid is subdivided (an aggregate zone), the location is not fully determined.
+    if any(grid.get("subdivided") for grid in grids):
+        return "C"  # names some grids (at the aggregate level)
+    return "B"  # names all grids (specific, non-aggregate)
 
 
 def _summary(letter: Letter, spread: dict[Letter, int]) -> str:

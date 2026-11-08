@@ -5,7 +5,7 @@ from tests.builders.location import make_facility, make_location
 
 
 # A route's rating: how precisely its location's primary evidence determines where its electricity comes from. A named
-# facilities, B one grid, C several grids or a subdivided one, D nothing disclosed (or known only from the press),
+# facilities, B specific non-aggregate grids (one or many), C aggregate/super-zone grids, D nothing disclosed (or known only from the press),
 # which is checked first.
 
 
@@ -27,7 +27,7 @@ def test_a_route_on_one_grid_is_b():
     location = make_location(candidates=["grid:ch"])
     assert disclosure_rating(location, {"ch": make_grid()}) == {
         "letter": "B",
-        "gap": "The grid is disclosed, not the facility.",
+        "gap": "The grids are disclosed, not the facility.",
     }
 
 
@@ -36,19 +36,31 @@ def test_a_route_on_one_subdivided_grid_is_c():
     grids = {"se": make_grid(name="se", country="SE", zone="SE", subdivided=True)}
     assert disclosure_rating(location, grids) == {
         "letter": "C",
-        "gap": "The grid is not determined: several are possible.",
+        "gap": "The grid is not fully determined: an aggregate zone is used.",
     }
 
 
-def test_a_route_on_several_grids_is_c_even_within_one_country():
+def test_a_route_on_several_grids_is_b():
     location = make_location(candidates=["grid:us-cal-ciso", "grid:us-tex-erco"])
     grids = {
         "us-cal-ciso": make_grid(name="us-cal-ciso", country="US", zone="US-CAL-CISO"),
         "us-tex-erco": make_grid(name="us-tex-erco", country="US", zone="US-TEX-ERCO"),
     }
     assert disclosure_rating(location, grids) == {
+        "letter": "B",
+        "gap": "The grids are disclosed, not the facility.",
+    }
+
+
+def test_a_route_on_mixed_aggregate_and_specific_grids_is_c():
+    location = make_location(candidates=["grid:se", "grid:ch"])
+    grids = {
+        "se": make_grid(name="se", country="SE", zone="SE", subdivided=True),
+        "ch": make_grid(name="ch", country="CH", zone="CH"),
+    }
+    assert disclosure_rating(location, grids) == {
         "letter": "C",
-        "gap": "The grid is not determined: several are possible.",
+        "gap": "The grid is not fully determined: an aggregate zone is used.",
     }
 
 

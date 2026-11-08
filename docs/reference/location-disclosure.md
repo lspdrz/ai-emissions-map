@@ -15,8 +15,8 @@ to, its `facilities` and its evidence, taking the first row that applies:
 |---|---|---|
 | Nothing: no candidates, or no primary evidence (unknown, or the press only) | D | 0 |
 | The facilities, named in `facilities:`, so their actual supply can be checked | A | 3 |
-| One grid that is not `subdivided` | B | 2 |
-| More than one possible grid, or one `subdivided` grid | C | 1 |
+| Specific, non-aggregate grids (one or many) | B | 2 |
+| Aggregate/super-zone grids (any `subdivided` grid) | C | 1 |
 
 The points serve only to average an organization's routes (below); they are `DISCLOSURE_POINTS` in
 `build/constants/config.py`.
@@ -41,8 +41,9 @@ the facility's on-site grid.
 ## Providers that may run anywhere in their network
 
 When a provider states only that a request may be processed in any of its locations (a "global"
-endpoint, for example), the candidates are every region the provider lists for that model, which makes the
-rating C. The carbon intensity is a range across all of them. When it commits to a jurisdiction (the United States, the European Union, a
+endpoint, for example), the candidates are every region the provider lists for that model. If those regions
+resolve to specific, non-aggregate grids, the rating is B; if any resolve to subdivided grids, it is C.
+The carbon intensity is a range across all of them. When it commits to a jurisdiction (the United States, the European Union, a
 single country), the candidates are all of its regions within that jurisdiction, because the
 commitment is to the jurisdiction, not to the region the endpoint is named after.
 
@@ -62,8 +63,8 @@ customer chooses; it is shown as such, and counts like any other.
 
 Each route below A states what is missing, in one of these forms:
 
-- "The grid is disclosed, not the facility." (B)
-- "The grid is not determined: several are possible." (C)
+- "The grids are disclosed, not the facility." (B)
+- "The grid is not fully determined: an aggregate zone is used." (C)
 - "Location not disclosed by the provider." (D)
 
 ## Serving-locations files

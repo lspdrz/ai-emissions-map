@@ -126,7 +126,7 @@ def test_estimate_lists_every_route_of_the_model_and_no_other(monkeypatch):
                 label="United States",
                 default=False,
                 letter="C",
-                gap="The grid is not determined: several are possible.",
+                gap="The grid is not fully determined: an aggregate zone is used.",
                 served_as=None,
                 energy={"low": 0.6, "high": 0.8},
                 embodied={"low": 0.05, "high": 0.05},

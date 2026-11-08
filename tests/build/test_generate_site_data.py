@@ -78,7 +78,7 @@ def test_a_routes_entry_carries_its_stored_fields():
         org="acme",
         model="m-70b",
         location=make_location(candidates=["grid:ch"]),
-        disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+        disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
         carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
@@ -95,7 +95,7 @@ def test_a_routes_entry_carries_its_stored_fields():
         "label": "1 grid",
         "default": False,
         "letter": "B",
-        "gap": "The grid is disclosed, not the facility.",
+        "gap": "The grids are disclosed, not the facility.",
         "sci": {"low": 0.065, "high": 0.078},
         "energy": {"low": 0.5, "high": 0.6},
         "grid_intensity": {"low": 30.0, "high": 30.0},
@@ -112,7 +112,7 @@ def test_a_default_routes_entry_is_marked_default():
         model="m-70b",
         location=make_location(candidates=["grid:ch"]),
         default=True,
-        disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+        disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
         carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
@@ -133,7 +133,7 @@ def test_a_routes_entry_carries_the_name_it_is_served_as():
         location=make_location(candidates=["grid:ch"]),
         served_as="acme/M-70B-Instruct",
         served_model_evidence=[make_evidence(kind="primary")],
-        disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+        disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
         carbon_intensity={
             "grids": ["ch"],
             "energy_wh": {"low": 0.5, "high": 0.6},
@@ -353,7 +353,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -368,7 +368,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch", "grid:de"]),
-                disclosure_rating={"letter": "C", "gap": "The grid is not determined: several are possible."},
+                disclosure_rating={"letter": "C", "gap": "The grid is not fully determined: an aggregate zone is used."},
                 carbon_intensity={
                     "grids": ["ch", "de"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -462,7 +462,7 @@ def test_the_grid_intensity_spread_is_the_highest_grid_intensity_over_the_lowest
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -477,7 +477,7 @@ def test_the_grid_intensity_spread_is_the_highest_grid_intensity_over_the_lowest
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:de"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["de"],
                     "energy_wh": {"low": 0.5, "high": 0.6},

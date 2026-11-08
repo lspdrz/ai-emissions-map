@@ -5,8 +5,8 @@ import type { Meta } from "@/lib/data/types";
 
 const RATINGS = [
   ["A", "Names the facility"],
-  ["B", "Names one grid"],
-  ["C", "Names several possible grids"],
+  ["B", "Names all specific grids"],
+  ["C", "Names aggregate zones"],
   ["D", "Undisclosed"],
 ] as const;
 

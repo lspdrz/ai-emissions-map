@@ -62,8 +62,8 @@ Location belongs to the route, not the model. A route records the model **actual
 Each route is rated on how precisely its primary evidence determines where its electricity comes from:
 
 - **A:** it names the facility, the only level at which the building's actual supply can be checked.
-- **B:** it determines one grid.
-- **C:** more than one grid is possible, including a single zone subdivided into finer ones.
+- **B:** it determines specific, non-aggregate grids (one or many).
+- **C:** it determines aggregate/super-zone grids (any `subdivided` zone).
 - **D:** the location is unknown, or known only from the press.
 
 The rating is generated from the recorded location, never assigned by hand, and each route below A states what is missing.

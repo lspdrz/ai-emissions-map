@@ -11,7 +11,7 @@ from build.types import ScoreRun
 
 def test_current_ratings_pass(monkeypatch):
     org_rating = {"letter": "B", "mean": 2.0, "spread": {"B": 1}, "summary": "B (1 route at B)"}
-    route_rating = {"letter": "B", "gap": "The grid is disclosed, not the facility."}
+    route_rating = {"letter": "B", "gap": "The grids are disclosed, not the facility."}
     run = ScoreRun(
         errors=[],
         written=[],
@@ -60,7 +60,7 @@ def test_a_route_without_a_rating_is_named(monkeypatch):
         data={"organizations": {}, "routes": {"acme-m-70b": {}}},
         routes=cast(
             Any,
-            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grid is disclosed, not the facility."}}},
+            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grids are disclosed, not the facility."}}},
         ),
         orgs=cast(Any, {}),
     )
@@ -123,7 +123,7 @@ def test_a_routes_moved_rating_is_named(monkeypatch):
         },
         routes=cast(
             Any,
-            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grid is disclosed, not the facility."}}},
+            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grids are disclosed, not the facility."}}},
         ),
         orgs=cast(Any, {}),
     )
@@ -145,7 +145,7 @@ def test_several_moved_values_are_named_in_the_fields_order(monkeypatch):
         },
         routes=cast(
             Any,
-            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grid is disclosed, not the facility."}}},
+            {"acme-m-70b": {"disclosure_rating": {"letter": "B", "gap": "The grids are disclosed, not the facility."}}},
         ),
         orgs=cast(Any, {}),
     )
@@ -156,7 +156,7 @@ def test_several_moved_values_are_named_in_the_fields_order(monkeypatch):
 
 
 def test_a_moved_carbon_intensity_is_not_this_gates_concern(monkeypatch):
-    route_rating = {"letter": "B", "gap": "The grid is disclosed, not the facility."}
+    route_rating = {"letter": "B", "gap": "The grids are disclosed, not the facility."}
     run = ScoreRun(
         errors=[],
         written=[],
@@ -186,7 +186,7 @@ def test_a_moved_carbon_intensity_is_not_this_gates_concern(monkeypatch):
 
 def test_organizations_are_named_before_routes_each_in_order(monkeypatch):
     org_rating = {"letter": None, "mean": None, "spread": {}, "summary": "Not rated (no routes)"}
-    route_rating = {"letter": "B", "gap": "The grid is disclosed, not the facility."}
+    route_rating = {"letter": "B", "gap": "The grids are disclosed, not the facility."}
     run = ScoreRun(
         errors=[],
         written=[],
