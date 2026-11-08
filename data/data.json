@@ -7,14 +7,14 @@
       1.0
     ],
     "counts": {
-      "grids": 14,
-      "models": 6,
-      "organizations": 3,
-      "routes": 13
+      "grids": 15,
+      "models": 8,
+      "organizations": 4,
+      "routes": 19
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": "gpt-6-1-astra",
+    "featured_model": "gemini-3-6-flash",
     "functional_unit": {
       "output_tokens": 1000
     },
@@ -23,7 +23,7 @@
       "year": 2025
     },
     "grid_intensity_spread": 21,
-    "inputs_sha": "c81ebbfc9825f60989eed51a7813e139d01ec11ffa8bc16aa7b51f40e8d55437",
+    "inputs_sha": "85a4b76a140d357b57af97a7e345257d0fc2d7b654406d1614ed75c2387ca2fc",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
@@ -41,6 +41,26 @@
       "display_name": "Claude Opus 5.5",
       "slug": "claude-opus-5-5",
       "total_b": 670
+    },
+    {
+      "active_b": {
+        "max": 200,
+        "min": 75
+      },
+      "architecture": "moe",
+      "display_name": "Gemini 3.6 Flash",
+      "slug": "gemini-3-6-flash",
+      "total_b": 750
+    },
+    {
+      "active_b": {
+        "max": 200,
+        "min": 75
+      },
+      "architecture": "moe",
+      "display_name": "Gemini 3.8 Flash",
+      "slug": "gemini-3-8-flash",
+      "total_b": 750
     },
     {
       "active_b": {
@@ -125,6 +145,84 @@
         "anthropic-claude-opus-5-5-us"
       ],
       "slug": "anthropic",
+      "type": "model_lab"
+    },
+    {
+      "country": "US",
+      "description": "Google serves Gemini on its Agent Platform (formerly Vertex AI) from a global endpoint, which may process requests in any Google Cloud location, or from regional endpoints that keep processing within a geography. It does not say which region serves a given request.",
+      "display_name": "Google",
+      "evidence": [
+        {
+          "accessed": "2026-11-08",
+          "quotes": [],
+          "routes": [
+            "google-gemini-3-6-flash-agent-platform-eu",
+            "google-gemini-3-8-flash-agent-platform-eu"
+          ],
+          "url": "https://cloud.google.com/about/locations/europe"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [],
+          "routes": [
+            "google-gemini-3-6-flash-agent-platform-us",
+            "google-gemini-3-8-flash-agent-platform-us"
+          ],
+          "url": "https://cloud.google.com/about/locations/us"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "If your organization has ML processing requirements, you can use a regional endpoint to keep your data in a specific region.",
+            "Requests submitted to a global endpoint may be processed in any Google Cloud location around the world, and therefore don't provide any data residency guarantees."
+          ],
+          "routes": [
+            "google-gemini-3-6-flash-agent-platform-eu",
+            "google-gemini-3-6-flash-agent-platform-global",
+            "google-gemini-3-6-flash-agent-platform-us",
+            "google-gemini-3-8-flash-agent-platform-eu",
+            "google-gemini-3-8-flash-agent-platform-global",
+            "google-gemini-3-8-flash-agent-platform-us"
+          ],
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/data-residency"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "Gemini 3.6 Flash (gemini-3.6-flash)",
+            "Don't use the global endpoint if you have ML processing requirements, because you can't control or know which region your ML processing requests are sent to when a request is made.",
+            "Gemini 3.8 Flash (gemini-3.8-flash)"
+          ],
+          "routes": [
+            "google-gemini-3-6-flash-agent-platform-eu",
+            "google-gemini-3-6-flash-agent-platform-global",
+            "google-gemini-3-6-flash-agent-platform-us",
+            "google-gemini-3-8-flash-agent-platform-eu",
+            "google-gemini-3-8-flash-agent-platform-global",
+            "google-gemini-3-8-flash-agent-platform-us"
+          ],
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/resources/locations"
+        }
+      ],
+      "homepage": "https://ai.google",
+      "rating": {
+        "letter": "C",
+        "mean": 0.666667,
+        "spread": {
+          "C": 4,
+          "D": 2
+        },
+        "summary": "C (4 routes at C, 2 routes at D)"
+      },
+      "routes": [
+        "google-gemini-3-6-flash-agent-platform-eu",
+        "google-gemini-3-6-flash-agent-platform-global",
+        "google-gemini-3-6-flash-agent-platform-us",
+        "google-gemini-3-8-flash-agent-platform-eu",
+        "google-gemini-3-8-flash-agent-platform-global",
+        "google-gemini-3-8-flash-agent-platform-us"
+      ],
+      "slug": "google",
       "type": "model_lab"
     },
     {
@@ -363,6 +461,168 @@
       },
       "served_as": null,
       "slug": "anthropic-claude-opus-5-5-us"
+    },
+    {
+      "band": [
+        3,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.054551,
+        "low": 0.054551
+      },
+      "energy": {
+        "high": 7.945461,
+        "low": 3.141091
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 28.05
+      },
+      "label": "Europe",
+      "letter": "C",
+      "model": "gemini-3-6-flash",
+      "org": "google",
+      "sci": {
+        "high": 4.748841,
+        "low": 0.142659
+      },
+      "served_as": null,
+      "slug": "google-gemini-3-6-flash-agent-platform-eu"
+    },
+    {
+      "band": null,
+      "default": false,
+      "embodied": {
+        "high": 0.054551,
+        "low": 0.054551
+      },
+      "energy": {
+        "high": 7.945461,
+        "low": 3.141091
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Any Google Cloud location",
+      "letter": "D",
+      "model": "gemini-3-6-flash",
+      "org": "google",
+      "sci": null,
+      "served_as": null,
+      "slug": "google-gemini-3-6-flash-agent-platform-global"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.054551,
+        "low": 0.054551
+      },
+      "energy": {
+        "high": 7.945461,
+        "low": 3.141091
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "gemini-3-6-flash",
+      "org": "google",
+      "sci": {
+        "high": 3.10881,
+        "low": 1.261996
+      },
+      "served_as": null,
+      "slug": "google-gemini-3-6-flash-agent-platform-us"
+    },
+    {
+      "band": [
+        3,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.081176,
+        "low": 0.081176
+      },
+      "energy": {
+        "high": 8.109468,
+        "low": 3.257174
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 28.05
+      },
+      "label": "Europe",
+      "letter": "C",
+      "model": "gemini-3-8-flash",
+      "org": "google",
+      "sci": {
+        "high": 4.872363,
+        "low": 0.172539
+      },
+      "served_as": null,
+      "slug": "google-gemini-3-8-flash-agent-platform-eu"
+    },
+    {
+      "band": null,
+      "default": false,
+      "embodied": {
+        "high": 0.081176,
+        "low": 0.081176
+      },
+      "energy": {
+        "high": 8.109468,
+        "low": 3.257174
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Any Google Cloud location",
+      "letter": "D",
+      "model": "gemini-3-8-flash",
+      "org": "google",
+      "sci": null,
+      "served_as": null,
+      "slug": "google-gemini-3-8-flash-agent-platform-global"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.081176,
+        "low": 0.081176
+      },
+      "energy": {
+        "high": 8.109468,
+        "low": 3.257174
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "gemini-3-8-flash",
+      "org": "google",
+      "sci": {
+        "high": 3.198479,
+        "low": 1.333243
+      },
+      "served_as": null,
+      "slug": "google-gemini-3-8-flash-agent-platform-us"
     },
     {
       "band": [
