@@ -1,0 +1,19 @@
+name: deepseek-v4-pro-0813
+display_name: DeepSeek-V4-Pro-0813
+architecture: moe
+active_b: 49
+total_b: 1600
+evidence:
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813
+  shows: 'Model card: "DeepSeek-V4-Pro-0813 is the official release of DeepSeek-V4-Pro, superseding the preview version"; "It is built on the DeepSeek-V4-Pro (Preview) model structure, with a DSpark speculative decoding module attached."'
+  accessed: "2026-11-08"
+  kind: primary
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
+  shows: 'Model card: "DeepSeek-V4-Pro with 1.6T parameters (49B activated)"'
+  accessed: "2026-11-08"
+  kind: primary
+comments: >-
+  DeepSeek states 1.6T parameters with 49B activated for DeepSeek-V4-Pro, whose structure the 0813 release keeps.
+  Hugging Face counts 1,650.5B parameters in the 0813 safetensors, against 1,598.8B in the preview's; the difference
+  is the attached DSpark speculative decoding module, which is not counted. EcoLogits 0.11.2 has no entry for the
+  model.
