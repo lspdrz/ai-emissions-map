@@ -1,0 +1,16 @@
+name: se
+display_name: Sweden
+zone: SE
+country: SE
+subdivided: true
+comments: >-
+  Sweden as a whole, for a route whose provider names the country but no bidding zone or facility. Sweden's grid is
+  split into four bidding zones (SE1 to SE4), so naming the country does not determine the grid. Its intensity is
+  Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 35.39
+  year: 2025
+  geography: SE
+  source: Ember

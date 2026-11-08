@@ -7,14 +7,14 @@
       1.0
     ],
     "counts": {
-      "grids": 0,
-      "models": 0,
-      "organizations": 0,
-      "routes": 0
+      "grids": 5,
+      "models": 2,
+      "organizations": 1,
+      "routes": 2
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": null,
+    "featured_model": "mistral-large-4",
     "functional_unit": {
       "output_tokens": 1000
     },
@@ -22,17 +22,198 @@
       "source": "Ember",
       "year": 2025
     },
-    "grid_intensity_spread": null,
-    "inputs_sha": "136c8da89bad12acd65003bbcc3ce6fc5bd7a5b4b7326149085a61da6ff67832",
+    "grid_intensity_spread": 5,
+    "inputs_sha": "9e16af617bfb5213d2d664934e441551b105ca6a9e32837f7cc9242999ad6451",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
       1.54
     ],
-    "release_date": "2026-11-05"
+    "release_date": "2026-11-08"
   },
-  "models": [],
-  "organizations": [],
-  "routes": [],
+  "models": [
+    {
+      "active_b": {
+        "max": 52,
+        "min": 49
+      },
+      "architecture": "moe",
+      "display_name": "Mistral Large 4",
+      "slug": "mistral-large-4",
+      "total_b": 1000
+    },
+    {
+      "active_b": 128,
+      "architecture": "dense",
+      "display_name": "Mistral Medium 3.5",
+      "slug": "mistral-medium-3-5",
+      "total_b": 128
+    }
+  ],
+  "organizations": [
+    {
+      "country": "FR",
+      "description": "Mistral AI serves its models from a global endpoint, with no commitment to where a request runs, and from regional endpoints in the European Union and the United States. Its subprocessor list names the countries of its own infrastructure and of its inference provider, but not the buildings.",
+      "display_name": "Mistral AI",
+      "evidence": [
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "EU-NORTH-01A",
+            "Falun, Sweden",
+            "EU-NORTH-02A",
+            "Kristiansand, Norway",
+            "EU-NORTH-04A",
+            "Stockholm, Sweden",
+            "EU-NORTH-05A",
+            "Skovlunde, Denmark",
+            "EU-SOUTH-01A",
+            "Barcelona, Spain",
+            "EU-SOUTH-03B",
+            "Barcelona, Spain",
+            "EU-SOUTH-04A",
+            "Alava, Spain",
+            "EU-WEST-01A",
+            "Crawley, UK",
+            "EU-WEST-02A",
+            "London, UK"
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-4",
+            "mistral-ai-mistral-medium-3-5"
+          ],
+          "url": "https://docs.coreweave.com/platform/regions/all-availability-zones.md"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "if you do not specify a region, the API uses the global Mistral endpoint.",
+            "Not region-specific",
+            "Mistral does not commit to a specific inference location for requests sent to this endpoint."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-4",
+            "mistral-ai-mistral-medium-3-5"
+          ],
+          "url": "https://docs.mistral.ai/inference/regional-inference.md"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "Where do you store my data or my Organization's data?",
+            "By default, your data is hosted in the European Union."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-4",
+            "mistral-ai-mistral-medium-3-5"
+          ],
+          "url": "https://help.mistral.ai/en/articles/347629-where-do-you-store-my-data-or-my-organization-s-data"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "Feb 2026",
+            "GB200 serving production."
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-4",
+            "mistral-ai-mistral-medium-3-5"
+          ],
+          "url": "https://mistral.ai/cloud/"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "Mistral Compute • Cloud infrastructure",
+            "Products: All",
+            "CoreWeave Inc. • Inference Provider",
+            "Products: All SaaS"
+          ],
+          "routes": [
+            "mistral-ai-mistral-large-4",
+            "mistral-ai-mistral-medium-3-5"
+          ],
+          "url": "https://trust.mistral.ai/subprocessors"
+        }
+      ],
+      "homepage": "https://mistral.ai",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 2
+        },
+        "summary": "C (2 routes at C)"
+      },
+      "routes": [
+        "mistral-ai-mistral-large-4",
+        "mistral-ai-mistral-medium-3-5"
+      ],
+      "slug": "mistral-ai",
+      "type": "model_lab"
+    }
+  ],
+  "routes": [
+    {
+      "band": [
+        4,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.389165,
+        "low": 0.378564
+      },
+      "energy": {
+        "high": 5.853699,
+        "low": 4.037396
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 153.459,
+        "low": 28.05
+      },
+      "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
+      "letter": "C",
+      "model": "mistral-large-4",
+      "org": "mistral-ai",
+      "sci": {
+        "high": 1.287468,
+        "low": 0.491813
+      },
+      "served_as": "mistral-large-4",
+      "slug": "mistral-ai-mistral-large-4"
+    },
+    {
+      "band": [
+        3,
+        3
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.082218,
+        "low": 0.082218
+      },
+      "energy": {
+        "high": 1.205093,
+        "low": 0.852955
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 153.459,
+        "low": 28.05
+      },
+      "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
+      "letter": "C",
+      "model": "mistral-medium-3-5",
+      "org": "mistral-ai",
+      "sci": {
+        "high": 0.26715,
+        "low": 0.106143
+      },
+      "served_as": "mistral-medium-3-5",
+      "slug": "mistral-ai-mistral-medium-3-5"
+    }
+  ],
   "schema": "aem-data/4"
 }
