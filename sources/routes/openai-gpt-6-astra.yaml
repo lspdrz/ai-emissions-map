@@ -1,7 +1,7 @@
-name: openai-gpt-6-1-astra
+name: openai-gpt-6-astra
 org: openai
-model: gpt-6-1-astra
-default: false
+model: gpt-6-astra
+default: true
 location:
   label: Global geography
   candidates: []
@@ -15,11 +15,11 @@ location:
     accessed: "2026-11-08"
     kind: primary
 speed:
-  tokens_per_second: 44
-  time_to_first_token_s: 3.22
+  tokens_per_second: 43
+  time_to_first_token_s: 4.15
   evidence:
-  - url: https://openrouter.ai/openai/gpt-6.1-astra/providers
-    shows: 'Providers table, P50: "OpenAI" (no region badge; Privacy: Logs) "3.22s" "44 tps"'
+  - url: https://openrouter.ai/openai/gpt-6-astra/providers
+    shows: 'Providers table, P50: "OpenAI" (no region badge) "4.15s" "43 tok/s"'
     accessed: "2026-11-08"
     kind: corroborating
 comments: >-
@@ -36,11 +36,11 @@ disclosure_rating:
 carbon_intensity:
   grids: []
   energy_wh:
-    low: 1.378802
-    high: 2.986279
+    low: 10.03035
+    high: 33.813822
   embodied_g:
-    low: 0.067571
-    high: 0.067571
+    low: 0.285477
+    high: 0.285477
   grid_intensity_g_per_kwh: null
   sci_g: null
   band: null

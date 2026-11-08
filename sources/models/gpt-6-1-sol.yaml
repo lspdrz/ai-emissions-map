@@ -7,7 +7,7 @@ active_b:
 total_b: 375
 evidence:
 - url: https://github.com/genai-impact/ecologits/blob/0.11.2/ecologits/data/models.json
-  shows: 'EcoLogits catalogue, "gpt-6-1-sol": architecture "moe", parameters "total": 375, "active": {"min": 38, "max": 112}; warnings "model-arch-not-released", "model-arch-multimodal"'
+  shows: 'EcoLogits catalogue, "gpt-6.1-sol": architecture "moe", parameters "total": 375, "active": {"min": 38, "max": 112}; warnings "model-arch-not-released", "model-arch-multimodal"'
   accessed: "2026-11-08"
   kind: corroborating
 comments: >-

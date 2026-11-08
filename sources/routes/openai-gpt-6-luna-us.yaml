@@ -18,11 +18,11 @@ location:
     accessed: "2026-11-08"
     kind: primary
 speed:
-  tokens_per_second: 44
-  time_to_first_token_s: 3.22
+  tokens_per_second: 73
+  time_to_first_token_s: 2.5
   evidence:
   - url: https://openrouter.ai/openai/gpt-6-luna/providers
-    shows: 'Providers table, P50: "OpenAI" (no region badge; Privacy: Logs; no US in-region row is listed) "3.22s" "44 tps"'
+    shows: 'Providers table, P50: "OpenAI" (no region badge; no US in-region row is listed) "2.50s" "73 tok/s"'
     accessed: "2026-11-08"
     kind: corroborating
 comments: >-
@@ -39,17 +39,17 @@ carbon_intensity:
   grids:
   - us
   energy_wh:
-    low: 1.378802
-    high: 2.986279
+    low: 0.116061
+    high: 0.176604
   embodied_g:
-    low: 0.067571
-    high: 0.067571
+    low: 0.005273
+    high: 0.005273
   grid_intensity_g_per_kwh:
     low: 384.403
     high: 384.403
   sci_g:
-    low: 0.597587
-    high: 1.215506
+    low: 0.049887
+    high: 0.07316
   band:
-  - 4
-  - 5
+  - 2
+  - 2

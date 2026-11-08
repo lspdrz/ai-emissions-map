@@ -18,11 +18,11 @@ location:
     accessed: "2026-11-08"
     kind: primary
 speed:
-  tokens_per_second: 44
-  time_to_first_token_s: 3.22
+  tokens_per_second: 52
+  time_to_first_token_s: 3.37
   evidence:
   - url: https://openrouter.ai/openai/gpt-6.1-sol/providers
-    shows: 'Providers table, P50: "OpenAI" (no region badge; Privacy: Logs; no US in-region row is listed) "3.22s" "44 tps"'
+    shows: 'Providers table, P50: "OpenAI" (no region badge; no US in-region row is listed) "3.37s" "52 tok/s"'
     accessed: "2026-11-08"
     kind: corroborating
 comments: >-
@@ -39,17 +39,17 @@ carbon_intensity:
   grids:
   - us
   energy_wh:
-    low: 1.378802
-    high: 2.986279
+    low: 1.340806
+    high: 2.932596
   embodied_g:
-    low: 0.067571
-    high: 0.067571
+    low: 0.058856
+    high: 0.058856
   grid_intensity_g_per_kwh:
     low: 384.403
     high: 384.403
   sci_g:
-    low: 0.597587
-    high: 1.215506
+    low: 0.574266
+    high: 1.186155
   band:
   - 4
   - 5
