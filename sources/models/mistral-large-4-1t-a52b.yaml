@@ -1,0 +1,16 @@
+name: mistral-large-4-1t-a52b
+display_name: Mistral Large 4
+architecture: moe
+active_b:
+  min: 49
+  max: 52
+total_b: 1000
+evidence:
+- url: https://huggingface.co/mistralai/Mistral-Large-4-1T-A52B
+  shows: 'Model card: "Mistral Large 4 is our largest and most capable model to date: a 1 trillion-parameter natively multimodal Mixture-of-Experts model with 49 billion active parameters per token (52 billion including embeddings and output layers)"'
+  accessed: "2026-11-07"
+  kind: primary
+comments: >-
+  Mistral states 1 trillion parameters in all, with 49B active per token, or 52B counting the embeddings and output
+  layers; the active count is recorded as that range. The card's summary rounds them: "~1T total / ~52B active
+  parameters".

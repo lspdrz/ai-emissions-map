@@ -1,4 +1,4 @@
-name: mistral-medium-3-5
+name: mistral-medium-3-5-128b
 display_name: Mistral Medium 3.5
 architecture: dense
 active_b: 128
@@ -10,4 +10,4 @@ evidence:
   kind: primary
 comments: >-
   Mistral states 128B. Hugging Face counts 127.7B parameters in the safetensors, 121.8B of them in FP8 and 5.9B in
-  BF16. This file uses the shorthand name without the parameter count.
+  BF16.

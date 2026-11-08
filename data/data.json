@@ -23,7 +23,7 @@
       "year": 2025
     },
     "grid_intensity_spread": 21,
-    "inputs_sha": "e1024d1b83411d7cf4ce6594c6008554388765328a1c267db72b99f8d4feefcd",
+    "inputs_sha": "4cf8b862516ccac08ae10feb5b64c3f0f689c64a1707077414e9c81dc94a727d",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
@@ -99,14 +99,14 @@
       },
       "architecture": "moe",
       "display_name": "Mistral Large 4",
-      "slug": "mistral-large-4",
+      "slug": "mistral-large-4-1t-a52b",
       "total_b": 1000
     },
     {
       "active_b": 128,
       "architecture": "dense",
       "display_name": "Mistral Medium 3.5",
-      "slug": "mistral-medium-3-5",
+      "slug": "mistral-medium-3-5-128b",
       "total_b": 128
     }
   ],
@@ -262,8 +262,8 @@
             "London, UK"
           ],
           "routes": [
-            "mistral-ai-mistral-large-4",
-            "mistral-ai-mistral-medium-3-5"
+            "mistral-ai-mistral-large-4-1t-a52b",
+            "mistral-ai-mistral-medium-3-5-128b"
           ],
           "url": "https://docs.coreweave.com/platform/regions/all-availability-zones.md"
         },
@@ -275,8 +275,8 @@
             "Mistral does not commit to a specific inference location for requests sent to this endpoint."
           ],
           "routes": [
-            "mistral-ai-mistral-large-4",
-            "mistral-ai-mistral-medium-3-5"
+            "mistral-ai-mistral-large-4-1t-a52b",
+            "mistral-ai-mistral-medium-3-5-128b"
           ],
           "url": "https://docs.mistral.ai/inference/regional-inference.md"
         },
@@ -287,8 +287,8 @@
             "By default, your data is hosted in the European Union."
           ],
           "routes": [
-            "mistral-ai-mistral-large-4",
-            "mistral-ai-mistral-medium-3-5"
+            "mistral-ai-mistral-large-4-1t-a52b",
+            "mistral-ai-mistral-medium-3-5-128b"
           ],
           "url": "https://help.mistral.ai/en/articles/347629-where-do-you-store-my-data-or-my-organization-s-data"
         },
@@ -299,8 +299,8 @@
             "GB200 serving production."
           ],
           "routes": [
-            "mistral-ai-mistral-large-4",
-            "mistral-ai-mistral-medium-3-5"
+            "mistral-ai-mistral-large-4-1t-a52b",
+            "mistral-ai-mistral-medium-3-5-128b"
           ],
           "url": "https://mistral.ai/cloud/"
         },
@@ -313,8 +313,8 @@
             "Products: All SaaS"
           ],
           "routes": [
-            "mistral-ai-mistral-large-4",
-            "mistral-ai-mistral-medium-3-5"
+            "mistral-ai-mistral-large-4-1t-a52b",
+            "mistral-ai-mistral-medium-3-5-128b"
           ],
           "url": "https://trust.mistral.ai/subprocessors"
         }
@@ -329,8 +329,8 @@
         "summary": "C (2 routes at C)"
       },
       "routes": [
-        "mistral-ai-mistral-large-4",
-        "mistral-ai-mistral-medium-3-5"
+        "mistral-ai-mistral-large-4-1t-a52b",
+        "mistral-ai-mistral-medium-3-5-128b"
       ],
       "slug": "mistral-ai",
       "type": "model_lab"
@@ -637,17 +637,17 @@
     },
     {
       "band": [
-        4,
-        5
+        3,
+        4
       ],
       "default": true,
       "embodied": {
-        "high": 0.389165,
-        "low": 0.378564
+        "high": 0.074402,
+        "low": 0.074402
       },
       "energy": {
-        "high": 5.853699,
-        "low": 4.037396
+        "high": 3.914755,
+        "low": 2.711249
       },
       "gap": "Uses aggregate/super-zone grids (location not fully specific).",
       "grid_intensity": {
@@ -656,28 +656,28 @@
       },
       "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
       "letter": "C",
-      "model": "mistral-large-4",
+      "model": "mistral-large-4-1t-a52b",
       "org": "mistral-ai",
       "sci": {
-        "high": 1.287468,
-        "low": 0.491813
+        "high": 0.675156,
+        "low": 0.150452
       },
       "served_as": "mistral-large-4",
-      "slug": "mistral-ai-mistral-large-4"
+      "slug": "mistral-ai-mistral-large-4-1t-a52b"
     },
     {
       "band": [
-        3,
+        1,
         3
       ],
       "default": true,
       "embodied": {
-        "high": 0.082218,
-        "low": 0.082218
+        "high": 0.006412,
+        "low": 0.006412
       },
       "energy": {
-        "high": 1.205093,
-        "low": 0.852955
+        "high": 0.738131,
+        "low": 0.522444
       },
       "gap": "Uses aggregate/super-zone grids (location not fully specific).",
       "grid_intensity": {
@@ -686,14 +686,14 @@
       },
       "label": "Mistral Compute in France or CoreWeave in the EEA (5 countries)",
       "letter": "C",
-      "model": "mistral-medium-3-5",
+      "model": "mistral-medium-3-5-128b",
       "org": "mistral-ai",
       "sci": {
-        "high": 0.26715,
-        "low": 0.106143
+        "high": 0.119685,
+        "low": 0.021067
       },
       "served_as": "mistral-medium-3-5",
-      "slug": "mistral-ai-mistral-medium-3-5"
+      "slug": "mistral-ai-mistral-medium-3-5-128b"
     },
     {
       "band": null,
