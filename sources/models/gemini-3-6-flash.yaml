@@ -11,9 +11,14 @@ evidence:
   accessed: "2026-11-08"
   kind: corroborating
 - url: https://deepmind.google/models/model-cards/gemini-3-6-flash/
-  shows: 'Model card: "Gemini 3.6 Flash is based on Gemini 3.5 Flash."'
+  shows: 'Model card, Architecture: "Gemini 3.6 Flash is based on Gemini 3.5 Flash."'
+  accessed: "2026-11-08"
+  kind: primary
+- url: https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-3-Pro-Model-Card.pdf
+  shows: 'Gemini 3 Pro model card, Architecture: "Gemini 3 Pro is a sparse mixture-of-experts (MoE)"'
   accessed: "2026-11-08"
   kind: primary
 comments: >-
   EcoLogits marks Gemini 3.6 Flash's architecture as not released by Google: these counts are its estimate. Google's
-  model card defers to the Gemini 3.5 Flash card, which defers to the Gemini 3 Flash card; none gives parameter counts.
+  model card defers its architecture to earlier cards (Gemini 3.5 Flash, 3 Flash), and the Gemini 3 Flash card to Gemini 3 Pro's,
+  which says the family is a sparse mixture of experts; none gives parameter counts.

@@ -1,0 +1,14 @@
+name: it-no
+display_name: North Italy
+zone: IT-NO
+country: IT
+comments: >-
+  Italy's northern bidding zone, where Google Cloud's Milan region (europe-west8) is. Ember publishes no value for
+  Italy's bidding zones, so its intensity is Italy's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 284.431
+  year: 2025
+  geography: IT
+  source: Ember
