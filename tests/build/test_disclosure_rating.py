@@ -36,7 +36,7 @@ def test_a_route_on_one_subdivided_grid_is_c():
     grids = {"se": make_grid(name="se", country="SE", zone="SE", subdivided=True)}
     assert disclosure_rating(location, grids) == {
         "letter": "C",
-        "gap": "The grid is not fully determined: an aggregate zone is used.",
+        "gap": "Uses aggregate/super-zone grids (location not fully specific).",
     }
 
 
@@ -60,7 +60,7 @@ def test_a_route_on_mixed_aggregate_and_specific_grids_is_c():
     }
     assert disclosure_rating(location, grids) == {
         "letter": "C",
-        "gap": "The grid is not fully determined: an aggregate zone is used.",
+        "gap": "Uses aggregate/super-zone grids (location not fully specific).",
     }
 
 

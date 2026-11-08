@@ -18,7 +18,7 @@ from build.schemas.score import OrgRating
 GAPS: dict[Letter, str | None] = {
     "A": None,
     "B": "The grids are disclosed, not the facility.",
-    "C": "The grid is not fully determined: an aggregate zone is used.",
+    "C": "Uses aggregate/super-zone grids (location not fully specific).",
     "D": "Location not disclosed by the provider.",
 }
 

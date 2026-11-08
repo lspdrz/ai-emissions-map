@@ -201,7 +201,7 @@ def test_trailing_blank_lines_above_the_comment_become_one():
 
 def test_written_fields_read_back_equal():
     route_score: RouteScore = {
-        "disclosure_rating": {"letter": "C", "gap": "The grid is not fully determined: an aggregate zone is used."},
+        "disclosure_rating": {"letter": "C", "gap": "Uses aggregate/super-zone grids (location not fully specific)."},
         "carbon_intensity": {
             "grids": ["de", "fr"],
             "energy_wh": {"low": 0.5, "high": 0.6},

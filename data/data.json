@@ -23,7 +23,7 @@
       "year": 2025
     },
     "grid_intensity_spread": 5,
-    "inputs_sha": "a760ce96ada10badcc0836a2651983d3bfc9c77a6b2d81a8e458ed4516a06e46",
+    "inputs_sha": "9e16af617bfb5213d2d664934e441551b105ca6a9e32837f7cc9242999ad6451",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
@@ -168,7 +168,7 @@
         "high": 5.853699,
         "low": 4.037396
       },
-      "gap": "The grid is not fully determined: an aggregate zone is used.",
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
       "grid_intensity": {
         "high": 153.459,
         "low": 28.05
@@ -198,7 +198,7 @@
         "high": 1.205093,
         "low": 0.852955
       },
-      "gap": "The grid is not fully determined: an aggregate zone is used.",
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
       "grid_intensity": {
         "high": 153.459,
         "low": 28.05

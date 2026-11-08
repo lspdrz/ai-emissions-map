@@ -368,7 +368,7 @@ def test_meta_counts_organizations_routes_models_and_distinct_grids():
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch", "grid:de"]),
-                disclosure_rating={"letter": "C", "gap": "The grid is not fully determined: an aggregate zone is used."},
+                disclosure_rating={"letter": "C", "gap": "Uses aggregate/super-zone grids (location not fully specific)."},
                 carbon_intensity={
                     "grids": ["ch", "de"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
