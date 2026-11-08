@@ -31,19 +31,19 @@ location:
     accessed: "2026-11-08"
     kind: primary
   - url: https://developers.openai.com/api/docs/guides/your-data
-    shows: 'Data residency: "GPT-6.1 Sol supports only US and EU data residency."'
+    shows: 'Data residency: "GPT-6.1 Sol and GPT-6.1 Terra support only US and EU data residency."'
     accessed: "2026-11-08"
     kind: primary
   - url: https://developers.openai.com/api/docs/guides/your-data
-    shows: 'Data residency: "GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing."'
+    shows: 'Data residency: "GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing."'
     accessed: "2026-11-08"
     kind: primary
 speed:
-  tokens_per_second: 44
-  time_to_first_token_s: 3.22
+  tokens_per_second: 52
+  time_to_first_token_s: 3.37
   evidence:
   - url: https://openrouter.ai/openai/gpt-6.1-sol/providers
-    shows: 'Providers table, P50: "OpenAI" (no region badge; Privacy: Logs; no EU in-region row is listed) "3.22s" "44 tps"'
+    shows: 'Providers table, P50: "OpenAI" (no region badge; no EU in-region row is listed) "3.37s" "52 tok/s"'
     accessed: "2026-11-08"
     kind: corroborating
 comments: >-
@@ -75,17 +75,17 @@ carbon_intensity:
   - pl
   - se
   energy_wh:
-    low: 1.378802
-    high: 2.986279
+    low: 1.340806
+    high: 2.932596
   embodied_g:
-    low: 0.067571
-    high: 0.067571
+    low: 0.058856
+    high: 0.058856
   grid_intensity_g_per_kwh:
     low: 28.05
     high: 590.814
   sci_g:
-    low: 0.106246
-    high: 1.831907
+    low: 0.096466
+    high: 1.791475
   band:
-  - 3
+  - 2
   - 5
