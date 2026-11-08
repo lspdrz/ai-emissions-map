@@ -134,7 +134,7 @@ def test_a_moved_disclosure_rating_is_not_this_gates_concern(monkeypatch):
             {
                 "acme-m-70b": {
                     "carbon_intensity": carbon_intensity,
-                    "disclosure_rating": {"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                    "disclosure_rating": {"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 }
             },
         ),

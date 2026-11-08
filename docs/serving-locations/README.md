@@ -29,8 +29,8 @@ and each route gets its own rating from its `locations`:
 | What the route's `locations` state | Rating |
 |---|---|
 | Every location names a `facility`, with its `operator` and `city` | **A** |
-| The facilities aren't disclosed, but the locations resolve to one grid | **B** |
-| The facilities aren't disclosed, and the locations resolve to more than one grid | **C** |
+| The facilities aren't disclosed, but the locations resolve to specific, non-aggregate grids | **B** |
+| The facilities aren't disclosed, and the locations resolve to aggregate/super-zone grids | **C** |
 | Nothing about the model or the organization's routes | **D** |
 
 List every location a route's requests may run in, failover and overflow sites included: leaving one out makes the

@@ -6,8 +6,7 @@ The AI Emissions Map estimates the emissions of AI **serving routes** (an organi
   `(E × I) + M`. Energy (E) and embodied hardware emissions (M) are estimated with EcoLogits from the model's
   parameter counts; grid intensity (I) is [Ember](https://ember-energy.org/)'s life-cycle intensity of generation
   for the country (or US state or Chinese province) of each grid the route may draw from.
-- **Location disclosure rating**: A to D per route, generated from its cited location (A names the facility, B one
-  grid, C several possible grids, D undisclosed). An organization's rating is the mean of its routes'.
+- **Location disclosure rating**: A to D per route, generated from its cited location (A names the facility, B names all specific grids, C names aggregate zones, D undisclosed). An organization's rating is the mean of its routes'.
 
 Every input is curated as YAML in `sources/`, each claim with its evidence; the Python pipeline in `build/` computes
 the carbon intensities and ratings and writes `data/data.json`.[^layout] A static site in `web/` presents the data at <https://ai-emissions-map.vercel.app>.

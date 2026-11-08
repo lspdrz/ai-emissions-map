@@ -31,8 +31,8 @@ describe("MethodSection", () => {
   it("lists the four ratings A to D", () => {
     const html = renderToStaticMarkup(<MethodSection meta={buildMeta()} />);
     expect(html).toMatch(/>A<\/dt><dd[^>]*>Names the facility</);
-    expect(html).toMatch(/>B<\/dt><dd[^>]*>Names one grid</);
-    expect(html).toMatch(/>C<\/dt><dd[^>]*>Names several possible grids</);
+    expect(html).toMatch(/>B<\/dt><dd[^>]*>Names all specific grids</);
+    expect(html).toMatch(/>C<\/dt><dd[^>]*>Names aggregate zones</);
     expect(html).toMatch(/>D<\/dt><dd[^>]*>Undisclosed</);
   });
 

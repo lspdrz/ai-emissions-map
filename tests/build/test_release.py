@@ -32,7 +32,7 @@ def test_a_release_writes_the_data_file(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -64,7 +64,7 @@ def test_a_release_copies_each_routes_stored_fields(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -98,7 +98,7 @@ def test_with_no_previous_data_file_the_release_date_is_the_run_date(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -131,7 +131,7 @@ def test_a_release_records_the_hash_of_its_inputs(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -190,7 +190,7 @@ def test_invalid_sources_write_nothing(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -228,7 +228,7 @@ def test_a_rerun_on_unchanged_inputs_writes_nothing(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -261,7 +261,7 @@ def test_a_change_the_site_does_not_show_keeps_the_release_date(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -299,7 +299,7 @@ def test_a_change_the_site_does_not_show_updates_the_hash(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -338,7 +338,7 @@ def test_a_change_the_site_shows_moves_the_release_date(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -377,7 +377,7 @@ def test_a_conflicted_data_file_is_rebuilt_with_the_run_date(tmp_path):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
@@ -417,7 +417,7 @@ def test_it_refuses_to_write_outside_the_contract(tmp_path, monkeypatch):
                 org="acme",
                 model="m-70b",
                 location=make_location(candidates=["grid:ch"]),
-                disclosure_rating={"letter": "B", "gap": "The grid is disclosed, not the facility."},
+                disclosure_rating={"letter": "B", "gap": "The grids are disclosed, not the facility."},
                 carbon_intensity={
                     "grids": ["ch"],
                     "energy_wh": {"low": 0.5, "high": 0.6},
