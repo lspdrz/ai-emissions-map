@@ -1,0 +1,11 @@
+name: ie
+display_name: Ireland
+zone: IE
+country: IE
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 263.298
+  year: 2025
+  geography: IE
+  source: Ember
