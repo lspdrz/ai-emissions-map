@@ -1,0 +1,11 @@
+name: ch
+display_name: Switzerland
+zone: CH
+country: CH
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 39.278
+  year: 2025
+  geography: CH
+  source: Ember

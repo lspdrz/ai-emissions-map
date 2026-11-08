@@ -1,0 +1,15 @@
+name: it
+display_name: Italy
+country: IT
+subdivided: true
+comments: >-
+  Italy as a whole, for a route whose provider names the country but no bidding zone or facility. Italy's grid is
+  split into several bidding zones (North Italy, it-no, among them), so naming the country does not determine the
+  grid. Its intensity is Ember's national value.
+
+# Written by `python -m build grid-emissions` from sources/snapshots/grid_intensity.csv. Everything below this line is rewritten by it; do not edit it by hand.
+intensity:
+  g_per_kwh: 284.431
+  year: 2025
+  geography: IT
+  source: Ember
