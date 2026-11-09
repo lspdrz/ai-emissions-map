@@ -1,4 +1,4 @@
-# The MCP server's image (mcp_server/). Cloud Run builds and deploys it on every push to beta (set up in the console).
+# The MCP server's image (mcp_server/). Cloud Run builds and deploys it on every push to main (set up in the console).
 
 FROM python:3.12-slim
 

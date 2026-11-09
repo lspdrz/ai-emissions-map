@@ -16,6 +16,9 @@ the carbon intensities and ratings and writes `data/data.json`.[^layout] A stati
 Start at [`docs/README.md`](docs/README.md), which routes each task to its workflow. The method is
 in [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md). Agents start at [`CLAUDE.md`](CLAUDE.md).
 
+To bring the map's estimates into any AI agent that supports MCP, connect it to the map's MCP server: see
+[`mcp_server/README.md`](mcp_server/README.md).
+
 ## Local development
 
 ### Requirements
