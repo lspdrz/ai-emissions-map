@@ -149,12 +149,12 @@ open_webui_plugins/
   `build/` imports neither; `open_webui_plugins/` import nothing from the repository (`uv run lint-imports`).
 - **Each Open WebUI plugin stands alone:** one file pasted into Open WebUI, using the standard library and pydantic,
   that calls the hosted MCP server over HTTP (a stateless `tools/call`). A change to a tool's arguments or output must
-  keep the plugins working, and reaches them only once `beta` redeploys the server.
+  keep the plugins working, and reaches them as soon as Cloud Run redeploys the server, on every push to `main`.
 - **The carbon estimate filter** reads the output tokens from the provider's usage, or estimates them from the text
   and says so. Its tests replace `_post`, its one HTTP call.
 - **Running it:** `uv run python -m mcp_server` for a local client over stdio, for example
-  `claude mcp add ai-emissions-map -- uv run --directory <repo> python -m mcp_server`. On `main` the release has no
-  routes, so try it on `beta`.
+  `claude mcp add ai-emissions-map -- uv run --directory <repo> python -m mcp_server`. The hosted server serves
+  `main`'s release; [`mcp_server/README.md`](mcp_server/README.md) says how an agent connects to it.
 
 ## The data model in one minute
 
