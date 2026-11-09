@@ -7,10 +7,10 @@
       1.0
     ],
     "counts": {
-      "grids": 21,
-      "models": 8,
-      "organizations": 4,
-      "routes": 19
+      "grids": 22,
+      "models": 10,
+      "organizations": 5,
+      "routes": 21
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -23,7 +23,7 @@
       "year": 2025
     },
     "grid_intensity_spread": 21,
-    "inputs_sha": "4cf8b862516ccac08ae10feb5b64c3f0f689c64a1707077414e9c81dc94a727d",
+    "inputs_sha": "c8b83520ec5c2e28114544ee82aed1dd5e56f543e172291f2a18376001488322",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
@@ -41,6 +41,20 @@
       "display_name": "Claude Opus 5.5",
       "slug": "claude-opus-5-5",
       "total_b": 670
+    },
+    {
+      "active_b": 16,
+      "architecture": "moe",
+      "display_name": "DeepSeek-V4.1-Flash-1017",
+      "slug": "deepseek-v4-1-flash-1017",
+      "total_b": 552
+    },
+    {
+      "active_b": 49,
+      "architecture": "moe",
+      "display_name": "DeepSeek-V4-Pro-0813",
+      "slug": "deepseek-v4-pro-0813",
+      "total_b": 1600
     },
     {
       "active_b": {
@@ -145,6 +159,53 @@
         "anthropic-claude-opus-5-5-us"
       ],
       "slug": "anthropic",
+      "type": "model_lab"
+    },
+    {
+      "country": "CN",
+      "description": "DeepSeek states that it collects, processes and stores users' personal data, prompts included, in the People's Republic of China. It does not say in which province or facility its API runs.",
+      "display_name": "DeepSeek",
+      "evidence": [
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "5.5 We will collect and process the personal information you provide as the data subject in accordance with the "
+          ],
+          "routes": [
+            "deepseek-deepseek-v4-1-flash-1017",
+            "deepseek-deepseek-v4-pro-0813"
+          ],
+          "url": "https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html"
+        },
+        {
+          "accessed": "2026-11-08",
+          "quotes": [
+            "Where We Store Your Personal Data",
+            "To provide you with our services, we directly collect, process and store your Personal Data in People's Republic of China.",
+            "User Input",
+            "When you use our Services, we may collect your text input, voice input, prompt, uploaded files, photos, feedback, chat history, or other content that you provide to our model and Services (“Prompts” or “Inputs”)."
+          ],
+          "routes": [
+            "deepseek-deepseek-v4-1-flash-1017",
+            "deepseek-deepseek-v4-pro-0813"
+          ],
+          "url": "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html"
+        }
+      ],
+      "homepage": "https://www.deepseek.com",
+      "rating": {
+        "letter": "C",
+        "mean": 1.0,
+        "spread": {
+          "C": 2
+        },
+        "summary": "C (2 routes at C)"
+      },
+      "routes": [
+        "deepseek-deepseek-v4-1-flash-1017",
+        "deepseek-deepseek-v4-pro-0813"
+      ],
+      "slug": "deepseek",
       "type": "model_lab"
     },
     {
@@ -472,6 +533,66 @@
       },
       "served_as": null,
       "slug": "anthropic-claude-opus-5-5-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.054371,
+        "low": 0.054371
+      },
+      "energy": {
+        "high": 2.781181,
+        "low": 1.968498
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 528.278,
+        "low": 528.278
+      },
+      "label": "China",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash-1017",
+      "org": "deepseek",
+      "sci": {
+        "high": 1.523608,
+        "low": 1.094285
+      },
+      "served_as": "deepseek-flash",
+      "slug": "deepseek-deepseek-v4-1-flash-1017"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.18139,
+        "low": 0.18139
+      },
+      "energy": {
+        "high": 7.861879,
+        "low": 5.564577
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 528.278,
+        "low": 528.278
+      },
+      "label": "China",
+      "letter": "C",
+      "model": "deepseek-v4-pro-0813",
+      "org": "deepseek",
+      "sci": {
+        "high": 4.334648,
+        "low": 3.121033
+      },
+      "served_as": "deepseek-v4-pro",
+      "slug": "deepseek-deepseek-v4-pro-0813"
     },
     {
       "band": [
