@@ -1,0 +1,17 @@
+name: apertus-8b-instruct-2509
+display_name: Apertus 8B Instruct 2509
+architecture: dense
+active_b: 8
+total_b: 8
+evidence:
+- url: https://huggingface.co/swiss-ai/Apertus-8B-Instruct-2509
+  shows: 'Model card: "Apertus is a 70B and 8B parameter language model designed to push the boundaries of fully-open multilingual and transparent models."'
+  accessed: "2026-11-09"
+  kind: primary
+- url: https://huggingface.co/swiss-ai/Apertus-8B-Instruct-2509/raw/main/config.json
+  shows: 'config.json: "architectures": ["ApertusForCausalLM"], "num_hidden_layers": 32, "intermediate_size": 21504, with no expert fields: a dense model'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  Swiss AI states 8B for the family; the repository is the 8B size. Hugging Face counts 8.05B parameters in the
+  safetensors.

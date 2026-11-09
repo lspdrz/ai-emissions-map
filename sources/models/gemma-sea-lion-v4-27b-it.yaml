@@ -1,0 +1,17 @@
+name: gemma-sea-lion-v4-27b-it
+display_name: Gemma-SEA-LION-v4-27B-IT
+architecture: dense
+active_b: 27
+total_b: 27
+evidence:
+- url: https://huggingface.co/aisingapore/Gemma-SEA-LION-v4-27B-IT
+  shows: 'Model card: "a decoder model using the Gemma 3 architecture"; "the default tokenizer used in Gemma 3 27B IT"'
+  accessed: "2026-11-09"
+  kind: primary
+- url: https://huggingface.co/aisingapore/Gemma-SEA-LION-v4-27B-IT/raw/main/config.json
+  shows: 'config.json: "architectures": ["Gemma3ForConditionalGeneration"], with no expert fields: a dense model'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  AI Singapore names the model 27B, post-trained from Gemma 3 27B; Hugging Face counts 27.43B parameters in the
+  safetensors, which include the vision encoder.
