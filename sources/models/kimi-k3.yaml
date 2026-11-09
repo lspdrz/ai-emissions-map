@@ -1,0 +1,16 @@
+name: kimi-k3
+display_name: Kimi K3
+architecture: moe
+active_b: 104
+total_b: 2800
+evidence:
+- url: https://huggingface.co/moonshotai/Kimi-K3
+  shows: 'Model card: "It is a 2.8T-parameter model built on Kimi Delta Attention (KDA) and Attention Residuals (AttnRes)"'
+  accessed: "2026-11-09"
+  kind: primary
+- url: https://huggingface.co/moonshotai/Kimi-K3
+  shows: 'Model card, Model Summary table: Architecture "Mixture-of-Experts (MoE)"; "Total Parameters" "2.8T"; "Activated Parameters" "104B"'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  Moonshot AI states 2.8T total parameters with 104B activated, a mixture of experts.

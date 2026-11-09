@@ -1,0 +1,20 @@
+name: deepseek-v4-1-flash
+display_name: DeepSeek-V4.1-Flash
+architecture: moe
+active_b: 16
+total_b: 552
+evidence:
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
+  shows: 'Model card: "We introduce DeepSeek-V4.1-Flash, a multimodal Mixture-of-Experts (MoE) model with 552B backbone parameters"; "This allows the model to activate only 8B parameters per token during prefill and 16B during decode"'
+  accessed: "2026-11-09"
+  kind: primary
+- url: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash
+  shows: 'Model card: "Engram conditional memory (196B parameters, sparsely accessed via token-based lookup)"'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  DeepSeek states 552B backbone parameters, with 8B active per token during prefill and 16B during decode. Output
+  tokens are generated in decode, so the active count is 16B. The total is the backbone alone: the model also has a
+  196B Engram conditional memory, accessed by lookup rather than computed, which is not counted. Hugging Face counts
+  763B parameters in the safetensors, backbone and Engram together. The same counts as DeepSeek-V4.1-Flash-1017's, a
+  minor update of this model.
