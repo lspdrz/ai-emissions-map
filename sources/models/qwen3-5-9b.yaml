@@ -1,0 +1,15 @@
+name: qwen3-5-9b
+display_name: Qwen3.5 9B
+architecture: dense
+active_b: 9
+total_b: 9
+evidence:
+- url: https://huggingface.co/Qwen/Qwen3.5-9B
+  shows: 'Model card, Model Overview, Language Model: "Number of Parameters: 9B"; "Feed Forward Network" with "Intermediate Dimension: 12288"'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  Qwen's model card gives 9B parameters for the language model and a single feed-forward network with one intermediate
+  dimension, and lists no experts; its config.json has no expert fields. The card's highlights mention sparse mixture-
+  of-experts for the Qwen3.5 series as a whole, so the architecture is read as dense from the 9B model's own overview.
+  Hugging Face counts 10B in the safetensors, which include the vision encoder.

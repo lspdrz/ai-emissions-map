@@ -8,13 +8,13 @@
     ],
     "counts": {
       "grids": 22,
-      "models": 10,
-      "organizations": 5,
-      "routes": 21
+      "models": 17,
+      "organizations": 6,
+      "routes": 36
     },
     "draft": true,
     "ecologits_version": "0.11.2",
-    "featured_model": "gemini-3-6-flash",
+    "featured_model": "deepseek-v4-1-flash-1017",
     "functional_unit": {
       "output_tokens": 1000
     },
@@ -23,13 +23,13 @@
       "year": 2025
     },
     "grid_intensity_spread": 21,
-    "inputs_sha": "c8b83520ec5c2e28114544ee82aed1dd5e56f543e172291f2a18376001488322",
+    "inputs_sha": "e3eae2d9183c7587d29b7553fdcfa925c5a1fdf0f455788e4ceb2bf25ba8135a",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
       1.54
     ],
-    "release_date": "2026-11-08"
+    "release_date": "2026-11-09"
   },
   "models": [
     {
@@ -41,6 +41,13 @@
       "display_name": "Claude Opus 5.5",
       "slug": "claude-opus-5-5",
       "total_b": 670
+    },
+    {
+      "active_b": 16,
+      "architecture": "moe",
+      "display_name": "DeepSeek-V4.1-Flash",
+      "slug": "deepseek-v4-1-flash",
+      "total_b": 552
     },
     {
       "active_b": 16,
@@ -77,6 +84,27 @@
       "total_b": 750
     },
     {
+      "active_b": 40,
+      "architecture": "moe",
+      "display_name": "GLM-5.2",
+      "slug": "glm-5-2",
+      "total_b": 744
+    },
+    {
+      "active_b": 40,
+      "architecture": "moe",
+      "display_name": "GLM-5.3",
+      "slug": "glm-5-3",
+      "total_b": 744
+    },
+    {
+      "active_b": 18,
+      "architecture": "moe",
+      "display_name": "GLM-5.3 Flash",
+      "slug": "glm-5-3-flash",
+      "total_b": 320
+    },
+    {
       "active_b": {
         "max": 112,
         "min": 38
@@ -107,6 +135,20 @@
       "total_b": 38
     },
     {
+      "active_b": 104,
+      "architecture": "moe",
+      "display_name": "Kimi K3",
+      "slug": "kimi-k3",
+      "total_b": 2800
+    },
+    {
+      "active_b": 104,
+      "architecture": "moe",
+      "display_name": "Kimi K3.1 Pro",
+      "slug": "kimi-k3-1-pro",
+      "total_b": 2800
+    },
+    {
       "active_b": {
         "max": 52,
         "min": 49
@@ -122,6 +164,13 @@
       "display_name": "Mistral Medium 3.5",
       "slug": "mistral-medium-3-5-128b",
       "total_b": 128
+    },
+    {
+      "active_b": 9,
+      "architecture": "dense",
+      "display_name": "Qwen3.5 9B",
+      "slug": "qwen3-5-9b",
+      "total_b": 9
     }
   ],
   "organizations": [
@@ -480,6 +529,130 @@
       ],
       "slug": "openai",
       "type": "model_lab"
+    },
+    {
+      "country": "US",
+      "description": "Together AI says it runs open models on its own infrastructure, in data centers it describes only by region: the United States, and France, the Netherlands, Sweden and Romania in Europe. It does not say which of them serves its serverless API, and its documentation offers no region choice there beyond United States processing for selected models at us-api.together.ai.",
+      "display_name": "Together AI",
+      "evidence": [
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "For example, DeepSeek models are hosted in Together's secure North America data centers. DeepSeek itself receives no user requests or API traffic from this deployment.",
+            "Models published by third-party authors (DeepSeek, Qwen, Mistral, etc.) and hosted on Together run on Together's own infrastructure.",
+            "It covers only where those requests are processed, not where data is stored, logged, or routed."
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash",
+            "together-ai-deepseek-v4-1-flash-1017",
+            "together-ai-deepseek-v4-1-flash-1017-us",
+            "together-ai-deepseek-v4-1-flash-us",
+            "together-ai-deepseek-v4-pro-0813",
+            "together-ai-deepseek-v4-pro-0813-us",
+            "together-ai-glm-5-3-flash-us",
+            "together-ai-glm-5-3-us",
+            "together-ai-kimi-k3-us"
+          ],
+          "url": "https://docs.together.ai/docs/privacy-and-security.md"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "* `deepseek-ai/DeepSeek-V4.1-Flash-1017`.",
+            "* `deepseek-ai/DeepSeek-V4.1-Flash`.",
+            "* `deepseek-ai/DeepSeek-V4-Pro-0813`.",
+            "* `zai-org/GLM-5.3-Flash`.",
+            "* `zai-org/GLM-5.3`.",
+            "* `moonshotai/Kimi-K3`."
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash-1017-us",
+            "together-ai-deepseek-v4-1-flash-us",
+            "together-ai-deepseek-v4-pro-0813-us",
+            "together-ai-glm-5-3-flash-us",
+            "together-ai-glm-5-3-us",
+            "together-ai-kimi-k3-us"
+          ],
+          "url": "https://docs.together.ai/docs/serverless/geo-specific-inference.md"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "keeps inference processing in the United States for requests sent to `us-api.together.ai`"
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash-1017-us",
+            "together-ai-deepseek-v4-1-flash-us",
+            "together-ai-deepseek-v4-pro-0813-us",
+            "together-ai-glm-5-3-flash-us",
+            "together-ai-glm-5-3-us",
+            "together-ai-kimi-k3-us"
+          ],
+          "url": "https://docs.together.ai/docs/serverless/models.md"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "For any other region, use a dedicated endpoint and pin its hardware to that region."
+          ],
+          "routes": [
+            "together-ai-deepseek-v4-1-flash",
+            "together-ai-deepseek-v4-1-flash-1017",
+            "together-ai-deepseek-v4-pro-0813",
+            "together-ai-glm-5-2",
+            "together-ai-glm-5-3",
+            "together-ai-glm-5-3-flash",
+            "together-ai-kimi-k3",
+            "together-ai-kimi-k3-1-pro",
+            "together-ai-qwen3-5-9b"
+          ],
+          "url": "https://docs.together.ai/docs/serverless/overview.md"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "when you make a serverless request, it gets routed to whichever GPU has capacity"
+          ],
+          "routes": [
+            "together-ai-glm-5-2",
+            "together-ai-glm-5-3",
+            "together-ai-glm-5-3-flash",
+            "together-ai-kimi-k3",
+            "together-ai-kimi-k3-1-pro",
+            "together-ai-qwen3-5-9b"
+          ],
+          "url": "https://docs.together.ai/learn/choosing-a-deployment-option.md"
+        }
+      ],
+      "homepage": "https://www.together.ai",
+      "rating": {
+        "letter": "C",
+        "mean": 0.6,
+        "spread": {
+          "C": 9,
+          "D": 6
+        },
+        "summary": "C (9 routes at C, 6 routes at D)"
+      },
+      "routes": [
+        "together-ai-deepseek-v4-1-flash",
+        "together-ai-deepseek-v4-1-flash-1017",
+        "together-ai-deepseek-v4-1-flash-1017-us",
+        "together-ai-deepseek-v4-1-flash-us",
+        "together-ai-deepseek-v4-pro-0813",
+        "together-ai-deepseek-v4-pro-0813-us",
+        "together-ai-glm-5-2",
+        "together-ai-glm-5-3",
+        "together-ai-glm-5-3-flash",
+        "together-ai-glm-5-3-flash-us",
+        "together-ai-glm-5-3-us",
+        "together-ai-kimi-k3",
+        "together-ai-kimi-k3-1-pro",
+        "together-ai-kimi-k3-us",
+        "together-ai-qwen3-5-9b"
+      ],
+      "slug": "together-ai",
+      "type": "inference_host"
     }
   ],
   "routes": [
@@ -1058,6 +1231,402 @@
       },
       "served_as": null,
       "slug": "openai-gpt-6-luna-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.059836,
+        "low": 2.87352
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States (North America)",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash",
+      "org": "together-ai",
+      "sci": {
+        "high": 1.822558,
+        "low": 1.366535
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
+      "slug": "together-ai-deepseek-v4-1-flash"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.059836,
+        "low": 2.87352
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States (North America)",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash-1017",
+      "org": "together-ai",
+      "sci": {
+        "high": 1.822558,
+        "low": 1.366535
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "slug": "together-ai-deepseek-v4-1-flash-1017"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.059836,
+        "low": 2.87352
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash-1017",
+      "org": "together-ai",
+      "sci": {
+        "high": 1.822558,
+        "low": 1.366535
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "slug": "together-ai-deepseek-v4-1-flash-1017-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.261945,
+        "low": 0.261945
+      },
+      "energy": {
+        "high": 4.059836,
+        "low": 2.87352
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "deepseek-v4-1-flash",
+      "org": "together-ai",
+      "sci": {
+        "high": 1.822558,
+        "low": 1.366535
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4.1-Flash",
+      "slug": "together-ai-deepseek-v4-1-flash-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.757127,
+        "low": 0.757127
+      },
+      "energy": {
+        "high": 11.408421,
+        "low": 8.074792
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States (North America)",
+      "letter": "C",
+      "model": "deepseek-v4-pro-0813",
+      "org": "together-ai",
+      "sci": {
+        "high": 5.142559,
+        "low": 3.861102
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4-Pro-0813",
+      "slug": "together-ai-deepseek-v4-pro-0813"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.757127,
+        "low": 0.757127
+      },
+      "energy": {
+        "high": 11.408421,
+        "low": 8.074792
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "deepseek-v4-pro-0813",
+      "org": "together-ai",
+      "sci": {
+        "high": 5.142559,
+        "low": 3.861102
+      },
+      "served_as": "deepseek-ai/DeepSeek-V4-Pro-0813",
+      "slug": "together-ai-deepseek-v4-pro-0813-us"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.346759,
+        "low": 0.346759
+      },
+      "energy": {
+        "high": 5.255745,
+        "low": 3.719975
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "glm-5-2",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "zai-org/GLM-5.2",
+      "slug": "together-ai-glm-5-2"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.346759,
+        "low": 0.346759
+      },
+      "energy": {
+        "high": 5.255745,
+        "low": 3.719975
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "glm-5-3",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "zai-org/GLM-5.3",
+      "slug": "together-ai-glm-5-3"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.134506,
+        "low": 0.134506
+      },
+      "energy": {
+        "high": 2.079747,
+        "low": 1.472029
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "glm-5-3-flash",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "zai-org/GLM-5.3-Flash",
+      "slug": "together-ai-glm-5-3-flash"
+    },
+    {
+      "band": [
+        4,
+        4
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.134506,
+        "low": 0.134506
+      },
+      "energy": {
+        "high": 2.079747,
+        "low": 1.472029
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "glm-5-3-flash",
+      "org": "together-ai",
+      "sci": {
+        "high": 0.933968,
+        "low": 0.700359
+      },
+      "served_as": "zai-org/GLM-5.3-Flash",
+      "slug": "together-ai-glm-5-3-flash-us"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.346759,
+        "low": 0.346759
+      },
+      "energy": {
+        "high": 5.255745,
+        "low": 3.719975
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "glm-5-3",
+      "org": "together-ai",
+      "sci": {
+        "high": 2.367083,
+        "low": 1.776728
+      },
+      "served_as": "zai-org/GLM-5.3",
+      "slug": "together-ai-glm-5-3-us"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 2.291713,
+        "low": 2.291713
+      },
+      "energy": {
+        "high": 33.779342,
+        "low": 23.908755
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "kimi-k3",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "moonshotai/Kimi-K3",
+      "slug": "together-ai-kimi-k3"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 2.291713,
+        "low": 2.291713
+      },
+      "energy": {
+        "high": 33.779342,
+        "low": 23.908755
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "kimi-k3-1-pro",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "moonshotai/Kimi-K3.1-Pro",
+      "slug": "together-ai-kimi-k3-1-pro"
+    },
+    {
+      "band": [
+        5,
+        5
+      ],
+      "default": false,
+      "embodied": {
+        "high": 2.291713,
+        "low": 2.291713
+      },
+      "energy": {
+        "high": 33.779342,
+        "low": 23.908755
+      },
+      "gap": "Uses aggregate/super-zone grids (location not fully specific).",
+      "grid_intensity": {
+        "high": 384.403,
+        "low": 384.403
+      },
+      "label": "United States",
+      "letter": "C",
+      "model": "kimi-k3",
+      "org": "together-ai",
+      "sci": {
+        "high": 15.276593,
+        "low": 11.48231
+      },
+      "served_as": "moonshotai/Kimi-K3",
+      "slug": "together-ai-kimi-k3-us"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.007413,
+        "low": 0.007413
+      },
+      "energy": {
+        "high": 0.11597,
+        "low": 0.082082
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Not disclosed",
+      "letter": "D",
+      "model": "qwen3-5-9b",
+      "org": "together-ai",
+      "sci": null,
+      "served_as": "Qwen/Qwen3.5-9B",
+      "slug": "together-ai-qwen3-5-9b"
     }
   ],
   "schema": "aem-data/4"
