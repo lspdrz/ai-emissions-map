@@ -1,0 +1,18 @@
+name: apertus-v1-5-70b
+display_name: Apertus 1.5 70B
+architecture: dense
+active_b: 70
+total_b: 70
+evidence:
+- url: https://arxiv.org/abs/2610.15542
+  shows: 'Apertus 1.5 technical report, abstract: "Continued pretraining of the Apertus 1.0 models, on 4T additional tokens for the 8B and 2T for the 70B"; "the architecture is unchanged"'
+  accessed: "2026-11-09"
+  kind: primary
+- url: https://huggingface.co/swiss-ai/Apertus-70B-Instruct-2509/raw/main/config.json
+  shows: 'config.json of the 1.0 70B release: "architectures": ["ApertusForCausalLM"], "num_hidden_layers": 80, "intermediate_size": 43008, with no expert fields: a dense model'
+  accessed: "2026-11-09"
+  kind: primary
+comments: >-
+  Swiss AI's 1.5 report names the 70B size and says the architecture is unchanged from 1.0, a dense model. Hugging
+  Face counts 72.0B parameters in the 1.5 safetensors: 71.7B in the language model and 0.3B in the vision and audio
+  tokenizers added in 1.5. The 1.5 model card is gated behind a login.

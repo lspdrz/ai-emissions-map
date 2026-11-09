@@ -8,9 +8,9 @@
     ],
     "counts": {
       "grids": 22,
-      "models": 10,
-      "organizations": 5,
-      "routes": 21
+      "models": 16,
+      "organizations": 6,
+      "routes": 28
     },
     "draft": true,
     "ecologits_version": "0.11.2",
@@ -23,15 +23,43 @@
       "year": 2025
     },
     "grid_intensity_spread": 21,
-    "inputs_sha": "c8b83520ec5c2e28114544ee82aed1dd5e56f543e172291f2a18376001488322",
+    "inputs_sha": "0161ce62a8d753f961e66f0f1162c4d0e4121258b8b254d24ed9aaa04cf706ca",
     "methodology_version": "0.4.0",
     "pue": [
       1.09,
       1.54
     ],
-    "release_date": "2026-11-08"
+    "release_date": "2026-11-09"
   },
   "models": [
+    {
+      "active_b": 70,
+      "architecture": "dense",
+      "display_name": "Apertus 70B Instruct 2509",
+      "slug": "apertus-70b-instruct-2509",
+      "total_b": 70
+    },
+    {
+      "active_b": 8,
+      "architecture": "dense",
+      "display_name": "Apertus 8B Instruct 2509",
+      "slug": "apertus-8b-instruct-2509",
+      "total_b": 8
+    },
+    {
+      "active_b": 70,
+      "architecture": "dense",
+      "display_name": "Apertus 1.5 70B",
+      "slug": "apertus-v1-5-70b",
+      "total_b": 70
+    },
+    {
+      "active_b": 11,
+      "architecture": "dense",
+      "display_name": "Bielik 11B v3.0 Instruct",
+      "slug": "bielik-11b-v3-0-instruct",
+      "total_b": 11
+    },
     {
       "active_b": {
         "max": 200,
@@ -75,6 +103,13 @@
       "display_name": "Gemini 3.8 Flash",
       "slug": "gemini-3-8-flash",
       "total_b": 750
+    },
+    {
+      "active_b": 27,
+      "architecture": "dense",
+      "display_name": "Gemma-SEA-LION-v4-27B-IT",
+      "slug": "gemma-sea-lion-v4-27b-it",
+      "total_b": 27
     },
     {
       "active_b": {
@@ -122,6 +157,13 @@
       "display_name": "Mistral Medium 3.5",
       "slug": "mistral-medium-3-5-128b",
       "total_b": 128
+    },
+    {
+      "active_b": 32,
+      "architecture": "dense",
+      "display_name": "Qwen-SEA-LION-v4-32B-IT",
+      "slug": "qwen-sea-lion-v4-32b-it",
+      "total_b": 32
     }
   ],
   "organizations": [
@@ -480,6 +522,198 @@
       ],
       "slug": "openai",
       "type": "model_lab"
+    },
+    {
+      "country": null,
+      "description": "Public AI's Inference Utility routes each request to an inference partner's compute. Its pages say only that its inference partners host models \"worldwide\"; its open-source deployment configuration names the partner behind each model, and most of those partners name no site.",
+      "display_name": "Public AI",
+      "evidence": [
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "The free API is rate-limited and meant for POC testing"
+          ],
+          "routes": [
+            "public-ai-gemma-sea-lion-v4-27b-it",
+            "public-ai-qwen-sea-lion-v4-32b-it"
+          ],
+          "url": "https://docs.sea-lion.ai/overview/readme/faq"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "Where are models hosted and how is usage billed?",
+            "Models are curated open-source LLMs hosted entirely on Swiss sovereign infrastructure"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://documentation.kvant.cloud/faq/ai-model-service/"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "Where is my data physically located?",
+            "Your data resides entirely in Switzerland. Our data centre is located in Basel and is fully managed by Phoeniqs"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://documentation.kvant.cloud/faq/iaas/"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "; two active entries under ",
+            "api_base: https://api.infomaniak.com/2/ai/106744/openai/v1",
+            "api_base: https://maas.phoeniqs.com/v1",
+            "#    api_base: https://api.featherless.ai/v1"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/6cd882f7a20776c01a86d14def00484f56b2bc84/charts/platform/charts/litellm/models/swiss-ai/apertus-v1.5-70b.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://api.sea-lion.ai"
+          ],
+          "routes": [
+            "public-ai-gemma-sea-lion-v4-27b-it"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/aisingapore/Gemma-SEA-LION-v4-27B-IT.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://api.sea-lion.ai"
+          ],
+          "routes": [
+            "public-ai-qwen-sea-lion-v4-32b-it"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/aisingapore/Qwen-SEA-LION-v4-32B-IT.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://llmlab.plgrid.pl/api/v1"
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/speakleash/Bielik-11B-v3.0-Instruct.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://api.infomaniak.com/2/ai/106744/openai/v1"
+          ],
+          "routes": [
+            "public-ai-apertus-70b-instruct-2509"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/swiss-ai/apertus-70b-instruct.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://api.featherless.ai/v1"
+          ],
+          "routes": [
+            "public-ai-apertus-8b-instruct-2509"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/swiss-ai/apertus-8b-instruct.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "api_base: https://api.blablador.fz-juelich.de/v1"
+          ],
+          "routes": [
+            "public-ai-apertus-8b-instruct-2509-v1-5-8b"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/charts/platform/charts/litellm/models/swiss-ai/apertus-v1.5-8b.yaml"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "Load Balancing & Resilience",
+            "Multiple endpoints for the same model name are automatically load-balanced.",
+            "`eu-central-2` (Zurich)"
+          ],
+          "routes": [
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://github.com/forpublicai/chat.publicai.co/blob/874a798fb8174aa1b94ddee06ae45c094c3ff951/developer/docs/overview.md"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "PLGrid offers access to o a distributed ecosystem of high-performance computing (HPC) clusters located at national supercomputing centers and partner infrastructures, including access to the LUMI EuroHPC system in Finland."
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://guide.plgrid.pl/en/infrastructure/resources"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "PLGrid Forge is a service for inference, management of credits and API keys, and access to models within a specific grant using PLGrid supercomputers. The service is hosted at https://llmlab.plgrid.pl",
+            "model instances run on a supercomputer"
+          ],
+          "routes": [
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://guide.plgrid.pl/en/integrated-platforms/plgrid_forge"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "The Public AI Gateway is a unified API that routes requests to open-source models hosted by inference partners worldwide."
+          ],
+          "routes": [
+            "public-ai-apertus-70b-instruct-2509",
+            "public-ai-apertus-8b-instruct-2509",
+            "public-ai-apertus-8b-instruct-2509-v1-5-8b",
+            "public-ai-apertus-v1-5-70b",
+            "public-ai-bielik-11b-v3-0-instruct"
+          ],
+          "url": "https://platform.publicai.co/inference-partners-faq"
+        },
+        {
+          "accessed": "2026-11-09",
+          "quotes": [
+            "Our AI and GPU services are powered from the heart of Europe in our data centers located in Switzerland, with no dependence on foreign players."
+          ],
+          "routes": [
+            "public-ai-apertus-70b-instruct-2509",
+            "public-ai-apertus-v1-5-70b"
+          ],
+          "url": "https://www.infomaniak.com/en/hosting/ai-services"
+        }
+      ],
+      "homepage": "https://publicai.co",
+      "rating": {
+        "letter": "C",
+        "mean": 1.142857,
+        "spread": {
+          "B": 4,
+          "D": 3
+        },
+        "summary": "C (4 routes at B, 3 routes at D)"
+      },
+      "routes": [
+        "public-ai-apertus-70b-instruct-2509",
+        "public-ai-apertus-8b-instruct-2509",
+        "public-ai-apertus-8b-instruct-2509-v1-5-8b",
+        "public-ai-apertus-v1-5-70b",
+        "public-ai-bielik-11b-v3-0-instruct",
+        "public-ai-gemma-sea-lion-v4-27b-it",
+        "public-ai-qwen-sea-lion-v4-32b-it"
+      ],
+      "slug": "public-ai",
+      "type": "inference_host"
     }
   ],
   "routes": [
@@ -1058,6 +1292,189 @@
       },
       "served_as": null,
       "slug": "openai-gpt-6-luna-us"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.056597,
+        "low": 0.056597
+      },
+      "energy": {
+        "high": 0.843829,
+        "low": 0.597256
+      },
+      "gap": "The grids are disclosed, not the facility.",
+      "grid_intensity": {
+        "high": 39.278,
+        "low": 39.278
+      },
+      "label": "Infomaniak, Switzerland",
+      "letter": "B",
+      "model": "apertus-70b-instruct-2509",
+      "org": "public-ai",
+      "sci": {
+        "high": 0.089741,
+        "low": 0.080056
+      },
+      "served_as": "swiss-ai/apertus-70b-instruct",
+      "slug": "public-ai-apertus-70b-instruct-2509"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.007302,
+        "low": 0.007302
+      },
+      "energy": {
+        "high": 0.114412,
+        "low": 0.08098
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "Featherless, location not disclosed",
+      "letter": "D",
+      "model": "apertus-8b-instruct-2509",
+      "org": "public-ai",
+      "sci": null,
+      "served_as": "swiss-ai/apertus-8b-instruct",
+      "slug": "public-ai-apertus-8b-instruct-2509"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": false,
+      "embodied": {
+        "high": 0.007302,
+        "low": 0.007302
+      },
+      "energy": {
+        "high": 0.114412,
+        "low": 0.08098
+      },
+      "gap": "The grids are disclosed, not the facility.",
+      "grid_intensity": {
+        "high": 334.117,
+        "low": 334.117
+      },
+      "label": "Jülich, Germany",
+      "letter": "B",
+      "model": "apertus-8b-instruct-2509",
+      "org": "public-ai",
+      "sci": {
+        "high": 0.045529,
+        "low": 0.034359
+      },
+      "served_as": "swiss-ai/apertus-v1.5-8b",
+      "slug": "public-ai-apertus-8b-instruct-2509-v1-5-8b"
+    },
+    {
+      "band": [
+        2,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.056597,
+        "low": 0.056597
+      },
+      "energy": {
+        "high": 0.843829,
+        "low": 0.597256
+      },
+      "gap": "The grids are disclosed, not the facility.",
+      "grid_intensity": {
+        "high": 39.278,
+        "low": 39.278
+      },
+      "label": "Switzerland (Infomaniak and PHOENIQS)",
+      "letter": "B",
+      "model": "apertus-v1-5-70b",
+      "org": "public-ai",
+      "sci": {
+        "high": 0.089741,
+        "low": 0.080056
+      },
+      "served_as": "swiss-ai/apertus-v1.5-70b",
+      "slug": "public-ai-apertus-v1-5-70b"
+    },
+    {
+      "band": [
+        1,
+        2
+      ],
+      "default": true,
+      "embodied": {
+        "high": 0.007634,
+        "low": 0.007634
+      },
+      "energy": {
+        "high": 0.119084,
+        "low": 0.084287
+      },
+      "gap": "The grids are disclosed, not the facility.",
+      "grid_intensity": {
+        "high": 590.814,
+        "low": 57.182
+      },
+      "label": "PLGrid supercomputers (Poland or Finland)",
+      "letter": "B",
+      "model": "bielik-11b-v3-0-instruct",
+      "org": "public-ai",
+      "sci": {
+        "high": 0.07799,
+        "low": 0.012453
+      },
+      "served_as": "speakleash/Bielik-11B-v3.0-Instruct",
+      "slug": "public-ai-bielik-11b-v3-0-instruct"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.009401,
+        "low": 0.009401
+      },
+      "energy": {
+        "high": 0.143999,
+        "low": 0.101921
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "AI Singapore's SEA-LION API, location not disclosed",
+      "letter": "D",
+      "model": "gemma-sea-lion-v4-27b-it",
+      "org": "public-ai",
+      "sci": null,
+      "served_as": "aisingapore/Gemma-SEA-LION-v4-27B-IT",
+      "slug": "public-ai-gemma-sea-lion-v4-27b-it"
+    },
+    {
+      "band": null,
+      "default": true,
+      "embodied": {
+        "high": 0.009953,
+        "low": 0.009953
+      },
+      "energy": {
+        "high": 0.151785,
+        "low": 0.107432
+      },
+      "gap": "Location not disclosed by the provider.",
+      "grid_intensity": null,
+      "label": "AI Singapore's SEA-LION API, location not disclosed",
+      "letter": "D",
+      "model": "qwen-sea-lion-v4-32b-it",
+      "org": "public-ai",
+      "sci": null,
+      "served_as": "aisingapore/Qwen-SEA-LION-v4-32B-IT",
+      "slug": "public-ai-qwen-sea-lion-v4-32b-it"
     }
   ],
   "schema": "aem-data/4"
